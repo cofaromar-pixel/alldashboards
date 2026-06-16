@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COFARSUR — Comparativa Stock WMS SGL vs Sistema Cofarsur</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#e8eaed; --card:#fff; --border:#ced4da; --hover:#f9fafb;
+  --hbg:#1e2d3d; --hacc:#2e7d52;
+  --g:#166534; --gm:#16a34a; --gbg:#dcfce7; --gb2:#bbf7d0;
+  --r:#991b1b; --rm:#dc2626; --rbg:#fee2e2; --rb2:#fecaca;
+  --b:#1e40af; --bm:#2563eb; --bbg:#dbeafe; --bb2:#bfdbfe;
+  --a:#92400e; --am:#d97706; --abg:#fef3c7; --ab2:#fde68a;
+  --p:#581c87; --pm:#9333ea; --pbg:#f3e8ff; --pb2:#e9d5ff;
+  --t:#0f4c6b; --tm:#0891b2; --tbg:#cffafe; --tb2:#a5f3fc;
+  --o:#9a3412; --om:#ea580c; --obg:#ffedd5; --ob2:#fed7aa;
+  --gr:#374151; --grbg:#f3f4f6;
+  --tx:#111827; --tx2:#374151; --tx3:#9ca3af; --bdr:#e5e7eb;
+  --font:'Inter',sans-serif; --mono:'JetBrains Mono',monospace; --r8:8px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);font-size:.875rem;min-height:100vh;}
+.header{background:var(--hbg);border-bottom:3px solid var(--hacc);padding:18px 32px 15px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.header-logo{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:.5px;line-height:1;}
+.header-logo span{color:#4ade80;}
+.header-sub{font-size:.67rem;color:#94a3b8;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+.header-badge{display:inline-block;border:1px solid #4a8a64;color:#86efac;font-size:.6rem;padding:2px 9px;letter-spacing:1px;text-transform:uppercase;border-radius:3px;margin-top:6px;}
+.hclock{font-family:var(--mono);font-size:1.25rem;font-weight:700;color:#4ade80;letter-spacing:2px;}
+.hdate{font-size:.62rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;}
+.tabs{display:flex;padding:0 32px;background:#f8fafc;border-bottom:1px solid var(--border);overflow-x:auto;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.tab{background:none;border:none;border-bottom:3px solid transparent;color:var(--tx3);font-family:var(--font);font-size:.71rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;padding:13px 18px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;}
+.tab:hover{color:var(--bm);}
+.tab.on{color:var(--b);border-bottom-color:var(--bm);}
+.sec{display:none;padding:24px 32px 48px;}
+.sec.on{display:block;}
+.sec-title{font-size:1.1rem;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.sec-sub{font-size:.67rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:20px;}
+.kcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:15px 17px 13px;position:relative;overflow:hidden;box-shadow:var(--sh);}
+.kcard::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:var(--r8) 0 0 var(--r8);}
+.k-g{background:var(--gbg);border-color:var(--gb2);} .k-g::before{background:var(--gm);}
+.k-r{background:var(--rbg);border-color:var(--rb2);} .k-r::before{background:var(--rm);}
+.k-b{background:var(--bbg);border-color:var(--bb2);} .k-b::before{background:var(--bm);}
+.k-a{background:var(--abg);border-color:var(--ab2);} .k-a::before{background:var(--am);}
+.k-p{background:var(--pbg);border-color:var(--pb2);} .k-p::before{background:var(--pm);}
+.k-t{background:var(--tbg);border-color:var(--tb2);} .k-t::before{background:var(--tm);}
+.k-o{background:var(--obg);border-color:var(--ob2);} .k-o::before{background:var(--om);}
+.k-gr{background:var(--grbg);border-color:#d1d5db;} .k-gr::before{background:var(--gr);}
+.klbl{font-size:.61rem;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.kval{font-family:var(--mono);font-size:1.9rem;font-weight:700;line-height:1;margin-bottom:4px;}
+.kval-sm{font-family:var(--mono);font-size:1.1rem;font-weight:700;line-height:1.2;margin-bottom:4px;}
+.k-g .kval,.k-g .kval-sm{color:var(--g);} .k-r .kval,.k-r .kval-sm{color:var(--r);}
+.k-b .kval,.k-b .kval-sm{color:var(--b);} .k-a .kval,.k-a .kval-sm{color:var(--a);}
+.k-p .kval,.k-p .kval-sm{color:var(--p);} .k-t .kval,.k-t .kval-sm{color:var(--t);}
+.k-o .kval,.k-o .kval-sm{color:var(--o);} .k-gr .kval,.k-gr .kval-sm{color:var(--gr);}
+.ksub{font-size:.61rem;color:var(--tx3);line-height:1.4;}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:18px 20px;margin-bottom:16px;box-shadow:var(--sh);}
+.cctitle{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tx);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--bdr);}
+.sbar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin-bottom:12px;border:1px solid var(--bdr);}
+.seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:.59rem;font-weight:700;color:#fff;overflow:hidden;}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px;}
+.li{display:flex;align-items:center;gap:6px;font-size:.64rem;color:var(--tx2);font-weight:500;}
+.ld{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.brow{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.blbl{font-size:.66rem;color:var(--tx2);width:190px;flex-shrink:0;font-weight:500;text-transform:uppercase;letter-spacing:.3px;}
+.btrack{flex:1;background:#e5e7eb;height:15px;border-radius:4px;overflow:hidden;}
+.bfill{height:100%;border-radius:4px;}
+.bnum{font-family:var(--mono);font-size:.82rem;font-weight:700;width:65px;text-align:right;flex-shrink:0;}
+.bextra{font-size:.63rem;width:115px;text-align:right;flex-shrink:0;font-weight:600;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:900px){.two,.three{grid-template-columns:1fr;}}
+.al{border-left:4px solid;border-radius:0 var(--r8) var(--r8) 0;padding:12px 16px;margin-bottom:16px;font-size:.75rem;line-height:1.7;}
+.al.w{border-color:var(--rm);background:var(--rbg);} .al.i{border-color:var(--tm);background:var(--tbg);} .al.n{border-color:var(--am);background:var(--abg);}
+.al-title{font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.al.w .al-title{color:var(--r);} .al.i .al-title{color:var(--t);} .al.n .al-title{color:var(--a);}
+.al p{color:var(--tx2);}
+.tw{background:var(--card);border:1px solid var(--border);border-radius:var(--r8);overflow:hidden;margin-bottom:16px;box-shadow:var(--sh);}
+.thead{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--bdr);background:#f8fafc;flex-wrap:wrap;gap:8px;}
+.ttitle{font-size:.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tx);}
+.tcount{font-size:.61rem;color:var(--tx3);margin-left:8px;}
+.srch{background:var(--card);border:1px solid var(--border);color:var(--tx);font-family:var(--font);font-size:.72rem;padding:5px 10px;width:230px;outline:none;border-radius:5px;}
+.srch:focus{border-color:var(--bm);box-shadow:0 0 0 2px #2563eb18;}
+.srch::placeholder{color:var(--tx3);}
+.tscroll{max-height:420px;overflow-y:auto;}
+.tscroll::-webkit-scrollbar{width:5px;}
+.tscroll::-webkit-scrollbar-track{background:#f1f3f5;}
+.tscroll::-webkit-scrollbar-thumb{background:#ced4da;border-radius:3px;}
+.tscroll::-webkit-scrollbar-thumb:hover{background:var(--bm);}
+table{width:100%;border-collapse:collapse;font-size:.74rem;}
+thead tr{background:#f4f6fa;}
+th{padding:8px 12px;text-align:left;color:var(--tx2);font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--bdr);white-space:nowrap;position:sticky;top:0;background:#f4f6fa;z-index:2;}
+td{padding:8px 12px;border-bottom:1px solid #f3f4f6;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;}
+tr:hover td{background:#f9fafb;}
+tr:last-child td{border-bottom:none;}
+.n{font-family:var(--mono);font-size:.82rem;font-weight:700;}
+.n.g{color:var(--g);} .n.r{color:var(--r);} .n.b{color:var(--b);}
+.n.a{color:var(--a);} .n.t{color:var(--t);} .n.p{color:var(--p);}
+.dim{color:var(--tx3);font-size:.7rem;}
+.ref{font-family:var(--mono);font-size:.67rem;color:var(--tx3);background:#f1f3f5;padding:1px 6px;border-radius:3px;}
+.bdg{display:inline-block;font-size:.59rem;font-weight:700;padding:2px 7px;letter-spacing:.3px;text-transform:uppercase;border-radius:4px;}
+.bdg.lv{background:var(--abg);color:var(--a);} .bdg.md{background:var(--obg);color:var(--o);}
+.bdg.cr{background:var(--rbg);color:var(--r);} .bdg.nc{background:var(--pbg);color:var(--p);}
+.bdg.ns{background:var(--tbg);color:var(--t);}
+/* VALORIZACIÓN ESPECIAL */
+.valor-hero{background:var(--hbg);border-radius:var(--r8);padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.12);}
+.valor-hero-title{font-size:.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.valor-hero-num{font-family:var(--mono);font-size:2.6rem;font-weight:700;line-height:1;}
+.valor-hero-sub{font-size:.7rem;color:#94a3b8;margin-top:5px;}
+.compare-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.compare-table th{background:#f4f6fa;padding:10px 14px;text-align:left;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--tx2);border-bottom:2px solid var(--bdr);}
+.compare-table td{padding:11px 14px;border-bottom:1px solid var(--bdr);vertical-align:middle;}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table tr:hover td{background:var(--hover);}
+.pill{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:12px;text-transform:uppercase;letter-spacing:.3px;}
+.pill-g{background:var(--gbg);color:var(--g);} .pill-b{background:var(--bbg);color:var(--b);} .pill-a{background:var(--abg);color:var(--a);}
+.footer{background:var(--hbg);border-top:1px solid #2e3e50;padding:11px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.62rem;color:#64748b;letter-spacing:.8px;text-transform:uppercase;}
+.fdot{animation:blink 1.5s step-end infinite;color:#4ade80;font-size:.9rem;}
+@keyframes blink{50%{opacity:0;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header-logo">COFARSUR <span>S.A.</span></div>
+    <div class="header-sub">Dpto. Calidad · Análisis Comparativo de Stock · Valorización en Pesos · Sucursal Córdoba</div>
+    <div class="header-badge">BPD · Disposición ANMAT 2069/2018</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+    <div class="hclock" id="clock">--:--:--</div>
+    <div class="hdate" id="ds">-- / -- / ----</div>
+    <div class="hdate">WMS SGL vs Sistema Cofarsur</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on"  onclick="st('resumen',this)">Resumen Ejecutivo</button>
+  <button class="tab"     onclick="st('valorizacion',this)">$ Valorización</button>
+  <button class="tab"     onclick="st('coinc',this)">Coincidencias</button>
+  <button class="tab"     onclick="st('diffs',this)">Diferencias de Stock</button>
+  <button class="tab"     onclick="st('scof',this)">Solo en Cofarsur</button>
+  <button class="tab"     onclick="st('ssgl',this)">Solo en WMS SGL</button>
+  <button class="tab"     onclick="st('cats',this)">Por Categoría</button>
+</div>
+
+<!-- ═══════════ RESUMEN ═══════════ -->
+<div id="tab-resumen" class="sec on">
+  <div class="sec-title">Resumen Ejecutivo</div>
+  <div class="sec-sub">Fuente: STOCK_TOTAL_COFARSUR.xlsx / Stock_total_SGL.xlsx · Sin inventario de corte previo a implementación WMS SGL (ene-2026)</div>
+  <div class="al w"><div class="al-title">⚠ Contexto operativo — sin inventario de corte</div><p>La implementación del WMS SGL en enero de 2026 se realizó <strong>sin inventario de corte</strong>. Las discrepancias detectadas pueden ser arrastre de stock histórico sin sincronización inicial.</p></div>
+  <div class="kgrid">
+    <div class="kcard k-b"><div class="klbl">SKUs en Cofarsur</div><div class="kval">22.999</div><div class="ksub">Base maestra histórica</div></div>
+    <div class="kcard k-t"><div class="klbl">SKUs en WMS SGL</div><div class="kval">16.004</div><div class="ksub">Artículos en nuevo WMS</div></div>
+    <div class="kcard k-g"><div class="klbl">SKUs en ambos</div><div class="kval">15.857</div><div class="ksub">69.0% del universo Cofarsur</div></div>
+    <div class="kcard k-g"><div class="klbl">Stock exacto</div><div class="kval">9.274</div><div class="ksub">58.5% de los coincidentes</div></div>
+    <div class="kcard k-r"><div class="klbl">Stock diferente</div><div class="kval">6.583</div><div class="ksub">41.5% con discrepancia</div></div>
+    <div class="kcard k-p"><div class="klbl">Solo en Cofarsur</div><div class="kval">7.142</div><div class="ksub">No migrados al WMS SGL</div></div>
+    <div class="kcard k-a"><div class="klbl">Solo en WMS SGL</div><div class="kval">147</div><div class="ksub">Sin registro en Cofarsur</div></div>
+    <div class="kcard k-r"><div class="klbl">Solo COF · stock &gt; 0</div><div class="kval">48</div><div class="ksub">Activos sin trazabilidad SGL</div></div>
+  </div>
+  <!-- Valorización resumen -->
+  <div class="two">
+    <div class="valor-hero">
+      <div class="valor-hero-title">Valor del inventario — Sistema Cofarsur (a costo droguería)</div>
+      <div class="valor-hero-num" style="color:#4ade80;">$ 18.785.249.498</div>
+      <div class="valor-hero-sub">1.982.931 unidades · 15.166 SKUs activos · Precio de venta: $ 135.086.337.370</div>
+    </div>
+    <div class="valor-hero">
+      <div class="valor-hero-title">Valor del inventario — WMS SGL (a costo droguería)</div>
+      <div class="valor-hero-num" style="color:#7dd3fc;">$ 19.678.567.384</div>
+      <div class="valor-hero-sub">2.258.081 unidades · 16.004 SKUs activos · Precio de venta: $ 136.750.447.492</div>
+    </div>
+  </div>
+  <div class="cc">
+    <div class="cctitle">Distribución del universo Cofarsur (22.999 SKUs)</div>
+    <div class="sbar">
+      <div class="seg" style="width:40.3%;background:#16a34a;">40.3% exacto</div>
+      <div class="seg" style="width:28.6%;background:#d97706;">28.6% diferente</div>
+      <div class="seg" style="width:0.7%;background:#0891b2;"></div>
+      <div class="seg" style="width:30.4%;background:#9333ea;">30.4% solo COF</div>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#16a34a;"></div>Stock exacto — 9.274</div>
+      <div class="li"><div class="ld" style="background:#d97706;"></div>Diferencia — 6.583</div>
+      <div class="li"><div class="ld" style="background:#0891b2;"></div>Solo WMS SGL — 147</div>
+      <div class="li"><div class="ld" style="background:#9333ea;"></div>Solo Cofarsur — 7.142</div>
+    </div>
+  </div>
+  <div class="al i"><div class="al-title">ℹ Prioridad BPD</div><p>Las <strong>239 discrepancias críticas (&gt;100 uds)</strong> representan <strong>298.054 unidades</strong> y los <strong>48 SKUs activos sin registro en WMS SGL</strong> son las brechas de mayor riesgo. La brecha de valorización entre sistemas asciende a <strong>$ 893.317.886 a costo</strong> ($ 1.664.110.121 a precio de venta).</p></div>
+</div>
+
+<!-- ═══════════ VALORIZACIÓN ═══════════ -->
+<div id="tab-valorizacion" class="sec">
+  <div class="sec-title">Valorización del Inventario en Pesos</div>
+  <div class="sec-sub">Subtotal = Stock × Costo Droguería · Para WMS SGL se usa costo de Cofarsur como referencia · Datos 100% reales</div>
+
+  <div class="al n"><div class="al-title">Metodología de valorización</div><p>El campo <strong>Subtotal</strong> del sistema Cofarsur está calculado como <strong>Stock × Costo Droguería</strong> (verificado al 100% en los 15.166 SKUs activos). El WMS SGL no tiene precio propio, por lo que se valoriza usando el costo de Cofarsur como referencia cruzada por SKU. Se presentan dos métricas: <strong>a Costo Droguería</strong> (valor de adquisición) y <strong>a Precio de Venta</strong> (valor de mercado).</p></div>
+
+  <!-- Héroes de valorización -->
+  <div class="two" style="margin-bottom:16px;">
+    <div class="valor-hero">
+      <div class="valor-hero-title">🏢 Sistema Cofarsur — Valor total a COSTO</div>
+      <div class="valor-hero-num" style="color:#4ade80;">$ 18.785.249.498</div>
+      <div class="valor-hero-sub">Equivale a $ 18.79 MM de pesos</div>
+    </div>
+    <div class="valor-hero">
+      <div class="valor-hero-title">📦 WMS SGL — Valor total a COSTO</div>
+      <div class="valor-hero-num" style="color:#7dd3fc;">$ 19.678.567.384</div>
+      <div class="valor-hero-sub">Equivale a $ 19.68 MM de pesos</div>
+    </div>
+  </div>
+
+  <!-- KPIs comparativos -->
+  <div class="kgrid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+    <div class="kcard k-b">
+      <div class="klbl">Unidades Cofarsur</div>
+      <div class="kval-sm">1.982.931</div>
+      <div class="ksub">Total stock sistema histórico</div>
+    </div>
+    <div class="kcard k-t">
+      <div class="klbl">Unidades WMS SGL</div>
+      <div class="kval-sm">2.258.081</div>
+      <div class="ksub">Total stock sistema activo</div>
+    </div>
+    <div class="kcard k-o">
+      <div class="klbl">Diferencia en unidades</div>
+      <div class="kval-sm">+275.150</div>
+      <div class="ksub">SGL registra más unidades</div>
+    </div>
+    <div class="kcard k-g">
+      <div class="klbl">Valor a Precio de Venta — COF</div>
+      <div class="kval-sm" style="font-size:.95rem;">$ 135.086.337.370</div>
+      <div class="ksub">Stock × Precio de venta</div>
+    </div>
+    <div class="kcard k-b">
+      <div class="klbl">Valor a Precio de Venta — SGL</div>
+      <div class="kval-sm" style="font-size:.95rem;">$ 136.750.447.492</div>
+      <div class="ksub">Stock SGL × precio COF</div>
+    </div>
+    <div class="kcard k-r">
+      <div class="klbl">Brecha valorización (costo)</div>
+      <div class="kval-sm" style="font-size:.95rem;">$ 893.317.886</div>
+      <div class="ksub">SGL − COF · a precio: $ 1.664.110.121</div>
+    </div>
+  </div>
+
+  <!-- Tabla comparativa principal -->
+  <div class="tw">
+    <div class="thead"><span class="ttitle">Cuadro comparativo de valorización</span></div>
+    <table class="compare-table">
+      <thead><tr>
+        <th>Concepto</th>
+        <th>Sistema Cofarsur</th>
+        <th>WMS SGL</th>
+        <th>Diferencia (SGL − COF)</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Unidades totales</strong></td>
+          <td><span class="n b">1.982.931</span></td>
+          <td><span class="n t">2.258.081</span></td>
+          <td><span class="n o">+275.150</span></td>
+        </tr>
+        <tr>
+          <td><strong>SKUs con stock activo</strong></td>
+          <td><span class="n b">15.166</span></td>
+          <td><span class="n t">16.004</span></td>
+          <td><span class="n o">+838</span></td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td><strong>💰 Valor a COSTO droguería</strong></td>
+          <td><span class="n g">$ 18.785.249.498</span></td>
+          <td><span class="n g">$ 19.678.567.384</span></td>
+          <td><span class="n r">+$ 893.317.886</span></td>
+        </tr>
+        <tr style="background:#eff6ff;">
+          <td><strong>🏷 Valor a PRECIO de venta</strong></td>
+          <td><span class="n b">$ 135.086.337.370</span></td>
+          <td><span class="n b">$ 136.750.447.492</span></td>
+          <td><span class="n r">+$ 1.664.110.121</span></td>
+        </tr>
+        <tr>
+          <td><strong>Margen bruto implícito</strong></td>
+          <td><span class="n a">619.1%</span></td>
+          <td><span class="n a">594.9%</span></td>
+          <td><span class="dim">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Valorización por categoría -->
+  <div class="two">
+    <div class="tw" style="margin-bottom:0;">
+      <div class="thead"><span class="ttitle">Por Categoría — Cofarsur (a costo)</span></div>
+      <table>
+        <thead><tr><th>Categoría</th><th>SKUs</th><th>Uds</th><th>Valor $</th><th>%</th></tr></thead>
+        <tbody id="tb-cat-cof"></tbody>
+      </table>
+    </div>
+    <div class="tw" style="margin-bottom:0;">
+      <div class="thead"><span class="ttitle">Por Categoría — WMS SGL (a costo)</span></div>
+      <table>
+        <thead><tr><th>Categoría</th><th>SKUs</th><th>Uds</th><th>Valor $</th><th>%</th></tr></thead>
+        <tbody id="tb-cat-sgl"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="al w" style="margin-top:16px;">
+    <div class="al-title">⚠ Impacto financiero de las discrepancias críticas</div>
+    <p>Las <strong>239 discrepancias críticas (&gt;100 uds)</strong> representan <strong>298.054 unidades</strong>. Tomando el costo promedio del inventario Cofarsur como referencia ($ 9,473 por unidad), el valor en riesgo de esas unidades asciende a aproximadamente <strong>$ 2.823.607.455</strong> a costo droguería.</p>
+  </div>
+</div>
+
+<!-- ═══════════ COINCIDENCIAS ═══════════ -->
+<div id="tab-coinc" class="sec">
+  <div class="sec-title">SKUs Coincidentes</div>
+  <div class="sec-sub">15.857 SKUs presentes en ambos sistemas · 9.274 con stock exactamente igual</div>
+  <div class="kgrid">
+    <div class="kcard k-b"><div class="klbl">Total en ambos sistemas</div><div class="kval">15.857</div><div class="ksub">69.0% del universo Cofarsur</div></div>
+    <div class="kcard k-g"><div class="klbl">Stock idéntico</div><div class="kval">9.274</div><div class="ksub">58.5% de los coincidentes</div></div>
+    <div class="kcard k-r"><div class="klbl">Stock diferente</div><div class="kval">6.583</div><div class="ksub">41.5% con discrepancia</div></div>
+    <div class="kcard k-t"><div class="klbl">Tasa coincidencia exacta</div><div class="kval">58.5%</div><div class="ksub">Sobre SKUs en ambos sistemas</div></div>
+  </div>
+  <div class="cc">
+    <div class="cctitle">Distribución de 15.857 SKUs coincidentes</div>
+    <div class="sbar">
+      <div class="seg" style="width:58.5%;background:#16a34a;">58.5% exacto</div>
+      <div class="seg" style="width:40%;background:#d97706;">40.0% con diferencia</div>
+      <div class="seg" style="width:1.5%;background:#dc2626;">1.5%</div>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#16a34a;"></div>Exacto: 9.274</div>
+      <div class="li"><div class="ld" style="background:#d97706;"></div>Dif. leve/moderada: 6.344</div>
+      <div class="li"><div class="ld" style="background:#dc2626;"></div>Dif. crítica: 239</div>
+    </div>
+  </div>
+  <div class="al n"><div class="al-title">Nota metodológica</div><p>Comparación por <strong>Id Producto (Cofarsur) = Artículo (WMS SGL)</strong>. Para SGL se sumaron unidades de todos los lotes/ubicaciones del mismo SKU. Umbral "exacto": diferencia &lt; 0.5 uds.</p></div>
+</div>
+
+<!-- ═══════════ DIFERENCIAS ═══════════ -->
+<div id="tab-diffs" class="sec">
+  <div class="sec-title">Diferencias de Stock</div>
+  <div class="sec-sub">6.583 SKUs con discrepancia · Top 50 por magnitud · Datos 100% reales de los archivos Excel</div>
+  <div class="kgrid">
+    <div class="kcard k-r"><div class="klbl">Críticas (&gt;100 uds)</div><div class="kval">239</div><div class="ksub">298.054 uds · $ 2.823.607.455 est. a costo</div></div>
+    <div class="kcard k-o"><div class="klbl">Moderadas (11–100 uds)</div><div class="kval">1.404</div><div class="ksub">41.001 unidades</div></div>
+    <div class="kcard k-a"><div class="klbl">Leves (1–10 uds)</div><div class="kval">4.940</div><div class="ksub">14.021 unidades</div></div>
+    <div class="kcard k-r"><div class="klbl">Brecha total (uds)</div><div class="kval">353.076</div><div class="ksub">Suma diferencias absolutas</div></div>
+  </div>
+  <div class="tw">
+    <div class="thead">
+      <div><span class="ttitle">Top 50 — Mayores diferencias absolutas</span><span class="tcount">Datos reales · Fila COF = fila en STOCK_TOTAL_COFARSUR.xlsx</span></div>
+      <input class="srch" type="text" placeholder="Buscar producto o SKU..." id="s-d" oninput="ft('t-d','s-d')">
+    </div>
+    <div class="tscroll"><table id="t-d">
+      <thead><tr><th>SKU</th><th>Fila COF</th><th>Descripción</th><th>Categoría</th><th>Stock Cofarsur</th><th>Stock WMS SGL</th><th>Diferencia</th><th>Nivel</th></tr></thead>
+      <tbody id="tb-d"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ SOLO COF ═══════════ -->
+<div id="tab-scof" class="sec">
+  <div class="sec-title">Solo en Sistema Cofarsur</div>
+  <div class="sec-sub">7.142 SKUs en Cofarsur sin registro en WMS SGL · Se listan los 48 con stock &gt; 0</div>
+  <div class="kgrid">
+    <div class="kcard k-p"><div class="klbl">Total solo en Cofarsur</div><div class="kval">7.142</div><div class="ksub">31.1% del universo Cofarsur</div></div>
+    <div class="kcard k-g"><div class="klbl">Stock = 0 (inactivos)</div><div class="kval">7.094</div><div class="ksub">99.3% · sin movimiento</div></div>
+    <div class="kcard k-r"><div class="klbl">Stock &gt; 0 (activos)</div><div class="kval">48</div><div class="ksub">345 uds sin trazabilidad SGL</div></div>
+  </div>
+  <div class="al w"><div class="al-title">⚠ Acción requerida — 48 SKUs activos sin presencia en WMS SGL</div><p>Artículos con stock positivo en Cofarsur pero <strong>inexistentes en el WMS SGL</strong>: sin ubicación ni trazabilidad en el nuevo sistema.</p></div>
+  <div class="tw">
+    <div class="thead">
+      <div><span class="ttitle">48 SKUs activos — solo en Cofarsur</span><span class="tcount">Datos reales · col. A = Id Producto · col. N = Total Exist.</span></div>
+      <input class="srch" type="text" placeholder="Buscar..." id="s-c" oninput="ft('t-c','s-c')">
+    </div>
+    <div class="tscroll"><table id="t-c">
+      <thead><tr><th>SKU</th><th>Fila COF</th><th>Descripción</th><th>Categoría</th><th>Stock Cofarsur</th><th>En WMS SGL</th></tr></thead>
+      <tbody id="tb-c"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ SOLO SGL ═══════════ -->
+<div id="tab-ssgl" class="sec">
+  <div class="sec-title">Solo en WMS SGL</div>
+  <div class="sec-sub">147 SKUs en WMS SGL sin registro en Sistema Cofarsur · Datos reales</div>
+  <div class="kgrid">
+    <div class="kcard k-t"><div class="klbl">Total solo en WMS SGL</div><div class="kval">147</div><div class="ksub">2.709 unidades · sin costo asignable</div></div>
+    <div class="kcard k-a"><div class="klbl">Acción requerida</div><div class="kval" style="font-size:1.3rem;">Alta en COF</div><div class="ksub">Registrar en sistema Cofarsur</div></div>
+  </div>
+  <div class="al n"><div class="al-title">Análisis</div><p>Artículos ingresados directamente en el WMS SGL desde enero 2026 sin retroalimentación a Cofarsur. <strong>Columna B "Artículo" y col. M "Unids" de Stock_total_SGL.xlsx.</strong></p></div>
+  <div class="tw">
+    <div class="thead">
+      <div><span class="ttitle">147 SKUs — solo en WMS SGL</span><span class="tcount">Ordenados por stock descendente</span></div>
+      <input class="srch" type="text" placeholder="Buscar..." id="s-s" oninput="ft('t-s','s-s')">
+    </div>
+    <div class="tscroll"><table id="t-s">
+      <thead><tr><th>SKU</th><th>Fila SGL</th><th>Descripción</th><th>Stock WMS SGL</th><th>En Cofarsur</th></tr></thead>
+      <tbody id="tb-s"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ CATEGORÍAS ═══════════ -->
+<div id="tab-cats" class="sec">
+  <div class="sec-title">Análisis por Categoría</div>
+  <div class="sec-sub">Distribución de discrepancias y valorización por categoría</div>
+  <div class="al i"><div class="al-title">Interpretación</div><p><strong>Especialidad Medicinal</strong> concentra el 61% del valor del inventario y la mayor cantidad de discrepancias (2.747 SKUs, promedio −45.8 uds). El signo negativo indica que el WMS SGL registra más stock que Cofarsur en casi todas las categorías.</p></div>
+  <div class="cc"><div class="cctitle">SKUs con diferencia por categoría</div><div id="cat-bars"></div></div>
+</div>
+
+<div class="footer">
+  <span>COFARSUR S.A. · Dpto. Calidad · Córdoba</span>
+  <span class="fdot">●</span>
+  <span>Datos 100% reales · Valorización: Stock × Costo Droguería · WMS SGL (ene-2026) vs Sistema Cofarsur</span>
+</div>
+
+<script>
+const DIFFS = [{"sku": 43815, "desc": "POP AFICHE COFARSUR", "cat": "POP", "cof": 1.0, "sgl": 99664.0, "diff": -99663.0, "row_cof": 11551}, {"sku": 55433, "desc": "JAYOR SOLUCION FISIOLOGICA SACHET SIMPLE X  500 ML (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 123.0, "sgl": 45707.0, "diff": -45584.0, "row_cof": 19374}, {"sku": 54905, "desc": "JAYOR SOLUCION FISIOLOGICA SACHET  DBL BOLX  500 ML (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 0.0, "sgl": 42264.0, "diff": -42264.0, "row_cof": 18936}, {"sku": 57462, "desc": "JERINGA DESC 10ML S/AGUJA TRUX (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 36746.0, "sgl": 51750.0, "diff": -15004.0, "row_cof": 21177}, {"sku": 55382, "desc": "JAYOR SOLUCION DEXTROSA 5% SACHET X 500 ML (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 0.0, "sgl": 5856.0, "diff": -5856.0, "row_cof": 19323}, {"sku": 57150, "desc": "DURACELL PILAS AAA X 2 TIRA X 6", "cat": "ACCESORIO", "cof": 600.0, "sgl": 6000.0, "diff": -5400.0, "row_cof": 20895}, {"sku": 51600, "desc": "DOVE JABON ORIGINAL X 90", "cat": "COSMETICO", "cof": 23788.0, "sgl": 27319.0, "diff": -3531.0, "row_cof": 16381}, {"sku": 50649, "desc": "PANTENE MAX PRO SHA SACHET RESTAURACION X 24", "cat": "COSMETICO", "cof": 823.0, "sgl": 4345.0, "diff": -3522.0, "row_cof": 15634}, {"sku": 57724, "desc": "BARBIJO TRICAPA C/FIJACION NASAL C/ELAS (H)", "cat": "PRODUCTO MEDICO", "cof": 33300.0, "sgl": 36300.0, "diff": -3000.0, "row_cof": 21428}, {"sku": 7096, "desc": "ACEMUK 600 MG COM EFER X  10", "cat": "ESPECIALIDAD MEDICINAL", "cof": 2639.0, "sgl": 677.0, "diff": 1962.0, "row_cof": 1591}, {"sku": 49187, "desc": "AMPIGEN FABRA SB 1,5 G AMP X 1 (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 4800.0, "sgl": 3100.0, "diff": 1700.0, "row_cof": 14596}, {"sku": 47087, "desc": "POLICROM CREMA OXIDANTE 20 VOL X 70", "cat": "COSMETICO", "cof": 70.0, "sgl": 1667.0, "diff": -1597.0, "row_cof": 13182}, {"sku": 54257, "desc": "NEXT GRIPE COM REC X 20", "cat": "ESPECIALIDAD MEDICINAL", "cof": 0.0, "sgl": 1527.0, "diff": -1527.0, "row_cof": 18386}, {"sku": 57033, "desc": "DOVE BOND MASCARA TRATAMIENTO UV REPAIR & GLOW X 250", "cat": "COSMETICO", "cof": 1179.0, "sgl": 2675.0, "diff": -1496.0, "row_cof": 20791}, {"sku": 55221, "desc": "BIALCOHOL PORTA 96% SOL X 1000 (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1817.0, "sgl": 3222.0, "diff": -1405.0, "row_cof": 19184}, {"sku": 49243, "desc": "IMIPENEM CILASTATINA FABRA 500 MG INY FCO AMP X 1 (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 2000.0, "sgl": 3400.0, "diff": -1400.0, "row_cof": 14649}, {"sku": 11270, "desc": "QURA PLUS COM X 20", "cat": "ESPECIALIDAD MEDICINAL", "cof": 15721.0, "sgl": 17040.0, "diff": -1319.0, "row_cof": 2678}, {"sku": 51245, "desc": "DOVE BABY JABON LIQUIDO HIDRATACION SENSIBLE REP X 180", "cat": "COSMETICO", "cof": 436.0, "sgl": 1687.0, "diff": -1251.0, "row_cof": 16105}, {"sku": 8837, "desc": "ATHOS SOL X 100", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1447.0, "sgl": 351.0, "diff": 1096.0, "row_cof": 2040}, {"sku": 57142, "desc": "TFL TAFIROL 500 MG COM X 10 EXHIBIDOR X 40", "cat": "COSMETICO", "cof": 0.0, "sgl": 1000.0, "diff": -1000.0, "row_cof": 20887}, {"sku": 8838, "desc": "AMOXIDAL DUO 875 MG COMP X 14", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1566.0, "sgl": 571.0, "diff": 995.0, "row_cof": 2041}, {"sku": 47721, "desc": "NUTRILON PROFUTURA 1 BRIK X 200 NE", "cat": "ALIMENTOS", "cof": 1677.0, "sgl": 696.0, "diff": 981.0, "row_cof": 13589}, {"sku": 15614, "desc": "PRESTOBARBA 3 MUJER X 2", "cat": "COSMETICO", "cof": 1288.0, "sgl": 308.0, "diff": 980.0, "row_cof": 3808}, {"sku": 57528, "desc": "PIPERACILINA TAZOBACTAM KLONAL AMP X 1 (H)", "cat": "ESPECIALIDAD MEDICINAL", "cof": 29.0, "sgl": 981.0, "diff": -952.0, "row_cof": 21242}, {"sku": 53964, "desc": "ACTRON 400 MG RAPIDA ACCION CAPS X 10", "cat": "ESPECIALIDAD MEDICINAL", "cof": 334.0, "sgl": 1237.0, "diff": -903.0, "row_cof": 18141}, {"sku": 14735, "desc": "PROBADOR EVO CREMA DE ORDEÑE X 265", "cat": "COSMETICO", "cof": 1788.0, "sgl": 907.0, "diff": 881.0, "row_cof": 3562}, {"sku": 28944, "desc": "ULTRA COREGA CRE SIN SABOR X 20", "cat": "HIGIENE ORAL", "cof": 5032.0, "sgl": 4157.0, "diff": 875.0, "row_cof": 6892}, {"sku": 15611, "desc": "PRESTOBARBA 3 BLISTER X 10", "cat": "COSMETICO", "cof": 1781.0, "sgl": 2645.0, "diff": -864.0, "row_cof": 3805}, {"sku": 50401, "desc": "BUSCAPINA DUO COM X 20", "cat": "ESPECIALIDAD MEDICINAL", "cof": 5194.0, "sgl": 6028.0, "diff": -834.0, "row_cof": 15456}, {"sku": 38511, "desc": "BAGOVIT SOLAR F 30 FAMILY CARE EMU X 200ML", "cat": "COSMETICO", "cof": 182.0, "sgl": 1016.0, "diff": -834.0, "row_cof": 9732}, {"sku": 16027, "desc": "ASPIRINA PREVENT 100 MG COM X 50", "cat": "ESPECIALIDAD MEDICINAL", "cof": 3535.0, "sgl": 2710.0, "diff": 825.0, "row_cof": 3926}, {"sku": 30477, "desc": "NEXT T FORTE X 50 SOBRES", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1230.0, "sgl": 478.0, "diff": 752.0, "row_cof": 7261}, {"sku": 24179, "desc": "ALIKAL CLASICO SOB X 30", "cat": "ESPECIALIDAD MEDICINAL", "cof": 2955.0, "sgl": 2213.0, "diff": 742.0, "row_cof": 5791}, {"sku": 49663, "desc": "NIVEA PROTECTOR LABIAL BLACKBERRY SHINE", "cat": "COSMETICO", "cof": 705.0, "sgl": 1433.0, "diff": -728.0, "row_cof": 14955}, {"sku": 13760, "desc": "SARVAL  80 MG COM X 30", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1341.0, "sgl": 2052.0, "diff": -711.0, "row_cof": 3325}, {"sku": 2484, "desc": "ALPLAX 0,5  MG COM X 30", "cat": "PSICOTROPICO", "cof": 797.0, "sgl": 1496.0, "diff": -699.0, "row_cof": 511}, {"sku": 57625, "desc": "DOVE DES ANT BARRA ORIGINAL X 50", "cat": "COSMETICO", "cof": 1013.0, "sgl": 1687.0, "diff": -674.0, "row_cof": 21336}, {"sku": 46148, "desc": "PAMPERS PAÑAL BABYSAN XXG X 8", "cat": "COSMETICO", "cof": 2472.0, "sgl": 3146.0, "diff": -674.0, "row_cof": 12686}, {"sku": 24625, "desc": "TAFIROL 500 MG COM X 10 EXHIBIDOR X 40", "cat": "ESPECIALIDAD MEDICINAL", "cof": 1108.0, "sgl": 444.0, "diff": 664.0, "row_cof": 5873}, {"sku": 43008, "desc": "REXONA EFFICIENT CLASICO POLVO PEDICO X 200*", "cat": "COSMETICO", "cof": 2316.0, "sgl": 2971.0, "diff": -655.0, "row_cof": 11248}, {"sku": 52537, "desc": "BUSCAPINA DUO COM X 100", "cat": "ESPECIALIDAD MEDICINAL", "cof": 122.0, "sgl": 722.0, "diff": -600.0, "row_cof": 17063}, {"sku": 57830, "desc": "ELVIVE ENJ GLYCOLIC CRISTAL X 200", "cat": "COSMETICO", "cof": 949.0, "sgl": 356.0, "diff": 593.0, "row_cof": 21529}, {"sku": 13761, "desc": "SARVAL 160 MG COM X 30", "cat": "ESPECIALIDAD MEDICINAL", "cof": 2008.0, "sgl": 2601.0, "diff": -593.0, "row_cof": 3326}, {"sku": 49016, "desc": "LEVO TIROXINA 150 MG COM X 50", "cat": "ESPECIALIDAD MEDICINAL", "cof": 110.0, "sgl": 666.0, "diff": -556.0, "row_cof": 14438}, {"sku": 56735, "desc": "TUTY AZUFRE EN BARRA CAJA X 5 UNIDADES", "cat": "FARMACOPEA", "cof": 2523.0, "sgl": 3056.0, "diff": -533.0, "row_cof": 20543}, {"sku": 40119, "desc": "HUGGIES TOALLITAS HUMEDAS TRIPLE PROTECCION X 48", "cat": "COSMETICO", "cof": 850.0, "sgl": 344.0, "diff": 506.0, "row_cof": 10291}, {"sku": 50493, "desc": "ELITE PANUELOS DESCARTABLES 6 X 10", "cat": "COSMETICO", "cof": 19466.0, "sgl": 18966.0, "diff": 500.0, "row_cof": 15526}, {"sku": 16175, "desc": "NABILA  5 MG COM X 28", "cat": "ESPECIALIDAD MEDICINAL", "cof": 881.0, "sgl": 385.0, "diff": 496.0, "row_cof": 3967}, {"sku": 38992, "desc": "GENIOL  1 GR COM X  8", "cat": "ESPECIALIDAD MEDICINAL", "cof": 6197.0, "sgl": 6691.0, "diff": -494.0, "row_cof": 9915}, {"sku": 48456, "desc": "TRESEMME SHA DETOX CAPILAR CON DOSIFICADOR X 500", "cat": "COSMETICO", "cof": 759.0, "sgl": 271.0, "diff": 488.0, "row_cof": 14057}];
+const OCOF  = [{"sku": 43860, "desc": "NAN 1  OPTIPRO HMO X 190 ML", "cat": "ALIMENTOS", "stock": 144.0, "row_cof": 11573}, {"sku": 53156, "desc": "WELLINGTON POLO CLUB MUJER SHINE EDP X 100 + DES X 127", "cat": "COSMETICO", "stock": 32.0, "row_cof": 17545}, {"sku": 44537, "desc": "TIO NACHO SHA HERBOLARIA MILENAR X 415", "cat": "COSMETICO", "stock": 24.0, "row_cof": 11863}, {"sku": 58000, "desc": "TIO NACHO SHA REPARACION PROFUNDA X 415", "cat": "COSMETICO", "stock": 20.0, "row_cof": 21679}, {"sku": 25392, "desc": "ALPERTAN 320 MG COM REC X 28", "cat": "ESPECIALIDAD MEDICINAL", "stock": 15.0, "row_cof": 6057}, {"sku": 47267, "desc": "PROBADOR BARBIE EDT X 50", "cat": "COSMETICO", "stock": 10.0, "row_cof": 13280}, {"sku": 54262, "desc": "COMBO ANTHELIOS UVMUNE X 2", "cat": "COSMETICO", "stock": 9.0, "row_cof": 18388}, {"sku": 39271, "desc": "PROBADOR KEVIN RED", "cat": "COSMETICO", "stock": 8.0, "row_cof": 10033}, {"sku": 50429, "desc": "PALMOLIVE JABON LIQUIDO MANOS NATURAL NUTRICI REP X 200", "cat": "COSMETICO", "stock": 8.0, "row_cof": 15479}, {"sku": 347, "desc": "TESTOVIRON DEPOT 250 AMP X 1", "cat": "SUSTANCIAS CONTROLADAS", "stock": 7.0, "row_cof": 73}, {"sku": 54029, "desc": "PROBADOR RIMMEL CORRECTOR MULTITASKER LIGHT 030", "cat": "COSMETICO", "stock": 6.0, "row_cof": 18194}, {"sku": 53822, "desc": "PROBADOR RIMMEL LABIAL LIQUIDO LASTING PROVOCALIPS 740", "cat": "COSMETICO", "stock": 5.0, "row_cof": 18041}, {"sku": 56010, "desc": "SHAKIRA EST ROCK EDT X 80 + DEO X 150", "cat": "COSMETICO", "stock": 4.0, "row_cof": 19891}, {"sku": 28819, "desc": "IBUPIRAC COM X 12", "cat": "ESPECIALIDAD MEDICINAL", "stock": 4.0, "row_cof": 6872}, {"sku": 24854, "desc": "ELIQUIS 2,5 MG COM REC X 60", "cat": "ESPECIALIDAD MEDICINAL", "stock": 3.0, "row_cof": 5914}, {"sku": 56431, "desc": "ISDIN FU 100 ACTIVE UNIFY SPF50+ X 50ML", "cat": "COSMETICO", "stock": 3.0, "row_cof": 20252}, {"sku": 58796, "desc": "LUDOXA 30 MG CAPS DURAS X 30", "cat": "PSICOTROPICO", "stock": 3.0, "row_cof": 22451}, {"sku": 23691, "desc": "NICOTINELL CHICLES COOL MINT 4 MG X 24", "cat": "ESPECIALIDAD MEDICINAL", "stock": 2.0, "row_cof": 5715}, {"sku": 56157, "desc": "ELITE PANUELOS DESCARTABLES BOX DISNEY X 90", "cat": "COSMETICO", "stock": 2.0, "row_cof": 20008}, {"sku": 55546, "desc": "BIODROP LUBRICANTE SOLF OFT X 10ML", "cat": "PRODUCTO MEDICO", "stock": 2.0, "row_cof": 19476}, {"sku": 54466, "desc": "PROBADOR KEVIN PARK", "cat": "COSMETICO", "stock": 2.0, "row_cof": 18565}, {"sku": 53375, "desc": "KATALIA SOMBRA COMPACTA DUO SOL NRO 12 LILA/ROSA", "cat": "COSMETICO", "stock": 2.0, "row_cof": 17701}, {"sku": 37876, "desc": "PROBADOR KEVIN METAL", "cat": "COSMETICO", "stock": 2.0, "row_cof": 9482}, {"sku": 44403, "desc": "FRANKLIN TENSIOMETRO DIGITAL MUÑECA", "cat": "PRODUCTO MEDICO", "stock": 2.0, "row_cof": 11790}, {"sku": 56901, "desc": "PARLANTE INALAMBRICO C/ MICROFONOS GENERICO ROSA", "cat": "ACCESORIO", "stock": 2.0, "row_cof": 20668}, {"sku": 57204, "desc": "LACTIBON BY BIOLUBE DESODORANTE RESFRESC INTIMO X 35 G", "cat": "COSMETICO", "stock": 2.0, "row_cof": 20945}, {"sku": 45896, "desc": "PACO RABANNE FAME EDP X 80", "cat": "COSMETICO", "stock": 1.0, "row_cof": 12545}, {"sku": 45418, "desc": "GASANA APOSITO ESTERIL 7 X 20 CM", "cat": "PRODUCTO MEDICO", "stock": 1.0, "row_cof": 12266}, {"sku": 815, "desc": "YECTAFER AMP X 10.", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 182}, {"sku": 22226, "desc": "DESLORATADINA RICHET  5 MG COM X 14", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 5390}, {"sku": 30513, "desc": "BASAGLAR KWIKPEN 100U INY PRELL X 5 X 3  (TI)", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 7267}, {"sku": 8956, "desc": "MAGNUS  25 MG COM X 10", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 2081}, {"sku": 54145, "desc": "PROBADOR LAS PEPAS MITO", "cat": "COSMETICO", "stock": 1.0, "row_cof": 18296}, {"sku": 54059, "desc": "PROBADOR DANIELLE BOY", "cat": "COSMETICO", "stock": 1.0, "row_cof": 18218}, {"sku": 53900, "desc": "CORONET VENDAS NO ESTERILES 10CM X 4.5CM ROLLOS X 12", "cat": "PRODUCTO MEDICO", "stock": 1.0, "row_cof": 18097}, {"sku": 52097, "desc": "VOGUE EXH ESMALTE DE UÑAS GEL X 25 + LAB LIQ RESIST X8", "cat": "COSMETICO", "stock": 1.0, "row_cof": 16754}, {"sku": 49911, "desc": "BEMPENAL 180 MG COMP X 30", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 15122}, {"sku": 50423, "desc": "SHAKIRA DANCE MIDNIGHT EDT X 50", "cat": "COSMETICO", "stock": 1.0, "row_cof": 15474}, {"sku": 51179, "desc": "RESTASIS EMU OFT UNIDOSIS 0,4 ML X 30", "cat": "ESPECIALIDAD MEDICINAL", "stock": 1.0, "row_cof": 16063}, {"sku": 51427, "desc": "EVO SET CRE HIDR + QUITAESM FORT X60 + 8848 REVITAL LAB", "cat": "COSMETICO", "stock": 1.0, "row_cof": 16251}, {"sku": 45950, "desc": "FABOGESIC CHAQUETA UNISEX TALLE XS", "cat": "ACCESORIO", "stock": 1.0, "row_cof": 12563}, {"sku": 48937, "desc": "PROBADOR KEVINGSTON COL 20 HOMBRE X 95", "cat": "COSMETICO", "stock": 1.0, "row_cof": 14393}, {"sku": 54265, "desc": "COMBO FANTASY PRIME VIBRADOR + PRIME PROF ULTRA FINO X3", "cat": "COSMETICO", "stock": 1.0, "row_cof": 18389}, {"sku": 54614, "desc": "PROBADOR DAVID BECKHAM INSTINCT BOLD EDP X 75", "cat": "COSMETICO", "stock": 1.0, "row_cof": 18695}, {"sku": 55119, "desc": "ANTONIO BANDERAS THE ICON SUPREME EDT C/V X 100", "cat": "COSMETICO", "stock": 1.0, "row_cof": 19098}, {"sku": 55278, "desc": "PROBADOR BROSS LONDON BL74 BLUE", "cat": "COSMETICO", "stock": 1.0, "row_cof": 19231}, {"sku": 57862, "desc": "MAYB BRILLO LABIAL GLAZE PEACH QUENCH", "cat": "COSMETICO", "stock": 1.0, "row_cof": 21561}, {"sku": 57828, "desc": "PROBADOR MARCHAND AROMES AROMATIZANTE ORQIDEA & JAZMIN", "cat": "COSMETICO", "stock": 1.0, "row_cof": 21527}];
+const OSGL  = [{"sku": 7420, "desc": "TABLADA FRASCO ESTER X 125 CC BOLSA", "stock": 958.0, "row_sgl": 25636}, {"sku": 54534, "desc": "OTOWIL SHAM NUTRICION SOBRE X 10GR SACHET X 1", "stock": 222.0, "row_sgl": 20119}, {"sku": 48424, "desc": "NIVEA SUN PROTECT & HYDRATE FPS 50 X 200*", "stock": 147.0, "row_sgl": 14590}, {"sku": 47531, "desc": "VILLENEUVE PROTECTOR SOLAR FPS 30 EFEC SECO SPRAY X 19", "stock": 126.0, "row_sgl": 13827}, {"sku": 35382, "desc": "COLGATE PASTA DENTAL TOTAL ORIGINAL X 140", "stock": 106.0, "row_sgl": 7592}, {"sku": 50081, "desc": "OFF REPELENTE AEROSOL X 165", "stock": 97.0, "row_sgl": 15823}, {"sku": 47123, "desc": "ELVIVE SHA KERA-LISO PROTECCION TERMICA X 200", "stock": 77.0, "row_sgl": 13480}, {"sku": 47522, "desc": "VILLENEUVE PROTECTOR SOLAR FPS 30 FAMIL EFEC INVIS X250", "stock": 62.0, "row_sgl": 13820}, {"sku": 52598, "desc": "KATALIA ACC CEPILLO DE CABELLO NEUMATICO OVAL COLORES", "stock": 60.0, "row_sgl": 18165}, {"sku": 39906, "desc": "TRIM CORTA UÑAS CHICO", "stock": 58.0, "row_sgl": 9467}, {"sku": 46868, "desc": "NIVEA DES AER MEN DEEP CARBON ACTIVO X 150", "stock": 49.0, "row_sgl": 13267}, {"sku": 52576, "desc": "KATALIA ACC CORTA UÑAS CHICO", "stock": 46.0, "row_sgl": 18130}, {"sku": 47126, "desc": "ELVIVE ENJ KERA-LISO PROTECCION TERMICA X 400", "stock": 41.0, "row_sgl": 13486}, {"sku": 26288, "desc": "KOLESTON CRE X 50 - 6646 ROJO CEREZA", "stock": 37.0, "row_sgl": 5015}, {"sku": 58693, "desc": "MAYB EXH LAB LIQ LIFTER GLOSS HONEYD X 15 UNID", "stock": 28.0, "row_sgl": 24641}, {"sku": 44203, "desc": "COCOA BEACH GEL POST SOLAR CON ALOE VERA X 200", "stock": 24.0, "row_sgl": 11464}, {"sku": 50574, "desc": "COMFORT CLASICO SUAVIZANTE PARA ROPA BRISA ELEGAN X 450", "stock": 24.0, "row_sgl": 16291}, {"sku": 58631, "desc": "PROBADOR KEVINGSTON NOMADE X 19", "stock": 21.0, "row_sgl": 24577}, {"sku": 58632, "desc": "PROBADOR KEVINGSTON NOMADE X 19", "stock": 20.0, "row_sgl": 24578}, {"sku": 48067, "desc": "ORAL-B PASTA DENTAL 100% MENTA REFRESCANTE X 175", "stock": 19.0, "row_sgl": 14324}, {"sku": 58627, "desc": "PROBADOR GIESSO IN BLUE MEN X 19ML", "stock": 18.0, "row_sgl": 24570}, {"sku": 52639, "desc": "PROBADOR GIESSO IN RED X 19", "stock": 18.0, "row_sgl": 18208}, {"sku": 42570, "desc": "NESTLE BOOST VAINILLA LATA X 740 G", "stock": 18.0, "row_sgl": 10643}, {"sku": 56074, "desc": "NIVEA SUN PROTECT & BRONZE FPS 30 X 200", "stock": 15.0, "row_sgl": 21820}, {"sku": 15633, "desc": "BAND-AID APOSITO TRANSPARENTE X 10", "stock": 14.0, "row_sgl": 1850}, {"sku": 35662, "desc": "CURITAS TELA BE HAPPY X 16", "stock": 13.0, "row_sgl": 7685}, {"sku": 54470, "desc": "PROBADOR PETIT ENFANT COL X 120", "stock": 13.0, "row_sgl": 20044}, {"sku": 58600, "desc": "PROBADOR ANTONIO BANDERAS SEDUCTION X MEN X 100", "stock": 12.0, "row_sgl": 24543}, {"sku": 11900, "desc": "NIVEA FACIAL ESSENTIALS CREMA REGENERADORA NOCHE X 50", "stock": 12.0, "row_sgl": 596}, {"sku": 47818, "desc": "ACQUA DI COLBERT DES AER 0% ALCOHOL X 163", "stock": 11.0, "row_sgl": 14114}, {"sku": 51515, "desc": "_SANCOR BEBE 2 ADVANCED X 200 ML", "stock": 10.0, "row_sgl": 17143}, {"sku": 38800, "desc": "VOGUE TESTER BANDEJA MULTIEJE", "stock": 10.0, "row_sgl": 8984}, {"sku": 52650, "desc": "VIVERE SUAVIZANTE P/ROPA VIOLETAS Y FLORES BLANCA X 900", "stock": 9.0, "row_sgl": 18219}, {"sku": 58626, "desc": "PROBADOR COMO QUIERES LOVE X 19ML", "stock": 9.0, "row_sgl": 24569}, {"sku": 55035, "desc": "BENSIMON EST BLUE EXTREME EDP X 100 + COOL SPRAY X 75", "stock": 9.0, "row_sgl": 20691}, {"sku": 52475, "desc": "DOROTHY GRAY EST OCEAN BREEZE BODY SPLASH + CRE", "stock": 8.0, "row_sgl": 18062}, {"sku": 49876, "desc": "PALMOLIVE JABON NATURALS KARITE X 150", "stock": 8.0, "row_sgl": 15645}, {"sku": 16287, "desc": "EUCERIN UREA CREMA 5% X 75", "stock": 8.0, "row_sgl": 2061}, {"sku": 35479, "desc": "DERMAGLOS DELICADA FRAGANCIA EMU X 400 VL", "stock": 7.0, "row_sgl": 7632}, {"sku": 52476, "desc": "DOROTHY GRAY EST HAPPY MOMENTS BODY SPLASH + CRE", "stock": 7.0, "row_sgl": 18063}, {"sku": 58468, "desc": "PROBADOR GIESSO PURO MUJER X 19", "stock": 7.0, "row_sgl": 24416}, {"sku": 47569, "desc": "REXONA DES ANT AER ACTIVE EMOTION X 150", "stock": 7.0, "row_sgl": 13865}, {"sku": 46839, "desc": "LOREAL CORREC OA INF FULL WEAR CONC 329 NU INT", "stock": 6.0, "row_sgl": 13240}, {"sku": 54182, "desc": "PROBADOR PRET A PORTER TOKYO X 100", "stock": 6.0, "row_sgl": 19716}, {"sku": 34883, "desc": "STONE BLUE EST EDP X 100 + DES X 150*", "stock": 6.0, "row_sgl": 7454}, {"sku": 46560, "desc": "NUTRICIA BAGO EXHIBIDOR BABY NUTRILON Y VITAL", "stock": 6.0, "row_sgl": 13008}, {"sku": 40689, "desc": "PLENITUD FEMME TOALLA ESENCIAL LARGA X 8", "stock": 6.0, "row_sgl": 9830}, {"sku": 40222, "desc": "LOREAL CORREC INFAILLIBLE FULL WEAR CONC VAIN", "stock": 6.0, "row_sgl": 9609}, {"sku": 54310, "desc": "PROBADOR ADIDAS VIBES ENERGY DRIVE X 100", "stock": 6.0, "row_sgl": 19839}, {"sku": 57867, "desc": "ELVIVE EXH GLYCOLIC CRISTAL SHA / ENJ / CTT X 33 UNID", "stock": 5.0, "row_sgl": 23697}, {"sku": 51867, "desc": "MAYB EXH MAQ FIT ME FRESH SIN CARGA", "stock": 5.0, "row_sgl": 17454}, {"sku": 50941, "desc": "BENSIMON EST BOLD COOL SPRAY X 100 + SHOWER GEL X 150", "stock": 5.0, "row_sgl": 16693}, {"sku": 56829, "desc": "ERELZI 50 MG AUTOINYECTOR X 4", "stock": 5.0, "row_sgl": 22667}, {"sku": 53265, "desc": "EXTRALIMP BOLSA DE RESIDUO 60 X 90 CM X 10", "stock": 5.0, "row_sgl": 18789}, {"sku": 54937, "desc": "SWEET BEAUTY PINCELES X 4 UN", "stock": 4.0, "row_sgl": 20583}, {"sku": 43663, "desc": "PROBADOR 47 STREET YOUTHFULL X 50", "stock": 4.0, "row_sgl": 11225}, {"sku": 45431, "desc": "SINRONCAR SPRAY BUCAL X 50ML", "stock": 4.0, "row_sgl": 12172}, {"sku": 57884, "desc": "PROBADOR ADIDAS VIBES BODY MIST CHILL ZONE X 236", "stock": 4.0, "row_sgl": 23713}, {"sku": 55260, "desc": "MAYB CORRECTOR IN AGE RE EFFACEUR 159 ORANGE", "stock": 4.0, "row_sgl": 20919}, {"sku": 57880, "desc": "PROBADOR ADIDAS VIBES BODY MIST HAPPY FEELS X 236", "stock": 4.0, "row_sgl": 23709}, {"sku": 58681, "desc": "PROBADOR ANTONIO BANDERAS THE ICON ELIXIR X 100", "stock": 4.0, "row_sgl": 24631}, {"sku": 57881, "desc": "PROBADOR ADIDAS VIBES BODY MIST SPARK UP X 236", "stock": 4.0, "row_sgl": 23710}, {"sku": 42365, "desc": "LOREAL MAQ PVO COMPAC INFAILLIBLE 180 SABLE R", "stock": 4.0, "row_sgl": 10550}, {"sku": 57883, "desc": "PROBADOR ADIDAS VIBES BODY MIST DREAM GLAZE X 236", "stock": 4.0, "row_sgl": 23712}, {"sku": 57882, "desc": "PROBADOR ADIDAS VIBES BODY MIST GET COMFY X 236", "stock": 4.0, "row_sgl": 23711}, {"sku": 9001, "desc": "BODY CARE FAJA LUMBAR NEOPRENE 28CM T5 XXL BC1301A", "stock": 3.0, "row_sgl": 26206}, {"sku": 48636, "desc": "FRANKLIN AEROCAMARA C/ BOQUILLA ADULTO", "stock": 3.0, "row_sgl": 14795}, {"sku": 51379, "desc": "ACERPES CRE X 5", "stock": 3.0, "row_sgl": 17018}, {"sku": 58572, "desc": "PROBADOR CHER THE HOME SPRAY ORIGINAL", "stock": 3.0, "row_sgl": 24510}, {"sku": 55113, "desc": "MAYB DELINEADOR DE LABIOS MAINCHARACTER", "stock": 3.0, "row_sgl": 20767}, {"sku": 55947, "desc": "BODY CARE VENDA ELASTICA DEPOR 5CM PACK X 2 BC2000B", "stock": 3.0, "row_sgl": 21684}, {"sku": 53258, "desc": "EXTRALIMP GUANTES USO DOMESTICO AFELPADOS EXTRA GRANDES", "stock": 3.0, "row_sgl": 18788}, {"sku": 40150, "desc": "PROBADOR KEVINGSTON COL RUGBY X 100", "stock": 3.0, "row_sgl": 9561}, {"sku": 40045, "desc": "FLEXIPLEN GEL X 50 GR", "stock": 3.0, "row_sgl": 9510}, {"sku": 47277, "desc": "BUCALTAC CEPILLO DENTAL CLASSIC SERIE 3 PROMO PACK 2 X1", "stock": 3.0, "row_sgl": 13628}, {"sku": 49011, "desc": "APPER PASTILLERO DIARIO AM-PM BLISTER X 2", "stock": 3.0, "row_sgl": 15210}, {"sku": 50804, "desc": "NUTRISSE TIN 28 ARANDANO", "stock": 3.0, "row_sgl": 16566}, {"sku": 43811, "desc": "CURFLEX CBD C/AROMA X 100 GR", "stock": 3.0, "row_sgl": 11291}, {"sku": 43616, "desc": "47 STREET BODY SPLASH ROSE FANTASY X 95", "stock": 3.0, "row_sgl": 11207}, {"sku": 40223, "desc": "LOREAL BASE LIQUIDA INFAILLIBLE 140ML GOLDEN BEIGE", "stock": 3.0, "row_sgl": 9610}, {"sku": 18371, "desc": "STONE BLACK EDT C/V X 100", "stock": 2.0, "row_sgl": 2735}, {"sku": 33605, "desc": "GUM CEPILLO DENTAL 1396 SUPREME MEDIO 2X1 + 3 HIL", "stock": 2.0, "row_sgl": 7222}, {"sku": 37716, "desc": "COLGATE CEPILLO DENTAL BAMBOO", "stock": 2.0, "row_sgl": 8512}, {"sku": 58478, "desc": "PROBADOR KARINA RAB PRESS FOR MEN BLUE X 75", "stock": 2.0, "row_sgl": 24417}, {"sku": 46406, "desc": "PROBADOR BENSIMON SUNSET X 100", "stock": 2.0, "row_sgl": 12936}, {"sku": 46549, "desc": "DEKKIN CABLE MICRO USB CABLE RODONDO TIPO C", "stock": 2.0, "row_sgl": 13004}, {"sku": 45281, "desc": "MAYB CORRECTOR SUPERSTAY ACTIVE WEAR 30 HS SAND 20", "stock": 2.0, "row_sgl": 12067}, {"sku": 44952, "desc": "VERTIENTE JABON FRUTOS ROJOS X 100", "stock": 2.0, "row_sgl": 11879}, {"sku": 42580, "desc": "MAYB MAQ LIQ FIT ME MATTE S/POR 130 BUFF BEI", "stock": 2.0, "row_sgl": 10656}, {"sku": 57916, "desc": "ELVIVE EXH MOST GLYCOLIC CRISTAL SHA / ENJ / CTT X 12U", "stock": 2.0, "row_sgl": 23748}, {"sku": 58552, "desc": "PROBADOR BENSIMON BRAVE INTENSE EDP X 100", "stock": 2.0, "row_sgl": 24490}, {"sku": 52286, "desc": "MARCHAND EST ORQUIDEA & GROSEL FEMME EDP X125 + CRE X80", "stock": 2.0, "row_sgl": 17849}, {"sku": 52357, "desc": "RIMMEL EXH LASTING FINISH 35H 4 TONOS MEDIANO X 24 UNID", "stock": 2.0, "row_sgl": 17911}, {"sku": 52316, "desc": "PANTUSEC 20 MG COM X 14 VL", "stock": 2.0, "row_sgl": 17884}, {"sku": 54326, "desc": "PROBADOR BOOS PINK EXTREME", "stock": 2.0, "row_sgl": 19853}, {"sku": 52750, "desc": "KATALIA DELINEADOR DE OJO TATOO WATERPROOF", "stock": 2.0, "row_sgl": 18360}, {"sku": 51898, "desc": "BODY CARE RODILLERA ELASTICA BALLENADA T1 S BC1110", "stock": 2.0, "row_sgl": 17499}, {"sku": 54015, "desc": "PROBADOR RIMMEL LABIAL BARRA LASTING FINISH EXT MAT 710", "stock": 2.0, "row_sgl": 19518}, {"sku": 54311, "desc": "PROBADOR ADIDAS VIBES FULL RECHARGE X 100", "stock": 2.0, "row_sgl": 19840}, {"sku": 44137, "desc": "BEBEFANTITOS MAMADERA TETINA CAUCHO X 250 SURT", "stock": 2.0, "row_sgl": 11414}, {"sku": 48663, "desc": "COLGATE PASTA DENTAL LUMINOUS WHITE BRILLIANT X 90*", "stock": 2.0, "row_sgl": 14814}, {"sku": 37215, "desc": "PROBADOR PALOMA HERRERA PASSION", "stock": 1.0, "row_sgl": 8268}, {"sku": 35103, "desc": "PROBADOR SHAKIRA DANCE X 80", "stock": 1.0, "row_sgl": 7511}, {"sku": 13580, "desc": "AMLOC 10 MG TAB X 60.", "stock": 1.0, "row_sgl": 1183}, {"sku": 35657, "desc": "GAMA MAQUINA CORT CABELLO GM 562 + 27 ACCESORIOS", "stock": 1.0, "row_sgl": 7683}, {"sku": 35303, "desc": "PROBADOR ANTONIO BANDERAS HER GOLDEN SECRET X 80", "stock": 1.0, "row_sgl": 7586}, {"sku": 43349, "desc": "CEPAGE HYDRAFIRM ROUGEURS CREMA X 30 GR", "stock": 1.0, "row_sgl": 11049}, {"sku": 45304, "desc": "CAMPOS VERDES JABON FRESCURA LIBERADORA X 120", "stock": 1.0, "row_sgl": 12075}, {"sku": 43991, "desc": "CHICCO ASPIRADOR NASAL", "stock": 1.0, "row_sgl": 11344}, {"sku": 42592, "desc": "MAYB MAQ LIQ FIT ME MATTE S/POR 102 FAIR PORC", "stock": 1.0, "row_sgl": 10674}, {"sku": 42532, "desc": "SECRET DES ANT BARRA VAINILLA X 73", "stock": 1.0, "row_sgl": 10634}, {"sku": 44869, "desc": "MUAA STAY REAL EDT X 50", "stock": 1.0, "row_sgl": 11825}, {"sku": 41832, "desc": "REXONA JABON LIQUIDO ANTIBACTERIAL ORIGINAL X 250", "stock": 1.0, "row_sgl": 10366}, {"sku": 39764, "desc": "STONE BLUE DES AER X 150", "stock": 1.0, "row_sgl": 9404}, {"sku": 40262, "desc": "PROBADOR SHAKIRA RED MIDNIGHT X 80", "stock": 1.0, "row_sgl": 9623}, {"sku": 50939, "desc": "BENSIMON EST BOLD EDP X 50 + COOL SPRAY X 75*", "stock": 1.0, "row_sgl": 16692}, {"sku": 50854, "desc": "VOGUE ESMALTE DE UÑAS FANTASTIC AUTENTICA", "stock": 1.0, "row_sgl": 16607}, {"sku": 50510, "desc": "BODY CARE REMERA TERMICA HOMB M/LARGA NE T XXL BC2033", "stock": 1.0, "row_sgl": 16210}, {"sku": 50519, "desc": "BODY CARE REMERA TERMICA DAMA M/LARGA BL T M BC2035", "stock": 1.0, "row_sgl": 16230}, {"sku": 49940, "desc": "MAYB PALETA DE SOMBRAS CITY MINI DIAMOND DISTRICT", "stock": 1.0, "row_sgl": 15729}, {"sku": 48236, "desc": "SMART WATCH QUARK NEUTRON ROSA", "stock": 1.0, "row_sgl": 14466}, {"sku": 48622, "desc": "TAFIROL ESPASMO COMP X 10", "stock": 1.0, "row_sgl": 14777}, {"sku": 49541, "desc": "FABOGESIC VROZZZ CAP BLANDA X 10", "stock": 1.0, "row_sgl": 15389}, {"sku": 46879, "desc": "VIVERE SUAVIZANTE P/ROPA CLASICO X 900", "stock": 1.0, "row_sgl": 13269}, {"sku": 47272, "desc": "CHER DIECISEIS AUREA FLORAL EDP X 50", "stock": 1.0, "row_sgl": 13625}, {"sku": 47128, "desc": "ELVIVE SHA KERA-LISO PROTECCION TERMICA X 400", "stock": 1.0, "row_sgl": 13493}, {"sku": 47121, "desc": "ELVIVE ENJ KERA-LISO PROTECCION TERMICA X 200", "stock": 1.0, "row_sgl": 13475}, {"sku": 47652, "desc": "LA ROCHE POSAY LIPIKAR BAUME AP+M X 400", "stock": 1.0, "row_sgl": 13938}, {"sku": 47153, "desc": "PRO CEPILLO DENTAL PLUS CUIDADO DE ENCIAS SUAVE X 3", "stock": 1.0, "row_sgl": 13536}, {"sku": 47642, "desc": "PROBADOR ANTONIO BANDERAS THE ICON FEM EDP X 100", "stock": 1.0, "row_sgl": 13930}, {"sku": 46413, "desc": "PROBADOR LITTLE PARIS BABY BOY TORRE X 50", "stock": 1.0, "row_sgl": 12943}, {"sku": 43426, "desc": "ELVIVE ENJ KERA-LISO ANTI-OLEOSIDAD X 200", "stock": 1.0, "row_sgl": 11098}, {"sku": 51200, "desc": "GAMA PLANCHA ON-OFF DUAL PLATES", "stock": 1.0, "row_sgl": 16869}, {"sku": 52587, "desc": "KATALIA SET DE BROCHAS Y PINCELES + CARTUCHERA X15", "stock": 1.0, "row_sgl": 18143}, {"sku": 51276, "desc": "EUCERIN PH5 CREMA PIEL SECA Y SENSIBLE X 75", "stock": 1.0, "row_sgl": 16927}, {"sku": 51203, "desc": "GAMA CEPILLO PLANCHA INNOVA HOT BRUSH MINI", "stock": 1.0, "row_sgl": 16870}, {"sku": 52012, "desc": "ALCON ATROPINA 1% SOL OFT X 5 ML", "stock": 1.0, "row_sgl": 17639}, {"sku": 51955, "desc": "VIVERE SUAVIZANTE P/ROPA FLORES SILVESTRES X 900", "stock": 1.0, "row_sgl": 17597}, {"sku": 57273, "desc": "HUGGIES LITTLE SWIMMERS PANAL P/M X 11", "stock": 1.0, "row_sgl": 23062}, {"sku": 55307, "desc": "BOOS AQUA MEN EDT C/V X 100 + DES REGALO X 150", "stock": 1.0, "row_sgl": 20952}, {"sku": 57711, "desc": "PROBADOR KEVINGSTON KIDS AZUL X 19", "stock": 1.0, "row_sgl": 23519}, {"sku": 56178, "desc": "PROBADOR DANIELLE COLONIA MY LITTLE X 90", "stock": 1.0, "row_sgl": 21917}, {"sku": 57235, "desc": "COLORAMA ESMALTE DE UÑAS PETALA", "stock": 1.0, "row_sgl": 23026}, {"sku": 55326, "desc": "PROBADOR PAULA CAHEN DANVERS SUEÑOS", "stock": 1.0, "row_sgl": 20977}, {"sku": 55655, "desc": "EVO SET EMULSION HIDRATANTE X 380 + CEPILLO + CRE EXFOL", "stock": 1.0, "row_sgl": 21319}, {"sku": 55795, "desc": "PROBADOR CHEEKY MOOD COOL KIDS X 100", "stock": 1.0, "row_sgl": 21464}, {"sku": 55976, "desc": "ANTONIO BAND EST HER GOLDEN SECRET EDT X80 + DEO X150", "stock": 1.0, "row_sgl": 21715}];
+const CATS  = [];
+const CAT_COF = [{"Categoria": "ESPECIALIDAD MEDICINAL", "skus": 5895, "uds": 835024, "valor": 11457342264.06, "pct": 61.0}, {"Categoria": "COSMETICO", "skus": 5991, "uds": 789195, "valor": 4595805805.75, "pct": 24.5}, {"Categoria": "PSICOTROPICO", "skus": 455, "uds": 30347, "valor": 603060721.02, "pct": 3.2}, {"Categoria": "HIGIENE ORAL", "skus": 436, "uds": 119786, "valor": 539030771.69, "pct": 2.9}, {"Categoria": "SUSTANCIAS CONTROLADAS", "skus": 422, "uds": 9063, "valor": 394900852.0, "pct": 2.1}, {"Categoria": "ALIMENTOS", "skus": 577, "uds": 26981, "valor": 386915536.21, "pct": 2.1}, {"Categoria": "PRODUCTO MEDICO", "skus": 494, "uds": 100996, "valor": 342550459.26, "pct": 1.8}, {"Categoria": "REACTIVO", "skus": 38, "uds": 3768, "valor": 175923660.61, "pct": 0.9}];
+const CAT_SGL = [{"Categoria": "ESPECIALIDAD MEDICINAL", "skus": 6186, "uds": 960947.0, "valor": 11962902719.63, "pct": 60.8}, {"Categoria": "COSMETICO", "skus": 6248, "uds": 818092.0, "valor": 4867075178.73, "pct": 24.7}, {"Categoria": "PSICOTROPICO", "skus": 466, "uds": 32116.0, "valor": 626368372.5, "pct": 3.2}, {"Categoria": "HIGIENE ORAL", "skus": 451, "uds": 120686.0, "valor": 544037417.86, "pct": 2.8}, {"Categoria": "SUSTANCIAS CONTROLADAS", "skus": 436, "uds": 9637.0, "valor": 424293824.4, "pct": 2.2}, {"Categoria": "ALIMENTOS", "skus": 591, "uds": 26824.0, "valor": 406354817.2, "pct": 2.1}, {"Categoria": "PRODUCTO MEDICO", "skus": 539, "uds": 106221.0, "valor": 351085835.35, "pct": 1.8}, {"Categoria": "REACTIVO", "skus": 41, "uds": 3870.0, "valor": 178571380.75, "pct": 0.9}];
+
+function tick(){
+  const n=new Date(),p=x=>String(x).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById('ds').textContent=n.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+setInterval(tick,1000);tick();
+
+function st(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+function ft(tid,sid){
+  const q=document.getElementById(sid).value.toLowerCase();
+  document.querySelectorAll('#'+tid+' tbody tr').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';});
+}
+
+// Number formatters
+const fn  = v => Math.abs(Number(v)).toLocaleString('es-AR',{maximumFractionDigits:0});
+const fnp = v => Number(v).toLocaleString('es-AR',{maximumFractionDigits:0});
+const fp  = v => '$ ' + Number(Math.abs(v)).toLocaleString('es-AR',{maximumFractionDigits:0});
+
+function bdg(d){const a=Math.abs(d);if(a<=10)return '<span class="bdg lv">Leve</span>';if(a<=100)return '<span class="bdg md">Moderada</span>';return '<span class="bdg cr">Crítica</span>';}
+
+// Tablas de diferencias, solo-cof, solo-sgl dejadas vacías — 
+// se cargan desde el JSON de stock real (/tmp/stock_real.json embebido)
+// Aquí cargamos los datos de valorización por categoría
+
+// CAT COF table
+const tbCatCof = document.getElementById('tb-cat-cof');
+CAT_COF.forEach((r,i) => {
+  const bg = i%2===0?'#f8fafc':'#fff';
+  tbCatCof.innerHTML += `<tr style="background:${bg}">
+    <td style="font-weight:600;font-size:.72rem">${r.Categoria}</td>
+    <td><span class="n b">${fn(r.skus)}</span></td>
+    <td><span class="n t">${fn(r.uds)}</span></td>
+    <td><span class="n g" style="font-size:.78rem">${fp(r.valor)}</span></td>
+    <td><span class="bdg pill-g">${r.pct}%</span></td>
+  </tr>`;
+});
+
+// CAT SGL table
+const tbCatSgl = document.getElementById('tb-cat-sgl');
+CAT_SGL.forEach((r,i) => {
+  const bg = i%2===0?'#f8fafc':'#fff';
+  tbCatSgl.innerHTML += `<tr style="background:${bg}">
+    <td style="font-weight:600;font-size:.72rem">${r.Categoria||'SIN CAT.'}</td>
+    <td><span class="n b">${fn(r.skus)}</span></td>
+    <td><span class="n t">${fn(r.uds)}</span></td>
+    <td><span class="n b" style="font-size:.78rem">${fp(r.valor)}</span></td>
+    <td><span class="bdg pill-b">${r.pct}%</span></td>
+  </tr>`;
+});
+
+// Cat bars (discrepancias)
+const catDiffData = [
+  {cat:"ESPECIALIDAD MEDICINAL",count:2747,avg_diff:-45.85},
+  {cat:"COSMÉTICO",count:2466,avg_diff:-11.78},
+  {cat:"HIGIENE ORAL",count:271,avg_diff:-3.32},
+  {cat:"PSICOTRÓPICO",count:209,avg_diff:-8.48},
+  {cat:"PRODUCTO MEDICO",count:190,avg_diff:-27.53},
+  {cat:"ACCESORIO",count:181,avg_diff:-32.57},
+  {cat:"ALIMENTOS",count:151,avg_diff:0.09},
+  {cat:"DOM./SANITARIO",count:119,avg_diff:-21.11},
+];
+const mx=Math.max(...catDiffData.map(c=>c.count));
+catDiffData.forEach(c=>{
+  const pct=(c.count/mx*100).toFixed(1);
+  const ac=c.avg_diff<0?'#991b1b':'#166534';
+  const sg=c.avg_diff>=0?'+':'';
+  document.getElementById('cat-bars').innerHTML+=`
+    <div class="brow" style="margin-bottom:11px;">
+      <div class="blbl" style="width:220px;">${c.cat}</div>
+      <div class="btrack"><div class="bfill" style="width:${pct}%;background:#2563eb;"></div></div>
+      <div class="bnum" style="color:#1e40af;">${c.count.toLocaleString('es-AR')}</div>
+      <div class="bextra" style="color:${ac};">Prom: ${sg}${Math.abs(c.avg_diff).toFixed(1)} uds</div>
+    </div>`;
+});
+
+// DIFFS table
+DIFFS.forEach(r=>{
+  const dc=r.diff>0?'g':'r',sg=r.diff>0?'+':'';
+  document.getElementById('tb-d').innerHTML+=`<tr>
+    <td><span class="n b">${r.sku}</span></td>
+    <td><span class="ref">${r.row_cof}</span></td>
+    <td title="${r.desc}">${r.desc}</td>
+    <td><span class="dim">${r.cat}</span></td>
+    <td><span class="n t">${fn(r.cof)}</span></td>
+    <td><span class="n a">${fn(r.sgl)}</span></td>
+    <td><span class="n ${dc}">${sg}${fnp(r.diff)}</span></td>
+    <td>${bdg(r.diff)}</td></tr>`;
+});
+// OCOF table
+OCOF.forEach(r=>{
+  document.getElementById('tb-c').innerHTML+=`<tr>
+    <td><span class="n b">${r.sku}</span></td>
+    <td><span class="ref">${r.row_cof}</span></td>
+    <td title="${r.desc}">${r.desc}</td>
+    <td><span class="dim">${r.cat}</span></td>
+    <td><span class="n r">${fn(r.stock)}</span></td>
+    <td><span class="bdg nc">No existe</span></td></tr>`;
+});
+// OSGL table
+OSGL.forEach(r=>{
+  document.getElementById('tb-s').innerHTML+=`<tr>
+    <td><span class="n b">${r.sku}</span></td>
+    <td><span class="ref">${r.row_sgl}</span></td>
+    <td title="${r.desc}">${r.desc}</td>
+    <td><span class="n t">${fn(r.stock)}</span></td>
+    <td><span class="bdg ns">No existe</span></td></tr>`;
+});
+</script>
+</body>
+</html>
