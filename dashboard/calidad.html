@@ -1,307 +1,418 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Calidad · Alldashboards</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #F8FAFC; --surface: #FFFFFF; --surface-alt: #F1F5F9;
-      --border: #E2E8F0; --text: #0F172A; --text-muted: #64748B;
-      --accent: #2563EB; --accent-light: #DBEAFE;
-      --green: #16A34A; --green-light: #DCFCE7;
-      --red: #DC2626; --red-light: #FEE2E2;
-      --amber: #D97706; --amber-light: #FEF9C3;
-      --shadow: 0 1px 3px rgba(0,0,0,.08); --radius: 12px; --radius-sm: 8px;
-    }
-    [data-theme="dark"] {
-      --bg: #0F172A; --surface: #1E293B; --surface-alt: #263348;
-      --border: #334155; --text: #F1F5F9; --text-muted: #94A3B8;
-      --accent: #3B82F6; --accent-light: #1E3A5F;
-      --green-light: #14532D; --red-light: #7F1D1D; --amber-light: #451A03;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    .topbar {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 0 2rem; height: 60px; display: flex; align-items: center;
-      justify-content: space-between; position: sticky; top: 0; z-index: 50;
-      box-shadow: var(--shadow);
-    }
-    .topbar-left { display: flex; align-items: center; gap: .75rem; }
-    .back-link {
-      font-size: .8rem; font-weight: 500; color: var(--text-muted);
-      border: 1px solid var(--border); border-radius: var(--radius-sm);
-      padding: .35rem .75rem; cursor: pointer; background: var(--surface-alt);
-      text-decoration: none; transition: all .2s;
-    }
-    .back-link:hover { color: var(--accent); border-color: var(--accent); }
-    .topbar h1 { font-size: 1rem; font-weight: 700; }
-    .topbar-meta { font-size: .8rem; color: var(--text-muted); }
-    .badge-owner {
-      background: var(--accent-light); color: var(--accent);
-      font-size: .72rem; font-weight: 600; padding: .2rem .6rem;
-      border-radius: 99px; letter-spacing: .02em;
-    }
-    .btn-theme {
-      background: var(--surface-alt); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: .35rem .65rem;
-      font-size: .8rem; cursor: pointer; color: var(--text-muted); transition: all .2s;
-    }
-    .btn-theme:hover { color: var(--accent); border-color: var(--accent); }
-
-    .content { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-
-    /* KPI STRIP */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .kpi-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem;
-      box-shadow: var(--shadow);
-    }
-    .kpi-label { font-size: .75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .5rem; }
-    .kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: .35rem; }
-    .kpi-sub { font-size: .78rem; color: var(--text-muted); }
-    .kpi-green .kpi-value { color: var(--green); }
-    .kpi-red .kpi-value { color: var(--red); }
-    .kpi-blue .kpi-value { color: var(--accent); }
-    .kpi-amber .kpi-value { color: var(--amber); }
-
-    /* SECTION */
-    .section-title {
-      font-size: .82rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .06em;
-      margin-bottom: 1rem; margin-top: 2rem;
-      display: flex; align-items: center; gap: .5rem;
-    }
-    .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-
-    /* PROGRESS BARS */
-    .prog-list { display: flex; flex-direction: column; gap: .75rem; }
-    .prog-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; box-shadow: var(--shadow); }
-    .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .6rem; }
-    .prog-name { font-size: .88rem; font-weight: 600; }
-    .prog-pct { font-size: .88rem; font-weight: 700; }
-    .prog-bar { height: 8px; background: var(--surface-alt); border-radius: 99px; overflow: hidden; }
-    .prog-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
-    .fill-green { background: var(--green); }
-    .fill-blue { background: var(--accent); }
-    .fill-amber { background: var(--amber); }
-    .fill-red { background: var(--red); }
-
-    /* TABLE */
-    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-    thead th { background: var(--surface-alt); padding: .75rem 1rem; text-align: left; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-    tbody td { padding: .75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text); }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: var(--surface-alt); }
-    .chip { display: inline-block; font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 99px; }
-    .chip-green { background: var(--green-light); color: var(--green); }
-    .chip-amber { background: var(--amber-light); color: var(--amber); }
-    .chip-red { background: var(--red-light); color: var(--red); }
-
-    /* 2 COL LAYOUT */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-    @media (max-width: 700px) {
-      .two-col { grid-template-columns: 1fr; }
-      .topbar { padding: 0 1rem; }
-      .content { padding: 1.25rem 1rem; }
-    }
-
-    .update-note {
-      font-size: .78rem; color: var(--text-muted); margin-top: 2.5rem;
-      text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--border);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Calidad BPD – COFARSUR</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"]{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2233;--border:#1e2d45;--accent:#00b4d8;--accent2:#0077a8;--gold:#f4a61a;--green:#22c55e;--red:#ef4444;--orange:#f97316;--yellow:#eab308;--text:#e2e8f0;--muted:#64748b;--header-bg:linear-gradient(135deg,#0d1b2e 0%,#0a1628 60%,#091422 100%);--card-shadow:0 2px 12px rgba(0,0,0,0.4);}
+:root[data-theme="light"]{--bg:#f0f4f8;--surface:#ffffff;--surface2:#e8f0f7;--border:#ccd8e4;--accent:#0077a8;--accent2:#005880;--gold:#d4870a;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--yellow:#ca8a04;--text:#1e293b;--muted:#64748b;--header-bg:linear-gradient(135deg,#0d3b60 0%,#0a5080 60%,#083550 100%);--card-shadow:0 2px 12px rgba(0,0,0,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;transition:background .3s,color .3s;}
+header{background:var(--header-bg);border-bottom:2px solid var(--accent2);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,100,180,.15);}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 0;}
+.logo-block{display:flex;align-items:center;gap:14px;}
+.logo-hex{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;}
+.logo-text h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:19px;letter-spacing:2px;color:#fff;line-height:1;}
+.logo-text p{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;}
+.header-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.hbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.5px;text-decoration:none;transition:all .2s;cursor:pointer;border:none;}
+.hbtn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff;}
+.hbtn-outline:hover{background:rgba(255,255,255,.15);}
+.theme-toggle{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:20px;padding:5px 12px;cursor:pointer;border:1.5px solid rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:600;transition:all .2s;}
+.theme-toggle:hover{background:rgba(255,255,255,.22);}
+.tabs-bar{background:var(--surface);border-bottom:1px solid var(--border);}
+.tabs-inner{max-width:1400px;margin:0 auto;display:flex;padding:0 24px;}
+.tab-btn{padding:12px 22px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;letter-spacing:.3px;white-space:nowrap;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.filter-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 24px;}
+.filter-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.filter-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.filter-select{padding:6px 12px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;}
+.filter-select:focus{outline:none;border-color:var(--accent);}
+.filter-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border-radius:12px;padding:4px 12px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.main-wrap{max-width:1400px;margin:0 auto;padding:24px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 18px;box-shadow:var(--card-shadow);position:relative;overflow:hidden;transition:transform .2s;}
+.kpi-card:hover{transform:translateY(-2px);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-color,var(--accent));}
+.kpi-icon{font-size:22px;margin-bottom:8px;}
+.kpi-val{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;line-height:1;color:var(--accent-color,var(--accent));}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+.dom-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
+.dom-table th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.dom-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.dom-table tr:hover td{background:var(--surface2);}
+.pct-bar{height:6px;border-radius:3px;background:var(--border);margin-top:4px;}
+.pct-fill{height:100%;border-radius:3px;transition:width .5s;}
+.hall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:24px;}
+.hall-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.hall-name{font-size:12px;font-weight:600;color:var(--text);}
+.hall-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.hall-badge{margin-left:auto;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;flex-shrink:0;}
+.hall-sucs{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.suc-chip{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.3px;}
+.suc-chip-CBA{background:#1e3a5f;color:#60a5fa;}
+.suc-chip-RIO4{background:#3a1e1e;color:#f87171;}
+.suc-chip-VME{background:#1a3a2a;color:#4ade80;}
+.badge-ok{background:rgba(34,197,94,.15);color:var(--green);}
+.badge-mid{background:rgba(249,115,22,.15);color:var(--orange);}
+.badge-hi{background:rgba(239,68,68,.15);color:var(--red);}
+.suc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:24px;}
+.suc-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);}
+.suc-head{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.suc-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;}
+.suc-body{padding:14px 18px;}
+.suc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.suc-row:last-child{border-bottom:none;}
+.suc-key{font-size:11px;color:var(--muted);}
+.suc-val{font-size:13px;font-weight:700;}
+.evol-table{width:100%;border-collapse:collapse;}
+.evol-table th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.evol-table td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.evol-table tr:hover td{background:var(--surface2);}
+.evol-table .cur-row td{background:rgba(0,180,216,.08);font-weight:600;}
+.audit-month-section{margin-bottom:28px;}
+.audit-month-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;padding-left:2px;}
+.audit-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+.audit-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--card-shadow);}
+.audit-card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.audit-suc{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;}
+.audit-dt{font-size:10px;color:var(--muted);margin-top:1px;}
+.audit-body{padding:12px 16px;}
+.audit-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--border);gap:8px;}
+.audit-row:last-child{border-bottom:none;}
+.audit-key{font-size:11px;color:var(--muted);flex:1;}
+.audit-val{font-size:11px;font-weight:600;text-align:right;max-width:55%;}
+.chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+.chip-si{background:rgba(34,197,94,.15);color:var(--green);}
+.chip-no{background:rgba(239,68,68,.15);color:var(--red);}
+.chip-par{background:rgba(249,115,22,.15);color:var(--orange);}
+.chip-dev{background:rgba(239,68,68,.15);color:var(--red);}
+.nc-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.nc-table-wrap{overflow-x:auto;}
+.nc-full-table{width:100%;border-collapse:collapse;min-width:900px;}
+.nc-full-table th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.nc-full-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:11px;vertical-align:top;}
+.nc-full-table tr:hover td{background:var(--surface2);}
+.nc-full-table .nc-open td{border-left:3px solid var(--red);}
+.nc-full-table .nc-closed td{border-left:3px solid var(--green);}
+.nc-desc{max-width:260px;white-space:normal;line-height:1.4;}
+.nc-link{color:var(--accent);text-decoration:none;font-size:10px;}
+.nc-link:hover{text-decoration:underline;}
+.nc-alert-box{background:rgba(239,68,68,.08);border:1.5px solid var(--red);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;}
+.nc-alert-icon{font-size:24px;flex-shrink:0;}
+.nc-alert-title{font-weight:700;color:var(--red);margin-bottom:4px;}
+.nc-alert-sub{font-size:11px;color:var(--muted);}
+.imp-grave{color:var(--red);font-weight:700;}
+.imp-moderado{color:var(--orange);font-weight:700;}
+.imp-leve{color:var(--green);font-weight:700;}
+.chip-abierto{background:rgba(239,68,68,.15);color:var(--red);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+.chip-cerrado{background:rgba(34,197,94,.15);color:var(--green);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+.chip-si2{background:rgba(239,68,68,.15);color:var(--red);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+.chip-no2{background:rgba(100,116,139,.15);color:var(--muted);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+@media(max-width:768px){.header-inner{flex-direction:column;align-items:flex-start;}.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
 </head>
-<body>
+<body data-theme="dark">
 
-<header class="topbar">
-  <div class="topbar-left">
-    <a href="../index.html" class="back-link">← Inicio</a>
-    <div>
-      <div style="display:flex;align-items:center;gap:.5rem;">
-        <h1>Dashboard de Calidad</h1>
-        <span class="badge-owner">Omar Pereyra</span>
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-hex">BPD</div>
+      <div class="logo-text">
+        <h1>DASHBOARD CALIDAD — COFARSUR</h1>
+        <p>ANMAT · Disposición 2069/2018 · Sistema de Gestión de Calidad</p>
       </div>
     </div>
-  </div>
-  <div style="display:flex;align-items:center;gap:.75rem;">
-    <span class="topbar-meta" id="dash-date"></span>
-    <button class="btn-theme" onclick="toggleTheme()">🌙</button>
+    <div class="header-btns">
+      <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/175894/20180124" target="_blank" class="hbtn hbtn-outline">📄 Disp. 2069/2018</a>
+      <a href="https://cofarsursacif.sharepoint.com/:f:/s/Calidad/IgBV0j66ysV1RpTaVczgPd7SAS3ioEBgfhrM03cPsjdElUg?e=QUQF9C" target="_blank" class="hbtn hbtn-outline">⚠️ No Conformidades</a>
+      <a href="https://cofarsursacif.sharepoint.com/:f:/s/Calidad/IgBEeVHNXeQjSI-AWRW4iMPmAe_RUXbTeSE68c0tIkn6UJE?e=FP7fTL" target="_blank" class="hbtn hbtn-outline">📋 Informes de la DT</a>
+      <button onclick="toggleTheme()" class="theme-toggle" id="themeBtn">
+        <span id="themeIcon">☀️</span><span id="themeLabel">Modo Claro</span>
+      </button>
+    </div>
   </div>
 </header>
 
-<main class="content">
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('resumen',this)">◆ Resumen General</button>
+    <button class="tab-btn" onclick="switchTab('autoinspecciones',this)">◆ Autoinspecciones DT</button>
+    <button class="tab-btn" onclick="switchTab('noconformidades',this)">◆ No Conformidades</button>
+  </div>
+</div>
 
-  <!-- KPIs -->
-  <div class="kpi-grid">
-    <div class="kpi-card kpi-green">
-      <div class="kpi-label">Cumplimiento BPD</div>
-      <div class="kpi-value">94%</div>
-      <div class="kpi-sub">↑ +2% vs mes anterior</div>
-    </div>
-    <div class="kpi-card kpi-blue">
-      <div class="kpi-label">Auditorías realizadas</div>
-      <div class="kpi-value">3</div>
-      <div class="kpi-sub">CBA · RIO4 · VME</div>
-    </div>
-    <div class="kpi-card kpi-amber">
-      <div class="kpi-label">NC abiertas</div>
-      <div class="kpi-value">7</div>
-      <div class="kpi-sub">2 críticas · 5 menores</div>
-    </div>
-    <div class="kpi-card kpi-green">
-      <div class="kpi-label">NC cerradas</div>
-      <div class="kpi-value">12</div>
-      <div class="kpi-sub">Tasa cierre: 63%</div>
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">🗓 Período:</span>
+    <select class="filter-select" id="selAnio" onchange="applyFilter()">
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="todos">Todos los años</option>
+    </select>
+    <select class="filter-select" id="selMes" onchange="applyFilter()">
+      <option value="Mayo">Mayo</option>
+      <option value="Abril">Abril</option>
+      <option value="Marzo">Marzo</option>
+      <option value="Febrero">Febrero</option>
+      <option value="Enero">Enero</option>
+      <option value="todos">Todos los meses</option>
+    </select>
+    <span class="filter-badge" id="filterBadge">📅 Mayo 2026</span>
+    <span style="font-size:11px;color:var(--muted)">← Por defecto muestra el último mes cargado</span>
+  </div>
+</div>
+
+<div id="resumen" class="tab-panel active">
+<div class="main-wrap">
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <hr class="section-divider">
+  <div class="section-title">📊 Cumplimiento por Dominio ANMAT 2069/2018</div>
+  <table class="dom-table">
+    <thead><tr><th>Dominio</th><th style="text-align:center">Eval.</th><th style="text-align:center">✓ Cumple</th><th style="text-align:center">⚠ Parcial</th><th style="text-align:center">✗ No Cumple</th><th style="min-width:160px">% Cumplimiento</th></tr></thead>
+    <tbody id="domTbody"></tbody>
+  </table>
+  <hr class="section-divider">
+  <div class="section-title">🚨 Hallazgos Críticos — Alertas Regulatorias</div>
+  <div class="hall-grid" id="hallGrid"></div>
+  <hr class="section-divider">
+  <div class="section-title">🏢 Detalle por Sucursal</div>
+  <div class="suc-grid" id="sucGrid"></div>
+  <hr class="section-divider">
+  <div class="section-title">📈 Evolución Mensual 2026</div>
+  <table class="evol-table">
+    <thead><tr><th>Mes</th><th style="text-align:center">Auditorías</th><th style="text-align:center">% Cumplimiento</th><th style="text-align:center">RNC del mes</th><th style="text-align:center">Hallazgos Críticos</th></tr></thead>
+    <tbody id="evolTbody"></tbody>
+  </table>
+</div>
+</div>
+
+<div id="autoinspecciones" class="tab-panel">
+<div class="main-wrap">
+  <div class="section-title">🔍 Autoinspecciones — Detalle por Auditoría</div>
+  <div id="auditContainer"></div>
+  <div id="auditEmpty" style="display:none;text-align:center;padding:48px;color:var(--muted)">
+    <div style="font-size:40px;margin-bottom:12px">📋</div>
+    <div style="font-size:16px;font-weight:600">Sin auditorías en el período seleccionado</div>
+  </div>
+</div>
+</div>
+
+<div id="noconformidades" class="tab-panel">
+<div class="main-wrap">
+  <div class="section-title">⚠️ No Conformidades Abiertas al Día de Hoy</div>
+  <div class="nc-alert-box" id="ncAlertBox">
+    <span class="nc-alert-icon">🔴</span>
+    <div>
+      <div class="nc-alert-title" id="ncAlertTitle">Cargando…</div>
+      <div class="nc-alert-sub">Las siguientes RNC permanecen sin cierre. Requieren acción correctiva y verificación de eficacia.</div>
     </div>
   </div>
-
-  <!-- CUMPLIMIENTO POR SUCURSAL -->
-  <div class="section-title">Cumplimiento por sucursal</div>
-  <div class="prog-list">
-    <div class="prog-item">
-      <div class="prog-header">
-        <span class="prog-name">📍 Córdoba (CBA) — DT: Ruth Pastoriza</span>
-        <span class="prog-pct" style="color:var(--green)">96%</span>
-      </div>
-      <div class="prog-bar"><div class="prog-fill fill-green" style="width:96%"></div></div>
-    </div>
-    <div class="prog-item">
-      <div class="prog-header">
-        <span class="prog-name">📍 Río Cuarto (RIO4) — DT: Federico Rojas</span>
-        <span class="prog-pct" style="color:var(--accent)">91%</span>
-      </div>
-      <div class="prog-bar"><div class="prog-fill fill-blue" style="width:91%"></div></div>
-    </div>
-    <div class="prog-item">
-      <div class="prog-header">
-        <span class="prog-name">📍 Villa Mercedes (VME) — DT: María Lucía Mesa</span>
-        <span class="prog-pct" style="color:var(--amber)">88%</span>
-      </div>
-      <div class="prog-bar"><div class="prog-fill fill-amber" style="width:88%"></div></div>
-    </div>
-  </div>
-
-  <!-- NO CONFORMIDADES -->
-  <div class="section-title">No conformidades abiertas</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Descripción</th>
-          <th>Sucursal</th>
-          <th>Severidad</th>
-          <th>Vencimiento</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>NC-001</td>
-          <td>Control de temperatura sin registro</td>
-          <td>VME</td>
-          <td><span class="chip chip-red">Crítica</span></td>
-          <td>15/07/2025</td>
-          <td><span class="chip chip-red">Pendiente</span></td>
-        </tr>
-        <tr>
-          <td>NC-002</td>
-          <td>Etiquetado de devoluciones incompleto</td>
-          <td>RIO4</td>
-          <td><span class="chip chip-red">Crítica</span></td>
-          <td>20/07/2025</td>
-          <td><span class="chip chip-amber">En proceso</span></td>
-        </tr>
-        <tr>
-          <td>NC-003</td>
-          <td>Falta de firma en acta de recepción</td>
-          <td>CBA</td>
-          <td><span class="chip chip-amber">Menor</span></td>
-          <td>30/07/2025</td>
-          <td><span class="chip chip-green">Resuelta</span></td>
-        </tr>
-        <tr>
-          <td>NC-004</td>
-          <td>Procedimiento desactualizado POC-ALM-001</td>
-          <td>CBA</td>
-          <td><span class="chip chip-amber">Menor</span></td>
-          <td>25/07/2025</td>
-          <td><span class="chip chip-amber">En proceso</span></td>
-        </tr>
-        <tr>
-          <td>NC-005</td>
-          <td>Ausencia en capacitación BPD</td>
-          <td>RIO4</td>
-          <td><span class="chip chip-amber">Menor</span></td>
-          <td>01/08/2025</td>
-          <td><span class="chip chip-red">Pendiente</span></td>
-        </tr>
-      </tbody>
+  <div class="nc-table-wrap">
+    <table class="nc-full-table">
+      <thead><tr><th>Nº RNC</th><th>Año / Mes</th><th>Sucursal</th><th>Proceso</th><th style="min-width:250px">Descripción</th><th>Impacto</th><th>¿Crítico?</th><th>Responsable</th><th>Vence</th><th>Doc</th></tr></thead>
+      <tbody id="ncOpenTbody"></tbody>
     </table>
   </div>
-
-  <!-- DOS COLUMNAS -->
-  <div class="two-col" style="margin-top:0">
-    <div>
-      <div class="section-title">Capacitaciones BPD</div>
-      <div class="prog-list">
-        <div class="prog-item">
-          <div class="prog-header"><span class="prog-name">Higiene y limpieza</span><span class="prog-pct" style="color:var(--green)">100%</span></div>
-          <div class="prog-bar"><div class="prog-fill fill-green" style="width:100%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-header"><span class="prog-name">Cadena de frío</span><span class="prog-pct" style="color:var(--accent)">85%</span></div>
-          <div class="prog-bar"><div class="prog-fill fill-blue" style="width:85%"></div></div>
-        </div>
-        <div class="prog-item">
-          <div class="prog-header"><span class="prog-name">Manejo de devoluciones</span><span class="prog-pct" style="color:var(--amber)">70%</span></div>
-          <div class="prog-bar"><div class="prog-fill fill-amber" style="width:70%"></div></div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="section-title">Documentos vencidos / por vencer</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Documento</th><th>Vence</th><th>Estado</th></tr></thead>
-          <tbody>
-            <tr><td>POC-ALM-001</td><td>Jul 2025</td><td><span class="chip chip-amber">Próximo</span></td></tr>
-            <tr><td>IF-CAL-001</td><td>Ago 2025</td><td><span class="chip chip-green">Vigente</span></td></tr>
-            <tr><td>Habilitación VME</td><td>Dic 2025</td><td><span class="chip chip-green">Vigente</span></td></tr>
-            <tr><td>Plan de capacitación</td><td>Jun 2025</td><td><span class="chip chip-red">Vencido</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <hr class="section-divider">
+  <div class="section-title">📂 Todas las No Conformidades</div>
+  <div class="nc-filters">
+    <span class="filter-label">Filtrar:</span>
+    <select class="filter-select" id="ncFiltAnio" onchange="renderNcAll()">
+      <option value="todos">Todos los años</option><option value="2026">2026</option><option value="2025">2025</option>
+    </select>
+    <select class="filter-select" id="ncFiltMes" onchange="renderNcAll()">
+      <option value="todos">Todos los meses</option>
+      <option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option>
+      <option>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option>
+      <option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+    </select>
+    <select class="filter-select" id="ncFiltSuc" onchange="renderNcAll()">
+      <option value="todos">Todas las sucursales</option>
+      <option value="CBA">CBA – Córdoba</option><option value="RIO4">RIO4 – Río Cuarto</option><option value="VME">VME – Villa Mercedes</option>
+    </select>
+    <select class="filter-select" id="ncFiltEst" onchange="renderNcAll()">
+      <option value="todos">Todos los estados</option><option value="Abierto">Abierto</option><option value="Cerrado">Cerrado</option>
+    </select>
   </div>
-
-  <p class="update-note">📄 Datos actualizados por <strong>Omar Pereyra</strong> · Coordinador de Calidad · COFARSUR S.A. — <span id="update-date"></span></p>
-</main>
+  <div class="nc-table-wrap">
+    <table class="nc-full-table">
+      <thead><tr><th>Estado</th><th>Nº RNC</th><th>Año / Mes</th><th>Sucursal</th><th>Proceso</th><th style="min-width:240px">Descripción</th><th>Impacto</th><th>¿Crítico?</th><th>Responsable</th><th>Doc</th></tr></thead>
+      <tbody id="ncTbody"></tbody>
+    </table>
+  </div>
+</div>
+</div>
 
 <script>
-  const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-  const d = new Date();
-  const label = `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  document.getElementById("dash-date").textContent = label;
-  document.getElementById("update-date").textContent = `${d.toLocaleDateString("es-AR")}`;
+const AUDITORIAS=[
+  {anio:2026,mes:"Enero",suc:"Río Cuarto",dt:"Federico Rojas",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"Parcial",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Se detectaron desvíos",equiposCal:"Sí",distancia:"Parcialmente",mezcla:"Sí",incomp:"Parcialmente",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Parcialmente",obs:"Medicamentos vencidos (FIFO). Ritalina sin trazabilidad. Desvíos de temperatura cámara y depósito. Mezcla de productos leches/medicamentos."},
+  {anio:2026,mes:"Enero",suc:"Córdoba",dt:"Ruth Pastoriza",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Sí",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"Habilitaciones incompletas (MUTUAL AGEC, FARMASOL). Productos segregados por Recall. Mezcla de productos en Tratamientos Especiales."},
+  {anio:2026,mes:"Enero",suc:"Villa Mercedes",dt:"María Lucía Mesa",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Sí",materiales:"No",instalaciones:"Sí",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Se detectaron desvíos",tempRangos:"Se detectaron desvíos",equiposCal:"No",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"No",alarmas:"No",enviosValid:"Sí",transporte:"Sí",obs:"FARMACIA COLEGIALES sin habilitación. Desvíos temp >25°. Equipos sin calibrar urgente. Mezcla perfumería/médicos. Corte de luz afectó cámara."},
+  {anio:2026,mes:"Febrero",suc:"Río Cuarto",dt:"Federico Rojas",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Se detectaron desvíos",equiposCal:"Sí",distancia:"Parcialmente",mezcla:"Sí",incomp:"Parcialmente",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Parcialmente",obs:"Dispones desactualizados. Productos vencidos. Transgresiones cámara <2°. Data logger calibración en proceso. Transporte sin A/C."},
+  {anio:2026,mes:"Febrero",suc:"Villa Mercedes",dt:"María Lucía Mesa",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"No",limpieza:"Sí",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"No",distancia:"Sí",mezcla:"No",incomp:"Sí",heladeras:"No",alarmas:"No",enviosValid:"Sí",transporte:"Parcialmente",obs:"4 cuentas con resolución vencida. Medicamentos rotos/vencidos recurrentes. Pérdida de cadena de frío. Sin alarmas."},
+  {anio:2026,mes:"Febrero",suc:"Córdoba",dt:"Ruth Pastoriza",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"Goteras en expedición. Residuos en grandes bultos. Cosméticos en contacto con piso. Mezcla Balda 15."},
+  {anio:2026,mes:"Marzo",suc:"Villa Mercedes",dt:"María Lucía Mesa",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"No",distancia:"Sí",mezcla:"Sí",incomp:"Parcialmente",heladeras:"No",alarmas:"No",enviosValid:"Sí",transporte:"Parcialmente",obs:"6 cuentas con resolución vencida. Hormigas en sector medicamentos. Paredes abiertas fumigación. Sin calibración de equipos. RNC por transporte."},
+  {anio:2026,mes:"Marzo",suc:"Río Cuarto",dt:"Federico Rojas",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"Parcial",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Se detectaron desvíos",equiposCal:"Sí",distancia:"Parcialmente",mezcla:"Sí",incomp:"Parcialmente",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Parcialmente",obs:"Medicamentos y cosméticos vencidos. Trazabilidad incompleta Zomarist. Transgresiones temp <15° depósito. Mezcla 3 categorías entrepiso."},
+  {anio:2026,mes:"Marzo",suc:"Córdoba",dt:"Ruth Pastoriza",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Sí",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"Goteras en expedición. Estupefacientes/psicotrópicos fuera de jaula. Suciedad de palomas en grandes bultos. Alarmas verificadas."},
+  {anio:2026,mes:"Abril",suc:"Río Cuarto",dt:"Federico Rojas",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"Sí",limpieza:"Parcial",materiales:"Sí",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Parcialmente",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"T4 50mcg: 47 cajas retiradas por FIFO. Rubifen sin trazar. Humedad en pared depósito pañales. Materiales ajenos (maderas). Mezcla 3 categorías."},
+  {anio:2026,mes:"Abril",suc:"Córdoba",dt:"Ruth Pastoriza",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Sí",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"Recall ATACAND D ejecutado correctamente. Cosméticos en piso. Mezcla Balda 41. Sistema alarmas verificado con desafío en cámara frío."},
+  {anio:2026,mes:"Abril",suc:"Villa Mercedes",dt:"María Lucía Mesa",habilitaciones:"Parcialmente",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"No",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Parcialmente",obs:"Hormigas persistentes. Paredes abiertas fumigación. Equipo de medición nuevo sin certificar. Transporte de respaldo sin ventilación."},
+  {anio:2026,mes:"Mayo",suc:"Córdoba",dt:"Ruth Pastoriza",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"No",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Sí",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Sí",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"Recall ATACAND D gestionado. Gomas portones 2-6 rotas (riesgo plagas). Cosméticos en piso B06-B36. Mezcla en Farmacopea (2 RNC pendientes)."},
+  {anio:2026,mes:"Mayo",suc:"Villa Mercedes",dt:"María Lucía Mesa",habilitaciones:"Sí",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"No",limpieza:"Parcial",materiales:"No",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Sí",equiposCal:"Sí",distancia:"Sí",mezcla:"Sí",incomp:"Parcialmente",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Parcialmente",obs:"NEPRO AP vencido dic/25 por error de carga. 4 cuentas resolución vencida. Paredes abiertas fumigación. Monitoreo continuo digitalizado activo."},
+  {anio:2026,mes:"Mayo",suc:"Río Cuarto",dt:"Federico Rojas",habilitaciones:"Parcialmente",devoluciones:"Sí",vencidos:"Sí",trazabilidad:"Sí",limpieza:"Parcial",materiales:"Sí",instalaciones:"Parcialmente",luzSolar:"No",plagas:"Sí",tempMonitoreo:"Sí",tempRangos:"Se detectaron desvíos",equiposCal:"Sí",distancia:"Parcialmente",mezcla:"Sí",incomp:"Parcialmente",heladeras:"Sí",alarmas:"Sí",enviosValid:"Sí",transporte:"Sí",obs:"2 dispones desactualizados. Entresto sin trazabilidad desde sucursal. Transgresiones depósito y sector ingreso. Plan de acción en elaboración."}
+];
 
-  function toggleTheme() {
-    const el = document.documentElement;
-    const next = el.getAttribute("data-theme") === "light" ? "dark" : "light";
-    el.setAttribute("data-theme", next);
-    document.querySelector(".btn-theme").textContent = next === "light" ? "🌙" : "☀️";
-  }
+const RNC_DATA=[
+  {anio:2025,mes:"Enero",suc:"CBA",proceso:"Instalaciones y Equipamiento",desc:"Desviaciones en registros de temperaturas",impacto:"GRAVE",critico:"SI",responsable:"Carrera Daniel",vence:"19/01/2025",estado:"Cerrado",nro:"C-25-01-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EbjGuaDiI8pGvLTGpSwm8LIBx_db_T9neCkMUrVemp0Hyg?e=KrqCls"},
+  {anio:2025,mes:"Enero",suc:"RIO4",proceso:"Almacenamiento",desc:"Mal guardado — no se respeta el FEFO",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"25/01/2025",estado:"Cerrado",nro:"R-25-01-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ef9r8_egqndMvXb2tqMZRQEBblT8lWJmG36Ur3Vdpspr1g?e=NkSsMt"},
+  {anio:2025,mes:"Enero",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Controlador próximo a equipos de aire",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"25/01/2025",estado:"Cerrado",nro:"R-25-01-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/ERsL8FQ8z2NGoyckJfg-cLQBDJIse_y80c4noPqC8AzmMQ?e=eRPzDu"},
+  {anio:2025,mes:"Enero",suc:"RIO4",proceso:"Almacenamiento",desc:"Mezcla de productos",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"25/01/2025",estado:"Cerrado",nro:"R-25-01-003",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/ER1kcGNPhxlNjkY69FFmHsEBx7jC1oVKRmOSpXfNwEjixg?e=OJruLK"},
+  {anio:2025,mes:"Febrero",suc:"CBA",proceso:"Cadena Frío",desc:"Envío con cadena de frío en caja no validada",impacto:"LEVE",critico:"SI",responsable:"Carrera Daniel",vence:"04/03/2025",estado:"Cerrado",nro:"C-25-02-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EZ4S8w5EWTJOpknT0P7qR90ByC5u-yWysScVZRqtK3uzwQ?e=F1ttpY"},
+  {anio:2025,mes:"Febrero",suc:"CBA",proceso:"Recepción Productos",desc:"Recepción de Alcoholes vencidos",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"04/03/2025",estado:"Cerrado",nro:"C-25-02-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ef1PSPD-4xpLnMIouvDh2tUBI0BdiEN2UpMx9b_IX1tOYg?e=Z5xl3c"},
+  {anio:2025,mes:"Febrero",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Psicotrópico fuera de jaula",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"04/03/2025",estado:"Cerrado",nro:"C-25-02-003",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EWZxivboOtNPsTeqZLlIV2EBj6T9igH2y-qpJ4jQ9szhLg?e=JSBwXv"},
+  {anio:2025,mes:"Febrero",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Mala ubicación de sensores para Mapeo programado",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"04/03/2025",estado:"Cerrado",nro:"R-25-02-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EcBdIdTw8-tHqVoC5XrJ_S0BEbsb9b-wBqevZ1r5z1EinQ?e=R0PFOX"},
+  {anio:2025,mes:"Febrero",suc:"RIO4",proceso:"Almacenamiento",desc:"Mezcla de productos",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"04/03/2025",estado:"Cerrado",nro:"R-25-02-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EYz3lYfIVfVDke2SZm8BIpcBJlm1w86u1L6pHvhq5XrZeQ?e=bnOJYf"},
+  {anio:2025,mes:"Marzo",suc:"CBA",proceso:"Recepción Productos",desc:"Mala carga de lotes",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"16/03/2025",estado:"Cerrado",nro:"C-25-03-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EV7sM001LqhCuGx1SHqN318BvRXR7x7RK81LyWHAd9ljSA?e=gLdsnN"},
+  {anio:2025,mes:"Marzo",suc:"CBA",proceso:"Preparación Pedidos",desc:"Mal embalaje de jarabe",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"30/03/2025",estado:"Cerrado",nro:"C-25-03-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EU7kuGEe2ShMroYfVey4vAYBEXAyT-zNjPmrnmCGatOLlA?e=Rs2bTz"},
+  {anio:2025,mes:"Marzo",suc:"CBA",proceso:"Almacenamiento",desc:"Mal guardado — no se respeta el FEFO",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"05/04/2025",estado:"Cerrado",nro:"C-25-03-003",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EaKeASaKKYRIihptBSpYXbcBcLjze76kEkYuLdnBWfq0Ng?e=eL7niH"},
+  {anio:2025,mes:"Marzo",suc:"RIO4",proceso:"Transporte",desc:"Mal acondicionamiento de los envíos",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"04/04/2025",estado:"Cerrado",nro:"R-25-03-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EazxpNSOWNBDiE5E1MN1hqABardf0y9-9uPuWBJko-NWWA?e=ZOsfCt"},
+  {anio:2025,mes:"Marzo",suc:"RIO4",proceso:"Almacenamiento",desc:"Cajas en contacto directo con el piso",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"04/04/2025",estado:"Cerrado",nro:"R-25-03-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EZnJNBK6v0dHuNbLtxFzF4cBbSX6o-Ux5fnZjXK6kbrDgw?e=FpALSw"},
+  {anio:2025,mes:"Abril",suc:"CBA",proceso:"Almacenamiento",desc:"Mal guardado de iodopovidona",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"29/04/2025",estado:"Cerrado",nro:"C-25-04-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EXPcf4igXrhIjvkI2D3ZO20BOygKzA0_B0cASBBlTfGwbA?e=f6r2As"},
+  {anio:2025,mes:"Abril",suc:"RIO4",proceso:"Transporte",desc:"Transporte sin control de riesgos para traslado de mercadería",impacto:"MODERADO",critico:"NO",responsable:"Allione Lucas",vence:"06/05/2025",estado:"Cerrado",nro:"R-25-04-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EU4WStVuOd1FmP7ZQTPWYswBTc95weSf-Fvj-8Dzu4OHPQ?e=1pRcVo"},
+  {anio:2025,mes:"Mayo",suc:"VME",proceso:"Almacenamiento",desc:"No se respeta el principio FEFO",impacto:"MODERADO",critico:"NO",responsable:"Anaya Alejandro",vence:"01/06/2025",estado:"Cerrado",nro:"V-25-05-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EbKZIDOwOxFBtAcu-IN82CIB-sFPW5zLPBEOVmMB2h3tLA?e=uxnWQC"},
+  {anio:2025,mes:"Mayo",suc:"CBA",proceso:"Recepción Productos",desc:"Recepción psicotrópicos lista 3, sin vales",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"15/05/2025",estado:"Cerrado",nro:"C-25-05-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EWbQp_qtJNNBkCF6A9KTTYkBOI1CnEGJjMvUnyHKZiyQjw?e=tyjCHG"},
+  {anio:2025,mes:"Mayo",suc:"CBA",proceso:"Orden y Limpieza",desc:"Riesgo conservación productos — portones sin cierre adecuado",impacto:"GRAVE",critico:"SI",responsable:"Carrera Daniel",vence:"03/06/2025",estado:"Cerrado",nro:"C-25-05-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EZbzutg9CORDmxZ1-JNFRK0B_2gtXghOEQgyto9LdQe3Yw?e=yMhlve"},
+  {anio:2025,mes:"Junio",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Falta de orden y espacio en la cámara de frío",impacto:"GRAVE",critico:"NO",responsable:"Allione Lucas",vence:"07/07/2025",estado:"Cerrado",nro:"R-25-06-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EedV8s7yCuVFsEQtCBwTIyQBR6JiGNbMkEqh4kVPu7ijxw?e=LYOQbf"},
+  {anio:2025,mes:"Junio",suc:"RIO4",proceso:"Almacenamiento",desc:"Productos almacenados bajo las escaleras",impacto:"MODERADO",critico:"NO",responsable:"Allione Lucas",vence:"07/07/2025",estado:"Cerrado",nro:"R-25-06-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EahWdoCIhoREkO7QsSDkBlsBQ0XCNjlD2hgbr2rB98yPtQ?e=7Tt4VC"},
+  {anio:2025,mes:"Junio",suc:"VME",proceso:"Recepción Productos",desc:"Mal ingreso de lote en sistema",impacto:"LEVE",critico:"NO",responsable:"Anaya Alejandro",vence:"01/07/2025",estado:"Cerrado",nro:"V-25-06-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EXGgSHBTriNNp0acXmbM3wwBqYAjz8EothjhPGl8hsjm0Q?e=sHwjVz"},
+  {anio:2025,mes:"Junio",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Productos sujetos a control sin prioridad de guardado",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"25/06/2025",estado:"Cerrado",nro:"C-25-06-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EcaKzh4unbZOmfGOpCHYTOAB4sRR6pox5Bh84pb5hFIC6w?e=s7GLK9"},
+  {anio:2025,mes:"Junio",suc:"CBA",proceso:"Almacenamiento",desc:"Falta de señalización en almacenamiento",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"06/07/2025",estado:"Cerrado",nro:"C-25-06-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EfKOAbzzaR5OviRzn7dEp3UB9qs_V5B5WjSDamAnbTBdJQ?e=47SH4I"},
+  {anio:2025,mes:"Julio",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos en una misma bandeja",impacto:"LEVE",critico:"NO",responsable:"Carrera, Daniel",vence:"25/07/2025",estado:"Cerrado",nro:"C-25-07-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/ESBpd_Tq2OJCvMBgiAKHPAwBqx9SEIkDYLyQpN9v5UhfNg?e=Cbd45F"},
+  {anio:2025,mes:"Julio",suc:"CBA",proceso:"Orden y Limpieza",desc:"Suciedad de palomas en piso del depósito",impacto:"GRAVE",critico:"SI",responsable:"Carrera, Daniel",vence:"06/08/2025",estado:"Cerrado",nro:"C-25-07-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ea0NVKtEfT9LjqtBhvtU-nUBlRDWkxKBs25PT8bUCtqc8A?e=DwEqA6"},
+  {anio:2025,mes:"Julio",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Muchas alarmas de transgresiones registradas por data loggers",impacto:"MODERADO",critico:"NO",responsable:"Allione, Lucas",vence:"08/08/2025",estado:"Cerrado",nro:"R-25-07-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Eah43lrL4mJGtry8TmLldHcBM11i-TPHOLtLry3UNZhVmg?e=1lQaxU"},
+  {anio:2025,mes:"Agosto",suc:"CBA",proceso:"Transporte",desc:"Pedidos dejados fuera del depósito el sábado 23/08",impacto:"MODERADO",critico:"NO",responsable:"Carrera, Daniel",vence:"05/09/2025",estado:"Cerrado",nro:"C-25-08-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EV68U5eV51tDobRsm_jYcH4B8W7T5u8Os3BuBcHLB4q8Sw?e=alJchB"},
+  {anio:2025,mes:"Agosto",suc:"CBA",proceso:"Documentación",desc:"Cuentas de clientes con habilitaciones desactualizadas",impacto:"LEVE",critico:"NO",responsable:"Casanova, Martín",vence:"05/09/2025",estado:"Cerrado",nro:"C-25-08-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ee5iG2eAZhRJqSbNartMy0EBwj8DVXe_3wQ977er-O2y8Q?e=iZGICQ"},
+  {anio:2025,mes:"Agosto",suc:"RIO4",proceso:"Almacenamiento",desc:"Desorden en depósito de medicamentos y otras áreas",impacto:"MODERADO",critico:"NO",responsable:"Allione, Lucas",vence:"08/09/2025",estado:"Cerrado",nro:"R-25-08-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ec9afxCcNLdAq1SiFVVvXnQBVOGT4jGLYd0etc4YDlPqnw?e=xBzSKV"},
+  {anio:2025,mes:"Septiembre",suc:"CBA",proceso:"Recepción Productos",desc:"No se le dio prioridad en el guardado a los productos",impacto:"MODERADO",critico:"NO",responsable:"Carrera, Daniel",vence:"02/10/2025",estado:"Cerrado",nro:"C-25-09-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EZaWXxTdzdRPuAHA8fuzVv4B-Y5gNmvQs1Epdshi48OOMw?e=kegQdV"},
+  {anio:2025,mes:"Septiembre",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos y falta de señalización",impacto:"LEVE",critico:"NO",responsable:"Carrera. Daniel",vence:"07/10/2025",estado:"Cerrado",nro:"C-25-09-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EcmejVbC_OVIveKwmgRToa4B7bjbjIaQ9lD57rUcXQmWdw?e=0EbxNE"},
+  {anio:2025,mes:"Septiembre",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Elevado número de alarmas por transgresiones en cámara de frío",impacto:"GRAVE",critico:"NO",responsable:"Allione, Lucas",vence:"07/10/2025",estado:"Cerrado",nro:"R-25-09-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EQ8O5KjLWolJj1C0b9FgryQBqeidk7bAjCTgNBwGog0x2g?e=m22e8R"},
+  {anio:2025,mes:"Octubre",suc:"CBA",proceso:"Preparación Pedidos",desc:"Pedido Farmacia BENEFICIOS VII enviado sin cadena de frío",impacto:"GRAVE",critico:"SI",responsable:"Carrera, Daniel",vence:"27/10/2025",estado:"Cerrado",nro:"C-25-10-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EVi5fsMxaYVNrWzPKBIaOPMBIxVAKvCrt5GBoKLiSPNNpw?e=0bxGt7"},
+  {anio:2025,mes:"Octubre",suc:"CBA",proceso:"Recepción Productos",desc:"Error carga lote Dermaglos emulsión (8655 vs 3655)",impacto:"MODERADO",critico:"NO",responsable:"Carrera, Daniel",vence:"27/10/2025",estado:"Cerrado",nro:"C-25-10-001b",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EQtdG5jCyDJLrgFDISkz7eUBAE11YRuGEKYr6UooDz2eQw?e=HMtqou"},
+  {anio:2025,mes:"Octubre",suc:"RIO4",proceso:"Producto Sujeto Control",desc:"Psicotrópicos fuera de la jaula en área de picking",impacto:"MODERADO",critico:"SI",responsable:"Allione, Lucas",vence:"15/12/2025",estado:"Cerrado",nro:"R-25-10-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/EXdiPZ31lA9DmjcpzwM0XB0B1N5rsTYtgvqclJHY6Ta8yw?e=P1KwoY"},
+  {anio:2025,mes:"Octubre",suc:"RIO4",proceso:"Almacenamiento",desc:"Desorden en perfumería y entrepiso, mezcla de productos",impacto:"MODERADO",critico:"NO",responsable:"Allione Lucas",vence:"28/02/2026",estado:"Cerrado",nro:"R-25-10-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Eb1hPb_j8ZdEs4BLYo_mVgUBwLMcKIjPEkrtA08oU3NUvA?e=WYmVad"},
+  {anio:2025,mes:"Octubre",suc:"VME",proceso:"Orden y Limpieza",desc:"Presencia de hormigas en sector de perfumería P1",impacto:"MODERADO",critico:"NO",responsable:"Anaya Alejandro",vence:"03/11/2025",estado:"Cerrado",nro:"V-25-10-001",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/ET1lXawCxfJGpFcF-qG7GBMBWNHNqEEKkLavhMNhO0KTTg?e=dM2Zhh"},
+  {anio:2025,mes:"Octubre",suc:"VME",proceso:"Instalaciones y Equipamiento",desc:"Tapa provisoria de desagüe peligrosa en área de ingresos",impacto:"MODERADO",critico:"NO",responsable:"Anaya Alejandro",vence:"02/11/2025",estado:"Cerrado",nro:"V-25-10-002",link:"https://cofarsursacif-my.sharepoint.com/:w:/g/personal/omarpereyra_cofarsur_com/Ecz52wXdkZBCmLebKXmhJeAB3ru--AsmnPMTjKuuLB9QNQ?e=e2cGbE"},
+  {anio:2025,mes:"Noviembre",suc:"CBA",proceso:"Instalaciones y Equipamiento",desc:"Sin datos de oct de los 3 sensores enviados a calibrar",impacto:"MODERADO",critico:"NO",responsable:"Carrea, Daniel",vence:"19/11/2025",estado:"Cerrado",nro:"C-25-11-001",link:"https://cofarsursacif-my.sharepoint.com/personal/omarpereyra_cofarsur_com/IQBqyDlGWR60Qr0IdAY9cRUIAYPx-TFwdN-30fUP3he-6Yw?e=PzWgJo"},
+  {anio:2025,mes:"Noviembre",suc:"CBA",proceso:"Recepción Productos",desc:"Error carga lote Dermaglos SV crema x 50 (7062 vs 7082)",impacto:"MODERADO",critico:"NO",responsable:"Carrea, Daniel",vence:"19/11/2025",estado:"Cerrado",nro:"C-25-11-002",link:"https://cofarsursacif-my.sharepoint.com/personal/omarpereyra_cofarsur_com/IQAe9XhVRLjVQbVAl0Gcl6i5AdDbgS8DOojT4rf8Ip8wiWM?e=56DGxs"},
+  {anio:2025,mes:"Noviembre",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Transgresiones en depósito de medicamentos en días cálidos",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"09/12/2025",estado:"Cerrado",nro:"R-25-11-001",link:"https://cofarsursacif-my.sharepoint.com/personal/omarpereyra_cofarsur_com/IQAxyM4X38R1R4Br91kRTspJAY3YH7HelXT4gYKGkmTz5AU?e=kCdHgq"},
+  {anio:2025,mes:"Diciembre",suc:"CBA",proceso:"Recepción Productos",desc:"Error en carga del lote del producto Dermaglos SV crema x 200",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"29/12/2025",estado:"Cerrado",nro:"C-25-12-001",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQCESKRn5rAmSLZp5SqlzZ1QAUACaRjSdguuRzsboUB1FcA?e=BzkUmy"},
+  {anio:2025,mes:"Diciembre",suc:"CBA",proceso:"Orden y Limpieza",desc:"Suciedad de palomas y plumas detrás de sector Alimentos. Estanterías con polvo persistente.",impacto:"GRAVE",critico:"SI",responsable:"Carrera Daniel",vence:"31/12/2025",estado:"Cerrado",nro:"C-25-12-002",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQD2GRBKfQD8QqevPNwegJt6AfJHxZ6N9-QOyz-9VnOHIiY?e=AAst6Z"},
+  {anio:2025,mes:"Diciembre",suc:"RIO4",proceso:"Instalaciones y Equipamiento",desc:"Transgresiones diarias prolongadas en depósito — temperaturas elevadas",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"07/01/2026",estado:"Cerrado",nro:"R-25-12-001",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQCQHiRoeSN3S4OzbtTaDgXlAVntrqr3JlYi6LNu8HP8ktk?e=YZISaG"},
+  {anio:2025,mes:"Diciembre",suc:"RIO4",proceso:"Transporte",desc:"Transporte Sandra: grave exposición de medicamentos a altas temperaturas",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"07/01/2026",estado:"Cerrado",nro:"R-25-12-002",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQBkwqmIhnNURL-y5Ck6fNliAXiwf1LUx46Ytpu7Do9r-h0?e=oKmx9k"},
+  {anio:2025,mes:"Diciembre",suc:"VME",proceso:"Recepción Productos",desc:"Recepción de medicamentos con cadena de frío dejada en área de ingresos sin guardar.",impacto:"GRAVE",critico:"SI",responsable:"Anaya Alejandro",vence:"09/01/2026",estado:"Abierto",nro:"V-25-12-001",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQBH3wh4s-i0RLtB5ixfGr7XAR02_W229NAhq6WTtVWJAE4?e=bp8UIr"},
+  {anio:2026,mes:"Enero",suc:"RIO4",proceso:"Almacenamiento",desc:"Mezclas de productos en alta rotación: leches con alikal, medicamentos con productos médicos.",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"29/01/2026",estado:"Abierto",nro:"R-26-01-001",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQCmtAYBRl1yTpI5t625h_iHAbnWyVbrxhdwz3YMO7O-RKg?e=LyVl8p"},
+  {anio:2026,mes:"Enero",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos y falta de señalización en Sector Tratamientos Especiales.",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"20/01/2026",estado:"Cerrado",nro:"C-26-01-001",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQAtTFlkUAdtRKdVBcvoIp-RAWCZfiqJllDkq6H7EGpSAbQ?e=Bu2MCD"},
+  {anio:2026,mes:"Enero",suc:"CBA",proceso:"Almacenamiento",desc:"Error en carga del lote MERTHIOLATE IODOPOVIDONA SOL X 60 ML (00037 vs 00087)",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"02/02/2026",estado:"Cerrado",nro:"C-26-01-002",link:"https://cofarsursacif.sharepoint.com/:w:/s/Calidad/IQDa48vwZKq9QpGJR0Msfh_CAb0xL-o5wBrV7Pc5RsL7f4I?e=45gKny"},
+  {anio:2026,mes:"Febrero",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos en Sector Balda 15 señalizado Medicamentos (PM, cosméticos, suplementos).",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"30/07/2026",estado:"Abierto",nro:"C-26-02-001",link:""},
+  {anio:2026,mes:"Marzo",suc:"VME",proceso:"Cadena Frío",desc:"Necesidad de equipos de medición de temperatura calibrados para depósito y cámara de frío.",impacto:"MODERADO",critico:"NO",responsable:"Anaya Alejandro",vence:"15/04/2026",estado:"Abierto",nro:"VME-26-03-001",link:""},
+  {anio:2026,mes:"Marzo",suc:"VME",proceso:"Transporte",desc:"Auditoría en transporte David Fernández (Zona 1) — falta de correcta ventilación.",impacto:"MODERADO",critico:"NO",responsable:"Anaya Alejandro",vence:"15/03/2026",estado:"Abierto",nro:"VME-26-03-002",link:""},
+  {anio:2026,mes:"Marzo",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Estupefacientes Lista I (Neocalmans) y Psicotrópico Lista II (Consiv) fuera de la Jaula (acceso restringido).",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"26/06/2026",estado:"Abierto",nro:"C-26-03-001",link:""},
+  {anio:2026,mes:"Marzo",suc:"RIO4",proceso:"Almacenamiento",desc:"Medicamentos en heladeras exhibidoras no homologadas y sin registro de temperatura. Cajas en contacto con piso por falta de espacio en cámara.",impacto:"MODERADO",critico:"NO",responsable:"Allione Lucas",vence:"02/04/2026",estado:"Abierto",nro:"R-26-03-001",link:""},
+  {anio:2026,mes:"Abril",suc:"RIO4",proceso:"Transporte",desc:"Vacunas PAMI con cadena de frío dejadas en farmacia cerrada. Cadena de frío rota. Vacunas enviadas a destrucción.",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"06/05/2026",estado:"Abierto",nro:"R-26-04-001",link:""},
+  {anio:2026,mes:"Abril",suc:"RIO4",proceso:"Almacenamiento",desc:"Falta de orden y mezcla de productos de diferentes categorías en depósito de medicamentos.",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"06/05/2026",estado:"Abierto",nro:"R-26-04-002",link:""},
+  {anio:2026,mes:"Abril",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos Sector Balda 41 señalizado Medicamentos (cosméticos, suplementos, PM).",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"30/07/2026",estado:"Abierto",nro:"C-26-04-001",link:""},
+  {anio:2026,mes:"Mayo",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Fentanilo Larjan y Remifentanilo IMA (Estupefacientes Lista I) sin sector asignado y fuera de la jaula.",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"30/06/2026",estado:"Abierto",nro:"C-26-05-002",link:""}
+];
 
-  const saved = localStorage.getItem("adb_theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-  document.querySelector(".btn-theme").textContent = saved === "light" ? "🌙" : "☀️";
+const MES_NORM={Enero:"Enero",Febrero:"Febrero",Marzo:"Marzo",Abril:"Abril",Mayo:"Mayo",Junio:"Junio",Julio:"Julio",Agosto:"Agosto",Septiembre:"Septiembre",Octubre:"Octubre",Noviembre:"Noviembre",Diciembre:"Diciembre",ENERO:"Enero",FEBRERO:"Febrero",MARZO:"Marzo",ABRIL:"Abril",MAYO:"Mayo"};
+function normMes(m){return MES_NORM[m]||m;}
+function pctColor(p){return p>=0.9?'var(--green)':p>=0.7?'var(--orange)':'var(--red)';}
+function sucColor(s){return s==='Córdoba'?'var(--accent)':s==='Río Cuarto'?'var(--green)':'#a78bfa';}
+function chipVal(v){const lv=(v||'').toLowerCase();if(lv==='sí'||lv==='si')return'<span class="chip chip-si">✓ Sí</span>';if(lv==='no')return'<span class="chip chip-no">✗ No</span>';if(lv.includes('detectar'))return'<span class="chip chip-dev">⚠ Desvíos</span>';return'<span class="chip chip-par">◑ '+v+'</span>';}
+function scoreAudit(a){
+  // 14 criterios positivos (Sí=cumple) + 1 invertido (trazabilidad: No=cumple porque la pregunta es ¿se encontraron sin informar?)
+  // Excluye: vencidos, materiales, luzSolar (son hallazgos críticos contados aparte)
+  // Almacenamiento usa 'incomp' (separación de incompatibles), no 'mezcla'
+  const posFields=[a.habilitaciones,a.devoluciones,a.limpieza,a.instalaciones,a.plagas,a.tempMonitoreo,a.tempRangos,a.equiposCal,a.heladeras,a.alarmas,a.enviosValid,a.transporte,a.distancia,a.incomp];
+  let score=0,si=0,par=0,no=0,tot=posFields.length+1;
+  posFields.forEach(f=>{const v=(f||'').toLowerCase();if(v==='sí'||v==='si'){score+=1;si++;}else if(v==='no'||v.includes('detectar')){no++;}else{score+=0.5;par++;}});
+  // trazabilidad invertida
+  const tv=(a.trazabilidad||'').toLowerCase();
+  if(tv==='no'){score+=1;si++;}else if(tv==='sí'||tv==='si'){no++;}else{score+=0.5;par++;}
+  return{si,par,no,pct:score/tot};
+}
+function calcDominios(auds){
+  const d={"Documentación (habilitaciones)":{e:0,si:0,par:0,no:0},"Devoluciones":{e:0,si:0,par:0,no:0},"Trazabilidad SNT":{e:0,si:0,par:0,no:0},"Instalaciones / Orden / Edilicio":{e:0,si:0,par:0,no:0},"Control de Plagas":{e:0,si:0,par:0,no:0},"Cadena de frío — monitoreo":{e:0,si:0,par:0,no:0},"Cadena de frío — equipos":{e:0,si:0,par:0,no:0},"Almacenamiento":{e:0,si:0,par:0,no:0},"Transporte":{e:0,si:0,par:0,no:0}};
+  auds.forEach(a=>{
+    const add=(dom,v)=>{d[dom].e++;const lv=(v||'').toLowerCase();if(lv==='sí'||lv==='si')d[dom].si++;else if(lv==='no'||lv.includes('detectar'))d[dom].no++;else d[dom].par++;};
+    const addInv=(dom,v)=>{d[dom].e++;const lv=(v||'').toLowerCase();if(lv==='no')d[dom].si++;else if(lv==='sí'||lv==='si')d[dom].no++;else d[dom].par++;};  // invertida: No=cumple
+    add("Documentación (habilitaciones)",a.habilitaciones);
+    add("Devoluciones",a.devoluciones);
+    addInv("Trazabilidad SNT",a.trazabilidad);  // ¿Se encontraron sin informar? No=cumple
+    add("Instalaciones / Orden / Edilicio",a.limpieza);
+    add("Instalaciones / Orden / Edilicio",a.instalaciones);
+    add("Control de Plagas",a.plagas);
+    add("Cadena de frío — monitoreo",a.tempMonitoreo);
+    add("Cadena de frío — monitoreo",a.tempRangos);
+    add("Cadena de frío — equipos",a.equiposCal);
+    add("Cadena de frío — equipos",a.heladeras);
+    add("Cadena de frío — equipos",a.alarmas);
+    add("Cadena de frío — equipos",a.enviosValid);
+    add("Almacenamiento",a.distancia);
+    add("Almacenamiento",a.incomp);  // 'Los medicamentos se separan de productos incompatibles'
+    add("Transporte",a.transporte);
+  });
+  return d;
+}
+function calcHalls(auds){const h=[{name:"Medicamentos vencidos / adulterados",key:"vencidos",cnt:0},{name:"Productos trazables sin informar al SNT",key:"trazabilidad",cnt:0},{name:"Materiales ajenos al sector",key:"materiales",cnt:0},{name:"Luz solar directa sobre medicamentos",key:"luzSolar",cnt:0},{name:"Mezcla de productos incompatibles",key:"mezcla",cnt:0},{name:"Desvíos de temperatura registrados",key:"tempRangos",cnt:0},{name:"Heladeras / alarmas fuera de rango",key:"heladeras",cnt:0}];auds.forEach(a=>{h.forEach(hh=>{const v=(a[hh.key]||'').toLowerCase();if(v==='sí'||v==='si'||v.includes('detectar'))hh.cnt++;});});return h;}
+function getFilter(){return{anio:document.getElementById('selAnio').value,mes:document.getElementById('selMes').value};}
+function filterAudits(){const{anio,mes}=getFilter();return AUDITORIAS.filter(a=>{const mn=normMes(a.mes);if(anio!=='todos'&&String(a.anio)!==anio)return false;if(mes!=='todos'&&mn!==mes)return false;return true;});}
+function applyFilter(){const{anio,mes}=getFilter();const label=anio==='todos'?'Todos los períodos':mes==='todos'?'Todo '+anio:mes+' '+anio;document.getElementById('filterBadge').textContent='📅 '+label;renderResumen();renderAutoinspecciones();}
+
+function renderResumen(){
+  const auds=filterAudits();
+  if(!auds.length){document.getElementById('kpiGrid').innerHTML='<div style="color:var(--muted);padding:32px;grid-column:1/-1;text-align:center">Sin datos para el período seleccionado.</div>';return;}
+  const pg=auds.length>0?auds.reduce((acc,a)=>acc+scoreAudit(a).pct,0)/auds.length:0;const openRnc=RNC_DATA.filter(r=>r.estado==='Abierto').length;
+  document.getElementById('kpiGrid').innerHTML=`<div class="kpi-card" style="--accent-color:var(--accent)"><div class="kpi-icon">📋</div><div class="kpi-val">${auds.length}</div><div class="kpi-label">Auditorías en el período</div></div><div class="kpi-card" style="--accent-color:var(--green)"><div class="kpi-icon">✅</div><div class="kpi-val">${Math.round(pg*100)}%</div><div class="kpi-label">Cumplimiento general</div></div><div class="kpi-card" style="--accent-color:var(--red)"><div class="kpi-icon">⚠️</div><div class="kpi-val">${openRnc}</div><div class="kpi-label">RNC Abiertas hoy</div></div><div class="kpi-card" style="--accent-color:var(--gold)"><div class="kpi-icon">🏢</div><div class="kpi-val">${[...new Set(auds.map(a=>a.suc))].length}</div><div class="kpi-label">Sucursales auditadas</div></div><div class="kpi-card" style="--accent-color:var(--orange)"><div class="kpi-icon">🔴</div><div class="kpi-val">${calcHalls(auds).filter(h=>h.cnt>0).length}</div><div class="kpi-label">Tipos hallazgos críticos</div></div>`;
+  const doms=calcDominios(auds);const tb=document.getElementById('domTbody');tb.innerHTML='';let aE=0,aSi=0;
+  Object.entries(doms).forEach(([nom,d])=>{if(!d.e)return;const score=d.si+d.par*0.5;aE+=d.e;aSi+=score;const p=score/d.e;const col=pctColor(p);tb.innerHTML+=`<tr><td style="font-weight:600">${nom}</td><td style="text-align:center">${d.e}</td><td style="text-align:center;color:var(--green);font-weight:700">${d.si}</td><td style="text-align:center;color:var(--orange);font-weight:700">${d.par}</td><td style="text-align:center;color:var(--red);font-weight:700">${d.no}</td><td><span style="font-weight:700;color:${col}">${Math.round(p*100)}%</span><div class="pct-bar"><div class="pct-fill" style="width:${Math.round(p*100)}%;background:${col}"></div></div></td></tr>`;});
+  const pt=aE>0?aSi/aE:0;tb.innerHTML+=`<tr style="background:var(--surface2)"><td style="font-weight:700;color:var(--accent)">TOTAL</td><td style="text-align:center;font-weight:700">${aE}</td><td style="text-align:center;color:var(--green);font-weight:700">${Math.round(aSi)}</td><td colspan="2"></td><td><span style="font-weight:800;color:${pctColor(pt)};font-size:14px">${Math.round(pt*100)}%</span></td></tr>`;
+  document.getElementById('hallGrid').innerHTML=calcHalls(auds).map(h=>{const pct=auds.length>0?h.cnt/auds.length:0;let cls='badge-ok',icon='✅';if(pct>0.5){cls='badge-hi';icon='🔴';}else if(pct>0){cls='badge-mid';icon='⚠️';}
+  const sucCodes={vencidos:'vencidos',trazabilidad:'trazabilidad',materiales:'materiales',luzSolar:'luzSolar',mezcla:'mezcla',tempRangos:'tempRangos',heladeras:'heladeras'};
+  const afectadas=auds.filter(a=>{const v=(a[h.key]||'').toLowerCase();return v==='sí'||v==='si'||v.includes('detectar');}).map(a=>a.suc==='Córdoba'?'CBA':a.suc==='Río Cuarto'?'RIO4':'VME');
+  const sucLabel=afectadas.length>0?`<div class="hall-sucs">${[...new Set(afectadas)].map(s=>`<span class="suc-chip suc-chip-${s}">${s}</span>`).join('')}</div>`:'';
+  return`<div class="hall-card"><div style="font-size:24px;flex-shrink:0">${icon}</div><div style="flex:1"><div class="hall-name">${h.name}</div><div class="hall-meta">${h.cnt} caso(s) de ${auds.length} auditorías</div>${sucLabel}</div><span class="hall-badge ${cls}">${h.cnt>0?Math.round(pct*100)+'%':'OK'}</span></div>`;}).join('');
+  const sucs=[...new Set(auds.map(a=>a.suc))];
+  document.getElementById('sucGrid').innerHTML=sucs.map(s=>{const sa=auds.filter(a=>a.suc===s);const p=sa.reduce((acc,a)=>acc+scoreAudit(a).pct,0)/sa.length;const col=sucColor(s);const ss=s==='Córdoba'?'CBA':s==='Río Cuarto'?'RIO4':'VME';const rncAbiertas=RNC_DATA.filter(r=>r.suc===ss&&r.estado==='Abierto').length;const rncPeriodo=RNC_DATA.filter(r=>{if(r.suc!==ss)return false;const{anio,mes}=getFilter();if(anio!=='todos'&&String(r.anio)!==anio)return false;if(mes!=='todos'){const mauds=[...new Set(sa.map(a=>normMes(a.mes)))];if(!mauds.includes(normMes(r.mes)))return false;}return true;}).length;return`<div class="suc-card"><div class="suc-head"><div><div class="suc-name" style="color:${col}">${s}</div><div style="font-size:10px;color:var(--muted)">DT: ${sa[0].dt}</div></div><span style="font-size:28px;font-weight:800;font-family:'Rajdhani',sans-serif;color:${pctColor(p)}">${Math.round(p*100)}%</span></div><div class="suc-body"><div class="suc-row"><span class="suc-key">Auditorías en período</span><span class="suc-val">${sa.length}</span></div><div class="suc-row"><span class="suc-key">RNC levantadas en período</span><span class="suc-val" style="color:${rncPeriodo>0?'var(--orange)':'var(--muted)'}">${rncPeriodo}</span></div><div class="suc-row"><span class="suc-key">RNC Abiertas hoy</span><span class="suc-val" style="color:${rncAbiertas>0?'var(--red)':'var(--green)'}">${rncAbiertas}</span></div><div class="suc-row"><span class="suc-key">Cumplimiento</span><span class="suc-val" style="color:${pctColor(p)}">${Math.round(p*100)}%</span></div></div></div>`;}).join('');
+  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const{anio,mes}=getFilter();const anioEv=anio==='todos'?'2026':anio;
+  document.getElementById('evolTbody').innerHTML=meses.map(m=>{const ma=AUDITORIAS.filter(a=>String(a.anio)===anioEv&&normMes(a.mes)===m);if(!ma.length)return`<tr><td style="color:var(--muted)">${m}</td><td style="text-align:center;color:var(--muted)">—</td><td style="text-align:center;color:var(--muted)">—</td><td style="text-align:center;color:var(--muted)">—</td><td style="text-align:center;color:var(--muted)">—</td></tr>`;const p=ma.reduce((acc,a)=>acc+scoreAudit(a).pct,0)/ma.length;const halls=calcHalls(ma).filter(h=>h.cnt>0).length;const rnc=RNC_DATA.filter(r=>r.anio===parseInt(anioEv)&&normMes(r.mes)===m).length;const cur=m===mes&&anio!=='todos';return`<tr class="${cur?'cur-row':''}"><td>${m}${cur?' ◀':''}</td><td style="text-align:center">${ma.length}</td><td style="text-align:center;color:${pctColor(p)};font-weight:600">${Math.round(p*100)}%</td><td style="text-align:center">${rnc}</td><td style="text-align:center;color:${halls>4?'var(--red)':halls>2?'var(--orange)':'var(--green)'}">${halls}</td></tr>`;}).join('');
+}
+
+function renderAutoinspecciones(){
+  const auds=filterAudits();const c=document.getElementById('auditContainer');const e=document.getElementById('auditEmpty');
+  if(!auds.length){c.style.display='none';e.style.display='block';return;}c.style.display='block';e.style.display='none';
+  const byMes={};auds.forEach(a=>{const m=normMes(a.mes);if(!byMes[m])byMes[m]=[];byMes[m].push(a);});
+  c.innerHTML=Object.entries(byMes).map(([mes,mas])=>`<div class="audit-month-section"><div class="audit-month-title">📅 ${mes} ${mas[0].anio}</div><div class="audit-cards-grid">${mas.map(a=>{const s=scoreAudit(a);const col=sucColor(a.suc);return`<div class="audit-card"><div class="audit-card-head"><div><div class="audit-suc" style="color:${col}">${a.suc}</div><div class="audit-dt">DT: ${a.dt}</div></div><span style="font-size:22px;font-weight:800;font-family:'Rajdhani',sans-serif;color:${pctColor(s.pct)}">${Math.round(s.pct*100)}%</span></div><div class="audit-body"><div class="audit-row"><span class="audit-key">Habilitaciones clientes</span><span class="audit-val">${chipVal(a.habilitaciones)}</span></div><div class="audit-row"><span class="audit-key">Devoluciones segregadas</span><span class="audit-val">${chipVal(a.devoluciones)}</span></div><div class="audit-row"><span class="audit-key">Medicamentos vencidos</span><span class="audit-val">${chipVal(a.vencidos)}</span></div><div class="audit-row"><span class="audit-key">Trazabilidad SNT</span><span class="audit-val">${chipVal(a.trazabilidad)}</span></div><div class="audit-row"><span class="audit-key">Limpieza y orden</span><span class="audit-val">${chipVal(a.limpieza)}</span></div><div class="audit-row"><span class="audit-key">Instalaciones edilicias</span><span class="audit-val">${chipVal(a.instalaciones)}</span></div><div class="audit-row"><span class="audit-key">Control de plagas</span><span class="audit-val">${chipVal(a.plagas)}</span></div><div class="audit-row"><span class="audit-key">Monitoreo temperatura</span><span class="audit-val">${chipVal(a.tempMonitoreo)}</span></div><div class="audit-row"><span class="audit-key">Rangos de temperatura</span><span class="audit-val">${chipVal(a.tempRangos)}</span></div><div class="audit-row"><span class="audit-key">Equipos calibrados</span><span class="audit-val">${chipVal(a.equiposCal)}</span></div><div class="audit-row"><span class="audit-key">Mezcla de productos</span><span class="audit-val">${chipVal(a.mezcla)}</span></div><div class="audit-row"><span class="audit-key">Envíos cadena frío validados</span><span class="audit-val">${chipVal(a.enviosValid)}</span></div><div class="audit-row"><span class="audit-key">Transporte</span><span class="audit-val">${chipVal(a.transporte)}</span></div>${a.obs?'<div style="margin-top:8px;padding:8px;background:var(--surface2);border-radius:6px;font-size:10px;color:var(--muted);line-height:1.5;border-left:3px solid '+col+'"><span style="font-weight:700;color:'+col+'">OBS: </span>'+a.obs+'</div>':''}</div></div>`;}).join('')}</div></div>`).join('');
+}
+
+function renderNcOpen(){const open=RNC_DATA.filter(r=>r.estado==='Abierto');document.getElementById('ncAlertTitle').textContent=`⚠ ${open.length} No Conformidad(es) ABIERTA(S) — Acción correctiva pendiente`;document.getElementById('ncOpenTbody').innerHTML=open.map(r=>`<tr class="nc-open"><td style="font-weight:700;color:var(--accent);white-space:nowrap">${r.nro||'—'}</td><td style="white-space:nowrap">${r.anio} / ${normMes(r.mes)}</td><td style="font-weight:600">${r.suc}</td><td style="white-space:nowrap">${r.proceso}</td><td class="nc-desc">${r.desc}</td><td class="imp-${(r.impacto||'').toLowerCase()}">${r.impacto}</td><td>${r.critico==='SI'?'<span class="chip-si2">🔴 SÍ</span>':'<span class="chip-no2">NO</span>'}</td><td style="white-space:nowrap">${r.responsable}</td><td style="white-space:nowrap;color:var(--red);font-weight:600">${r.vence}</td><td>${r.link?`<a href="${r.link}" target="_blank" class="nc-link">📄 Ver</a>`:'—'}</td></tr>`).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--green);padding:24px;font-weight:700">✅ Sin RNC abiertas</td></tr>';}
+function renderNcAll(){const fa=document.getElementById('ncFiltAnio').value,fm=document.getElementById('ncFiltMes').value,fs=document.getElementById('ncFiltSuc').value,fe=document.getElementById('ncFiltEst').value;const f=RNC_DATA.filter(r=>{if(fa!=='todos'&&String(r.anio)!==fa)return false;if(fm!=='todos'&&normMes(r.mes)!==fm)return false;if(fs!=='todos'&&r.suc!==fs)return false;if(fe!=='todos'&&r.estado!==fe)return false;return true;});document.getElementById('ncTbody').innerHTML=f.map(r=>`<tr class="nc-${r.estado==='Abierto'?'open':'closed'}"><td><span class="${r.estado==='Abierto'?'chip-abierto':'chip-cerrado'}">${r.estado}</span></td><td style="font-weight:700;color:var(--accent);white-space:nowrap">${r.nro||'—'}</td><td style="white-space:nowrap">${r.anio} / ${normMes(r.mes)}</td><td style="font-weight:600">${r.suc}</td><td>${r.proceso}</td><td class="nc-desc">${r.desc}</td><td class="imp-${(r.impacto||'').toLowerCase()}">${r.impacto}</td><td>${r.critico==='SI'?'<span class="chip-si2">🔴 SÍ</span>':'<span class="chip-no2">NO</span>'}</td><td style="white-space:nowrap">${r.responsable}</td><td>${r.link?`<a href="${r.link}" target="_blank" class="nc-link">📄 Ver</a>`:'—'}</td></tr>`).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">Sin resultados.</td></tr>';}
+
+function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='noconformidades'){renderNcOpen();renderNcAll();}}
+
+let darkMode=true;
+function toggleTheme(){darkMode=!darkMode;document.documentElement.setAttribute('data-theme',darkMode?'dark':'light');document.getElementById('themeIcon').textContent=darkMode?'☀️':'🌙';document.getElementById('themeLabel').textContent=darkMode?'Modo Claro':'Modo Oscuro';}
+
+document.addEventListener('DOMContentLoaded',()=>{renderResumen();renderAutoinspecciones();});
 </script>
 </body>
 </html>
