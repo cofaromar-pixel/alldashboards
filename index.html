@@ -391,12 +391,316 @@
       margin: 2.5rem 0;
     }
 
+    /* ── PANEL DE LINKS ── */
+    .links-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .links-section-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -.015em;
+      color: var(--text);
+    }
+    .links-section-header p {
+      font-size: .85rem;
+      color: var(--text-muted);
+      margin-top: .2rem;
+    }
+    .links-actions {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .btn-add-link {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: .5rem 1rem;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform .1s;
+    }
+    .btn-add-link:hover { background: var(--accent-h); }
+    .btn-add-link:active { transform: scale(.97); }
+    .btn-links-secondary {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .5rem .9rem;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-links-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* LINKS GRID */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .link-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .link-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--lc-color, var(--accent));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .link-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      border-color: var(--lc-color, var(--accent));
+    }
+    .link-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+    }
+    .link-emoji {
+      font-size: 1.6rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+    .link-card-title {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .link-card-url {
+      font-size: .72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .link-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+    .link-open-btn {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--lc-color, var(--accent));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: .38rem .8rem;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity var(--transition);
+      flex: 1;
+      justify-content: center;
+    }
+    .link-open-btn:hover { opacity: .85; }
+    .link-card-controls {
+      display: flex;
+      gap: .35rem;
+    }
+    .link-ctrl-btn {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all var(--transition);
+    }
+    .link-ctrl-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+    .link-ctrl-btn.del:hover { background: #FEE2E2; color: var(--danger); border-color: var(--danger); }
+
+    /* EMPTY STATE */
+    .links-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+    .links-empty-icon { font-size: 2.5rem; margin-bottom: .75rem; }
+    .links-empty-text { font-size: .9rem; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.45);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 460px;
+      padding: 1.75rem;
+      transform: translateY(12px);
+      transition: transform .2s ease;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; cursor: pointer; color: var(--text-muted);
+      transition: all var(--transition);
+    }
+    .modal-close:hover { background: #FEE2E2; color: var(--danger); border-color: var(--danger); }
+
+    /* EMOJI PICKER */
+    .emoji-field { margin-bottom: 1rem; }
+    .emoji-label { font-size: .8rem; font-weight: 500; color: var(--text-muted); margin-bottom: .4rem; display: block; letter-spacing: .02em; }
+    .emoji-row { display: flex; align-items: center; gap: .75rem; }
+    .emoji-preview {
+      width: 48px; height: 48px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; cursor: pointer;
+      transition: border-color var(--transition);
+      flex-shrink: 0;
+    }
+    .emoji-preview:hover { border-color: var(--accent); }
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .5rem;
+      margin-top: .4rem;
+      display: none;
+    }
+    .emoji-grid.open { display: grid; }
+    .emoji-opt {
+      font-size: 1.3rem;
+      padding: .3rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: background var(--transition);
+    }
+    .emoji-opt:hover { background: var(--accent-light); }
+
+    /* COLOR PICKER */
+    .color-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .35rem; }
+    .color-dot {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: border-color var(--transition), transform .1s;
+    }
+    .color-dot:hover { transform: scale(1.15); }
+    .color-dot.selected { border-color: var(--text); }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: .6rem;
+      margin-top: 1.5rem;
+    }
+    .btn-modal-cancel {
+      padding: .6rem 1.2rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-modal-cancel:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-modal-save {
+      padding: .6rem 1.4rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .btn-modal-save:hover { background: var(--accent-h); }
+
+    /* import hidden input */
+    #import-file-input { display: none; }
+
     /* RESPONSIVE */
     @media (max-width: 600px) {
       .topbar { padding: 0 1rem; }
       .main-content { padding: 1.5rem 1rem; }
       .settings-row { grid-template-columns: 1fr; }
       .topbar-actions .btn-icon span { display: none; }
+      .links-section-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -469,6 +773,32 @@
 
     <hr class="divider" />
 
+    <!-- SECTION: PANEL DE LINKS -->
+    <div class="links-section-header">
+      <div>
+        <h2>Panel de Links</h2>
+        <p>Guardá y accedé rápidamente a tus enlaces de interés.</p>
+      </div>
+      <div class="links-actions">
+        <button class="btn-links-secondary" onclick="exportLinks()" title="Exportar links como JSON">
+          ⬇ Exportar
+        </button>
+        <button class="btn-links-secondary" onclick="document.getElementById('import-file-input').click()" title="Importar links desde JSON">
+          ⬆ Importar
+        </button>
+        <input type="file" id="import-file-input" accept=".json" onchange="importLinks(event)" />
+        <button class="btn-add-link" onclick="openModal()">
+          + Agregar link
+        </button>
+      </div>
+    </div>
+
+    <div class="links-grid" id="links-grid">
+      <!-- Generado por JS -->
+    </div>
+
+    <hr class="divider" />
+
     <!-- SECTION: SETTINGS -->
     <div class="settings-panel">
       <h2>
@@ -531,19 +861,6 @@
       badge: "Stock",
       badgeClass: "badge-green",
       file: "dashboard/stock.html",
-    },
-    {
-      id: "Comparativo de Stock",
-      title: "Análisis comparativo de Stock",
-      dept: "Almacenes · Inventario",
-      icon: "📦",
-      iconBg: "#DCFCE7",
-      owner: "Germán García",
-      initials: "GG",
-      avatarColor: "#16A34A",
-      badge: "Stock",
-      badgeClass: "badge-green",
-      file: "dashboard/stock_comparativo.html",
     },
     // ── AGREGAR NUEVAS TARJETAS AQUÍ ──
     // {
@@ -613,6 +930,8 @@
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
       renderCards();
+      loadLinks();
+      renderLinks();
     } else {
       document.getElementById("login-error").style.display = "block";
     }
@@ -684,7 +1003,285 @@
     }
   });
 
+  /* ─── PANEL DE LINKS ─── */
+  const LINK_COLORS = [
+    "#2563EB","#7C3AED","#DB2777","#DC2626",
+    "#D97706","#16A34A","#0891B2","#475569",
+  ];
+
+  const EMOJI_LIST = [
+    "🔗","📌","📎","🌐","📊","📋","📁","📂",
+    "⭐","🏷️","🔍","📝","💼","📈","📉","💡",
+    "🔔","📣","🗂️","📅","✅","⚙️","🛠️","🔒",
+    "🏠","🚀","📧","💬","🖨️","💾","🖥️","📱",
+    "🎯","📦","🧾","🧮","🗃️","🔑","📐","🧩",
+  ];
+
+  let linksData = [];
+  let editingId  = null;
+  let selectedEmoji = "🔗";
+  let selectedColor = LINK_COLORS[0];
+
+  function loadLinks() {
+    try { linksData = JSON.parse(localStorage.getItem("adb_links") || "[]"); }
+    catch { linksData = []; }
+  }
+
+  function saveLinksStorage() {
+    localStorage.setItem("adb_links", JSON.stringify(linksData));
+  }
+
+  function renderLinks() {
+    const grid = document.getElementById("links-grid");
+    if (!linksData.length) {
+      grid.innerHTML = `
+        <div class="links-empty">
+          <div class="links-empty-icon">🔗</div>
+          <div class="links-empty-text">Todavía no hay links guardados.<br>Hacé clic en <strong>+ Agregar link</strong> para comenzar.</div>
+        </div>`;
+      return;
+    }
+    grid.innerHTML = linksData.map(l => {
+      const safeTitle = escHtml(l.title);
+      const safeUrl   = escHtml(l.url);
+      const dispUrl   = l.url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+      return `
+      <div class="link-card" style="--lc-color:${l.color}">
+        <div class="link-card-top">
+          <span class="link-emoji">${l.emoji}</span>
+          <div style="min-width:0">
+            <div class="link-card-title">${safeTitle}</div>
+            <div class="link-card-url" title="${safeUrl}">${escHtml(dispUrl)}</div>
+          </div>
+        </div>
+        <div class="link-card-footer">
+          <a class="link-open-btn" href="${safeUrl}" target="_blank" rel="noopener">
+            Abrir ↗
+          </a>
+          <div class="link-card-controls">
+            <button class="link-ctrl-btn" onclick="editLink('${l.id}')" title="Editar">✏️</button>
+            <button class="link-ctrl-btn del" onclick="deleteLink('${l.id}')" title="Eliminar">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  /* ── MODAL ── */
+  function buildEmojiGrid() {
+    const grid = document.getElementById("emoji-grid");
+    grid.innerHTML = EMOJI_LIST.map(e =>
+      `<div class="emoji-opt" onclick="pickEmoji('${e}')">${e}</div>`
+    ).join("");
+  }
+
+  function buildColorRow() {
+    const row = document.getElementById("color-row");
+    row.innerHTML = LINK_COLORS.map(c =>
+      `<div class="color-dot ${c === selectedColor ? 'selected' : ''}"
+            style="background:${c}"
+            onclick="pickColor('${c}')"></div>`
+    ).join("");
+  }
+
+  function toggleEmojiGrid() {
+    document.getElementById("emoji-grid").classList.toggle("open");
+  }
+
+  function pickEmoji(e) {
+    selectedEmoji = e;
+    document.getElementById("emoji-preview").textContent = e;
+    document.getElementById("emoji-custom").value = "";
+    document.getElementById("emoji-grid").classList.remove("open");
+  }
+
+  function onCustomEmojiInput() {
+    const v = document.getElementById("emoji-custom").value.trim();
+    if (v) {
+      selectedEmoji = v;
+      document.getElementById("emoji-preview").textContent = v;
+    }
+  }
+
+  function pickColor(c) {
+    selectedColor = c;
+    buildColorRow();
+  }
+
+  function openModal(prefill = null) {
+    editingId = prefill ? prefill.id : null;
+    selectedEmoji = prefill ? prefill.emoji : "🔗";
+    selectedColor = prefill ? prefill.color : LINK_COLORS[0];
+
+    document.getElementById("modal-title").textContent = prefill ? "Editar link" : "Agregar link";
+    document.getElementById("emoji-preview").textContent = selectedEmoji;
+    document.getElementById("emoji-custom").value = "";
+    document.getElementById("link-title").value = prefill ? prefill.title : "";
+    document.getElementById("link-url").value   = prefill ? prefill.url   : "";
+    document.getElementById("modal-error").style.display = "none";
+    document.getElementById("emoji-grid").classList.remove("open");
+
+    buildEmojiGrid();
+    buildColorRow();
+
+    document.getElementById("link-modal").classList.add("open");
+  }
+
+  function closeModal() {
+    document.getElementById("link-modal").classList.remove("open");
+    editingId = null;
+  }
+
+  function handleModalOverlayClick(e) {
+    if (e.target === document.getElementById("link-modal")) closeModal();
+  }
+
+  function saveLink() {
+    const title = document.getElementById("link-title").value.trim();
+    let   url   = document.getElementById("link-url").value.trim();
+    const errEl = document.getElementById("modal-error");
+    errEl.style.display = "none";
+
+    if (!title) { errEl.textContent = "El título es obligatorio."; errEl.style.display = "block"; return; }
+    if (!url)   { errEl.textContent = "La URL es obligatoria.";   errEl.style.display = "block"; return; }
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+
+    if (editingId) {
+      const idx = linksData.findIndex(l => l.id === editingId);
+      if (idx > -1) {
+        linksData[idx] = { ...linksData[idx], title, url, emoji: selectedEmoji, color: selectedColor };
+      }
+    } else {
+      linksData.push({
+        id: "lnk_" + Date.now(),
+        title, url,
+        emoji: selectedEmoji,
+        color: selectedColor,
+        createdAt: new Date().toISOString(),
+      });
+    }
+
+    saveLinksStorage();
+    renderLinks();
+    closeModal();
+  }
+
+  function editLink(id) {
+    const link = linksData.find(l => l.id === id);
+    if (link) openModal(link);
+  }
+
+  function deleteLink(id) {
+    if (!confirm("¿Eliminar este link?")) return;
+    linksData = linksData.filter(l => l.id !== id);
+    saveLinksStorage();
+    renderLinks();
+  }
+
+  /* ── EXPORT / IMPORT ── */
+  function exportLinks() {
+    if (!linksData.length) { alert("No hay links para exportar."); return; }
+    const blob = new Blob([JSON.stringify(linksData, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url;
+    a.download = `alldashboards-links-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importLinks(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!Array.isArray(imported)) throw new Error();
+        const valid = imported.filter(l => l.id && l.title && l.url);
+        // Merge: add only those not already present by id
+        const existingIds = new Set(linksData.map(l => l.id));
+        const newOnes = valid.filter(l => !existingIds.has(l.id));
+        linksData = [...linksData, ...newOnes];
+        saveLinksStorage();
+        renderLinks();
+        alert(`✔ Importación exitosa: ${newOnes.length} link(s) agregado(s).`);
+      } catch {
+        alert("❌ El archivo no tiene un formato válido.");
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  }
+
+  /* ─── UPDATE renderCards to also load links ─── */
+  const _origRenderCards = renderCards;
+
   initTheme();
 </script>
+<!-- ═══════════════ MODAL AGREGAR/EDITAR LINK ═══════════════ -->
+<div class="modal-overlay" id="link-modal" onclick="handleModalOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Agregar link</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- EMOJI -->
+    <div class="emoji-field">
+      <span class="emoji-label">Emoji</span>
+      <div class="emoji-row">
+        <div class="emoji-preview" id="emoji-preview" onclick="toggleEmojiGrid()">🔗</div>
+        <div style="flex:1">
+          <div style="font-size:.78rem;color:var(--text-muted);line-height:1.5">
+            Hacé clic en el emoji para elegir uno del panel,<br>o escribí uno directamente a continuación.
+          </div>
+          <input type="text" id="emoji-custom" placeholder="📌 escribí un emoji"
+            style="margin-top:.4rem;width:100%;padding:.4rem .7rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-alt);color:var(--text);font-size:1.1rem;outline:none;"
+            oninput="onCustomEmojiInput()" />
+        </div>
+      </div>
+      <div class="emoji-grid" id="emoji-grid">
+        <!-- Generado por JS -->
+      </div>
+    </div>
+
+    <!-- TÍTULO -->
+    <div class="field">
+      <label for="link-title">Título</label>
+      <input type="text" id="link-title" placeholder="Ej: Portal ANMAT" maxlength="60" />
+    </div>
+
+    <!-- URL -->
+    <div class="field">
+      <label for="link-url">URL</label>
+      <input type="url" id="link-url" placeholder="https://..." />
+    </div>
+
+    <!-- COLOR -->
+    <div class="field">
+      <label>Color de acento</label>
+      <div class="color-row" id="color-row">
+        <!-- Generado por JS -->
+      </div>
+    </div>
+
+    <div id="modal-error" style="font-size:.82rem;color:var(--danger);margin-top:.25rem;display:none;"></div>
+
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-modal-save" onclick="saveLink()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
