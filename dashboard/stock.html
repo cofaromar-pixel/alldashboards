@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Stock · Alldashboards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8FAFC; --surface: #FFFFFF; --surface-alt: #F1F5F9;
+      --border: #E2E8F0; --text: #0F172A; --text-muted: #64748B;
+      --accent: #16A34A; --accent-light: #DCFCE7;
+      --blue: #2563EB; --blue-light: #DBEAFE;
+      --red: #DC2626; --red-light: #FEE2E2;
+      --amber: #D97706; --amber-light: #FEF9C3;
+      --shadow: 0 1px 3px rgba(0,0,0,.08); --radius: 12px; --radius-sm: 8px;
+    }
+    [data-theme="dark"] {
+      --bg: #0F172A; --surface: #1E293B; --surface-alt: #263348;
+      --border: #334155; --text: #F1F5F9; --text-muted: #94A3B8;
+      --accent: #4ADE80; --accent-light: #14532D;
+      --blue-light: #1E3A5F; --red-light: #7F1D1D; --amber-light: #451A03;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 2rem; height: 60px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 50;
+      box-shadow: var(--shadow);
+    }
+    .topbar-left { display: flex; align-items: center; gap: .75rem; }
+    .back-link {
+      font-size: .8rem; font-weight: 500; color: var(--text-muted);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: .35rem .75rem; cursor: pointer; background: var(--surface-alt);
+      text-decoration: none; transition: all .2s;
+    }
+    .back-link:hover { color: var(--accent); border-color: var(--accent); }
+    .badge-owner {
+      background: var(--accent-light); color: var(--accent);
+      font-size: .72rem; font-weight: 600; padding: .2rem .6rem;
+      border-radius: 99px; letter-spacing: .02em;
+    }
+    .btn-theme {
+      background: var(--surface-alt); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: .35rem .65rem;
+      font-size: .8rem; cursor: pointer; color: var(--text-muted); transition: all .2s;
+    }
+    .content { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+    .kpi-label { font-size: .75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .5rem; }
+    .kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: .35rem; }
+    .kpi-sub { font-size: .78rem; color: var(--text-muted); }
+    .kpi-green .kpi-value { color: var(--accent); }
+    .kpi-red .kpi-value { color: var(--red); }
+    .kpi-blue .kpi-value { color: var(--blue); }
+    .kpi-amber .kpi-value { color: var(--amber); }
+
+    .section-title {
+      font-size: .82rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 1rem; margin-top: 2rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    thead th { background: var(--surface-alt); padding: .75rem 1rem; text-align: left; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    tbody td { padding: .75rem 1rem; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--surface-alt); }
+    .chip { display: inline-block; font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 99px; }
+    .chip-green { background: var(--accent-light); color: var(--accent); }
+    .chip-amber { background: var(--amber-light); color: var(--amber); }
+    .chip-red { background: var(--red-light); color: var(--red); }
+    .chip-blue { background: var(--blue-light); color: var(--blue); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+    .alert-box {
+      border: 1px solid; border-radius: var(--radius-sm); padding: 1rem;
+      margin-bottom: .75rem; display: flex; gap: .75rem; align-items: flex-start;
+    }
+    .alert-red { background: var(--red-light); border-color: var(--red); }
+    .alert-amber { background: var(--amber-light); border-color: var(--amber); }
+    .alert-green { background: var(--accent-light); border-color: var(--accent); }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+    .alert-text { font-size: .84rem; line-height: 1.5; }
+    .alert-text strong { font-weight: 600; }
+
+    .prog-bar { height: 8px; background: var(--surface-alt); border-radius: 99px; overflow: hidden; margin-top: .4rem; }
+    .prog-fill { height: 100%; border-radius: 99px; }
+
+    @media (max-width: 700px) {
+      .two-col { grid-template-columns: 1fr; }
+      .topbar { padding: 0 1rem; }
+      .content { padding: 1.25rem 1rem; }
+    }
+    .update-note { font-size: .78rem; color: var(--text-muted); margin-top: 2.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="back-link">← Inicio</a>
+    <div>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <h1 style="font-size:1rem;font-weight:700;">Dashboard de Stock</h1>
+        <span class="badge-owner">Germán García</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <span style="font-size:.8rem;color:var(--text-muted)" id="dash-date"></span>
+    <button class="btn-theme" onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
+
+<main class="content">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-label">Ítems en sistema</div>
+      <div class="kpi-value">3.842</div>
+      <div class="kpi-sub">WMS SGL activo</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-label">Exactitud inventario</div>
+      <div class="kpi-value">97.3%</div>
+      <div class="kpi-sub">↑ +1.1% vs mes ant.</div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-label">Diferencias detectadas</div>
+      <div class="kpi-value">104</div>
+      <div class="kpi-sub">Faltantes + sobrantes</div>
+    </div>
+    <div class="kpi-card kpi-red">
+      <div class="kpi-label">SKU con quiebre</div>
+      <div class="kpi-value">18</div>
+      <div class="kpi-sub">Requieren reposición</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-label">Valor total stock</div>
+      <div class="kpi-value" style="font-size:1.4rem;">$142M</div>
+      <div class="kpi-sub">Pesos argentinos</div>
+    </div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div class="section-title">Alertas de inventario</div>
+  <div class="alert-box alert-red">
+    <span class="alert-icon">🔴</span>
+    <div class="alert-text"><strong>Quiebre crítico:</strong> 6 SKUs clasificación A sin stock disponible. Afecta entrega inmediata.</div>
+  </div>
+  <div class="alert-box alert-amber">
+    <span class="alert-icon">🟡</span>
+    <div class="alert-text"><strong>Stock mínimo:</strong> 12 SKUs por debajo del punto de reorden. Programar compra en los próximos 5 días hábiles.</div>
+  </div>
+  <div class="alert-box alert-green">
+    <span class="alert-icon">🟢</span>
+    <div class="alert-text"><strong>Reconciliación SGL:</strong> Proceso completado. Diferencia neta: $2.4M entre sistema legado y WMS.</div>
+  </div>
+
+  <!-- DOS COLUMNAS -->
+  <div class="two-col">
+    <div>
+      <div class="section-title">Exactitud por sucursal</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sucursal</th><th>Exactitud</th><th>Dif.</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>📍 Córdoba (CBA)</td>
+              <td>
+                <strong style="color:var(--accent)">98.1%</strong>
+                <div class="prog-bar"><div class="prog-fill" style="width:98.1%;background:var(--accent)"></div></div>
+              </td>
+              <td><span class="chip chip-green">+0.8%</span></td>
+            </tr>
+            <tr>
+              <td>📍 Río Cuarto (RIO4)</td>
+              <td>
+                <strong style="color:var(--blue)">96.5%</strong>
+                <div class="prog-bar"><div class="prog-fill" style="width:96.5%;background:var(--blue)"></div></div>
+              </td>
+              <td><span class="chip chip-green">+1.2%</span></td>
+            </tr>
+            <tr>
+              <td>📍 Villa Mercedes (VME)</td>
+              <td>
+                <strong style="color:var(--amber)">94.8%</strong>
+                <div class="prog-bar"><div class="prog-fill" style="width:94.8%;background:var(--amber)"></div></div>
+              </td>
+              <td><span class="chip chip-amber">-0.3%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Clasificación ABC</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Clase</th><th>SKUs</th><th>% Valor</th><th>Exactitud</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip chip-red">A</span></td><td>384</td><td>70%</td><td style="color:var(--accent)">98.5%</td></tr>
+            <tr><td><span class="chip chip-amber">B</span></td><td>768</td><td>20%</td><td style="color:var(--amber)">96.1%</td></tr>
+            <tr><td><span class="chip chip-blue">C</span></td><td>2.690</td><td>10%</td><td style="color:var(--text-muted)">91.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOVIMIENTOS DEL MES -->
+  <div class="section-title">Top movimientos del mes</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Descripción</th>
+          <th>Sucursal</th>
+          <th>Mov. Entrada</th>
+          <th>Mov. Salida</th>
+          <th>Stock actual</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>AMX-001</td><td>Amoxicilina 500mg x 12</td><td>CBA</td><td>1.200</td><td>980</td><td>420</td><td><span class="chip chip-green">Normal</span></td></tr>
+        <tr><td>IBU-022</td><td>Ibuprofeno 400mg x 20</td><td>RIO4</td><td>800</td><td>760</td><td>85</td><td><span class="chip chip-amber">Bajo</span></td></tr>
+        <tr><td>MET-045</td><td>Metformina 850mg x 30</td><td>VME</td><td>600</td><td>612</td><td>0</td><td><span class="chip chip-red">Quiebre</span></td></tr>
+        <tr><td>ATO-088</td><td>Atorvastatina 20mg x 30</td><td>CBA</td><td>500</td><td>490</td><td>210</td><td><span class="chip chip-green">Normal</span></td></tr>
+        <tr><td>OML-103</td><td>Omeprazol 20mg x 14</td><td>RIO4</td><td>900</td><td>870</td><td>142</td><td><span class="chip chip-green">Normal</span></td></tr>
+        <tr><td>LOS-217</td><td>Losartán 50mg x 30</td><td>VME</td><td>400</td><td>398</td><td>12</td><td><span class="chip chip-red">Crítico</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="update-note">📦 Datos actualizados por <strong>Germán García</strong> · Almacenes e Inventario · COFARSUR S.A. — <span id="update-date"></span></p>
+</main>
+
+<script>
+  const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  const d = new Date();
+  document.getElementById("dash-date").textContent = `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById("update-date").textContent = d.toLocaleDateString("es-AR");
+
+  function toggleTheme() {
+    const el = document.documentElement;
+    const next = el.getAttribute("data-theme") === "light" ? "dark" : "light";
+    el.setAttribute("data-theme", next);
+    document.querySelector(".btn-theme").textContent = next === "light" ? "🌙" : "☀️";
+  }
+
+  const saved = localStorage.getItem("adb_theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+  document.querySelector(".btn-theme").textContent = saved === "light" ? "🌙" : "☀️";
+</script>
+</body>
+</html>
