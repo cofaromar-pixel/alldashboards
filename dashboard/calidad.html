@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -119,7 +119,7 @@ header{background:var(--header-bg);border-bottom:2px solid var(--accent2);paddin
 @media(max-width:768px){.header-inner{flex-direction:column;align-items:flex-start;}.kpi-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
-<body data-theme="dark">
+<body>
 
 <header>
   <div class="header-inner">
@@ -133,9 +133,10 @@ header{background:var(--header-bg);border-bottom:2px solid var(--accent2);paddin
     <div class="header-btns">
       <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/175894/20180124" target="_blank" class="hbtn hbtn-outline">📄 Disp. 2069/2018</a>
       <a href="https://cofarsursacif.sharepoint.com/:f:/s/Calidad/IgBV0j66ysV1RpTaVczgPd7SAS3ioEBgfhrM03cPsjdElUg?e=QUQF9C" target="_blank" class="hbtn hbtn-outline">⚠️ No Conformidades</a>
+      <a href="https://cofarsursacif-my.sharepoint.com/:l:/g/personal/omarpereyra_cofarsur_com/JACU0aobhlx7T46Y4JqH5TjEAd74IMxjTfS62qlrsg2OqNQ?e=yXCraj" target="_blank" class="hbtn hbtn-outline">📌 Seguimiento de NC</a>
       <a href="https://cofarsursacif.sharepoint.com/:f:/s/Calidad/IgBEeVHNXeQjSI-AWRW4iMPmAe_RUXbTeSE68c0tIkn6UJE?e=FP7fTL" target="_blank" class="hbtn hbtn-outline">📋 Informes de la DT</a>
       <button onclick="toggleTheme()" class="theme-toggle" id="themeBtn">
-        <span id="themeIcon">☀️</span><span id="themeLabel">Modo Claro</span>
+        <span id="themeIcon">🌙</span><span id="themeLabel">Modo Oscuro</span>
       </button>
     </div>
   </div>
@@ -329,7 +330,8 @@ const RNC_DATA=[
   {anio:2026,mes:"Abril",suc:"RIO4",proceso:"Transporte",desc:"Vacunas PAMI con cadena de frío dejadas en farmacia cerrada. Cadena de frío rota. Vacunas enviadas a destrucción.",impacto:"GRAVE",critico:"SI",responsable:"Allione Lucas",vence:"06/05/2026",estado:"Abierto",nro:"R-26-04-001",link:""},
   {anio:2026,mes:"Abril",suc:"RIO4",proceso:"Almacenamiento",desc:"Falta de orden y mezcla de productos de diferentes categorías en depósito de medicamentos.",impacto:"LEVE",critico:"NO",responsable:"Allione Lucas",vence:"06/05/2026",estado:"Abierto",nro:"R-26-04-002",link:""},
   {anio:2026,mes:"Abril",suc:"CBA",proceso:"Almacenamiento",desc:"Mezcla de productos Sector Balda 41 señalizado Medicamentos (cosméticos, suplementos, PM).",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"30/07/2026",estado:"Abierto",nro:"C-26-04-001",link:""},
-  {anio:2026,mes:"Mayo",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Fentanilo Larjan y Remifentanilo IMA (Estupefacientes Lista I) sin sector asignado y fuera de la jaula.",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"30/06/2026",estado:"Abierto",nro:"C-26-05-002",link:""}
+  {anio:2026,mes:"Mayo",suc:"CBA",proceso:"Producto Sujeto Control",desc:"Fentanilo Larjan y Remifentanilo IMA (Estupefacientes Lista I) sin sector asignado y fuera de la jaula.",impacto:"MODERADO",critico:"NO",responsable:"Carrera Daniel",vence:"30/06/2026",estado:"Abierto",nro:"C-26-05-002",link:""},
+  {anio:2026,mes:"Mayo",suc:"CBA",proceso:"Mezcla / Segregación",desc:"Mezcla de productos en sector Farmacopea. Cosméticos en contacto con piso (B06-B36). Segregación insuficiente de categorías incompatibles.",impacto:"LEVE",critico:"NO",responsable:"Carrera Daniel",vence:"30/06/2026",estado:"Abierto",nro:"C-26-05-001",link:""}
 ];
 
 const MES_NORM={Enero:"Enero",Febrero:"Febrero",Marzo:"Marzo",Abril:"Abril",Mayo:"Mayo",Junio:"Junio",Julio:"Julio",Agosto:"Agosto",Septiembre:"Septiembre",Octubre:"Octubre",Noviembre:"Noviembre",Diciembre:"Diciembre",ENERO:"Enero",FEBRERO:"Febrero",MARZO:"Marzo",ABRIL:"Abril",MAYO:"Mayo"};
@@ -381,7 +383,9 @@ function renderResumen(){
   const auds=filterAudits();
   if(!auds.length){document.getElementById('kpiGrid').innerHTML='<div style="color:var(--muted);padding:32px;grid-column:1/-1;text-align:center">Sin datos para el período seleccionado.</div>';return;}
   const pg=auds.length>0?auds.reduce((acc,a)=>acc+scoreAudit(a).pct,0)/auds.length:0;const openRnc=RNC_DATA.filter(r=>r.estado==='Abierto').length;
-  document.getElementById('kpiGrid').innerHTML=`<div class="kpi-card" style="--accent-color:var(--accent)"><div class="kpi-icon">📋</div><div class="kpi-val">${auds.length}</div><div class="kpi-label">Auditorías en el período</div></div><div class="kpi-card" style="--accent-color:var(--green)"><div class="kpi-icon">✅</div><div class="kpi-val">${Math.round(pg*100)}%</div><div class="kpi-label">Cumplimiento general</div></div><div class="kpi-card" style="--accent-color:var(--red)"><div class="kpi-icon">⚠️</div><div class="kpi-val">${openRnc}</div><div class="kpi-label">RNC Abiertas hoy</div></div><div class="kpi-card" style="--accent-color:var(--gold)"><div class="kpi-icon">🏢</div><div class="kpi-val">${[...new Set(auds.map(a=>a.suc))].length}</div><div class="kpi-label">Sucursales auditadas</div></div><div class="kpi-card" style="--accent-color:var(--orange)"><div class="kpi-icon">🔴</div><div class="kpi-val">${calcHalls(auds).filter(h=>h.cnt>0).length}</div><div class="kpi-label">Tipos hallazgos críticos</div></div>`;
+  const{anio:kpiAnio,mes:kpiMes}=getFilter();
+  const rncPeriodo=RNC_DATA.filter(r=>{if(kpiAnio!=='todos'&&String(r.anio)!==kpiAnio)return false;if(kpiMes!=='todos'&&normMes(r.mes)!==normMes(kpiMes))return false;return true;}).length;
+  document.getElementById('kpiGrid').innerHTML=`<div class="kpi-card" style="--accent-color:var(--accent)"><div class="kpi-icon">📋</div><div class="kpi-val">${auds.length}</div><div class="kpi-label">Auditorías en el período</div></div><div class="kpi-card" style="--accent-color:var(--green)"><div class="kpi-icon">✅</div><div class="kpi-val">${Math.round(pg*100)}%</div><div class="kpi-label">Cumplimiento general</div></div><div class="kpi-card" style="--accent-color:var(--red)"><div class="kpi-icon">⚠️</div><div class="kpi-val">${openRnc}</div><div class="kpi-label">RNC Abiertas hoy</div></div><div class="kpi-card" style="--accent-color:var(--orange)"><div class="kpi-icon">📝</div><div class="kpi-val">${rncPeriodo}</div><div class="kpi-label">RNC levantadas en período</div></div><div class="kpi-card" style="--accent-color:var(--gold)"><div class="kpi-icon">🏢</div><div class="kpi-val">${[...new Set(auds.map(a=>a.suc))].length}</div><div class="kpi-label">Sucursales auditadas</div></div><div class="kpi-card" style="--accent-color:var(--orange)"><div class="kpi-icon">🔴</div><div class="kpi-val">${calcHalls(auds).filter(h=>h.cnt>0).length}</div><div class="kpi-label">Tipos hallazgos críticos</div></div>`;
   const doms=calcDominios(auds);const tb=document.getElementById('domTbody');tb.innerHTML='';let aE=0,aSi=0;
   Object.entries(doms).forEach(([nom,d])=>{if(!d.e)return;const score=d.si+d.par*0.5;aE+=d.e;aSi+=score;const p=score/d.e;const col=pctColor(p);tb.innerHTML+=`<tr><td style="font-weight:600">${nom}</td><td style="text-align:center">${d.e}</td><td style="text-align:center;color:var(--green);font-weight:700">${d.si}</td><td style="text-align:center;color:var(--orange);font-weight:700">${d.par}</td><td style="text-align:center;color:var(--red);font-weight:700">${d.no}</td><td><span style="font-weight:700;color:${col}">${Math.round(p*100)}%</span><div class="pct-bar"><div class="pct-fill" style="width:${Math.round(p*100)}%;background:${col}"></div></div></td></tr>`;});
   const pt=aE>0?aSi/aE:0;tb.innerHTML+=`<tr style="background:var(--surface2)"><td style="font-weight:700;color:var(--accent)">TOTAL</td><td style="text-align:center;font-weight:700">${aE}</td><td style="text-align:center;color:var(--green);font-weight:700">${Math.round(aSi)}</td><td colspan="2"></td><td><span style="font-weight:800;color:${pctColor(pt)};font-size:14px">${Math.round(pt*100)}%</span></td></tr>`;
@@ -409,7 +413,7 @@ function renderNcAll(){const fa=document.getElementById('ncFiltAnio').value,fm=d
 
 function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='noconformidades'){renderNcOpen();renderNcAll();}}
 
-let darkMode=true;
+let darkMode=false;
 function toggleTheme(){darkMode=!darkMode;document.documentElement.setAttribute('data-theme',darkMode?'dark':'light');document.getElementById('themeIcon').textContent=darkMode?'☀️':'🌙';document.getElementById('themeLabel').textContent=darkMode?'Modo Claro':'Modo Oscuro';}
 
 document.addEventListener('DOMContentLoaded',()=>{renderResumen();renderAutoinspecciones();});
