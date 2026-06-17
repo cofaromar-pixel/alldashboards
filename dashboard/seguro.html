@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard RMG – Sancor Seguros | COFARSUR</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══ MODO CLARO — estilo calidad.html: fondo crema, texto oscuro, acentos institucionales ══ */
+  [data-theme="light"] {
+    --bg: #F4F4F0;
+    --bg2: #EAEAE6;
+    --card: #FFFFFF;
+    --card2: #F8F8F4;
+    --border: #D8D7D0;
+    --border2: #B0AFA8;
+    --magenta: #C0143C;
+    --green: #2E7D32;
+    --red: #C62828;
+    --cyan: #1565C0;
+    --amber: #E65100;
+    --yellow: #F57F17;
+    --white: #1A1A1A;
+    --muted: #7A7A72;
+    --bar30: linear-gradient(90deg,#E65100,#BF360C);
+    --bar60: linear-gradient(90deg,#C0143C,#880E2E);
+    --bar90: linear-gradient(90deg,#1565C0,#0D47A1);
+    --nav-bg: #FFFFFF;
+    --nav-border: #D8D7D0;
+    --table-row-border: #EAEAE4;
+    --table-hover: #F0F0EC;
+    --gantt-today: rgba(21,101,192,.07);
+    --gantt-th-border: #D0D0C8;
+    --progress-bg: #DEDED8;
+    --save-bg: #E8F5E9;
+    --belt-card-bg: #F4F4F0;
+    --belt-obs-bg: #E8F5E9;
+    --belt-obs-color: #1B5E20;
+    --belt-alerta-bg: #FFF8E1;
+    --belt-alerta-color: #5D4037;
+    --belt-alerta-border: #FFE082;
+    --input-bg: #FFFFFF;
+    --input-border: #C0BFB8;
+    --font: 'IBM Plex Sans', sans-serif;
+    --head: 'IBM Plex Sans', sans-serif;
+    --head-w: 700;
+    --logo-shadow: none;
+    --nav-active-text: #FFFFFF;
+    --card-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  /* ══ MODO OSCURO — RETRO-TERMINAL NEON ══ */
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg2: #0f0f0f;
+    --card: #111111;
+    --card2: #0d0d0d;
+    --border: #1a3a2a;
+    --border2: #2a2a2a;
+    --magenta: #ff2d9b;
+    --green: #00ff88;
+    --red: #ff3333;
+    --cyan: #00cfff;
+    --amber: #e8632a;
+    --yellow: #ffd700;
+    --white: #e8e8e8;
+    --muted: #666666;
+    --bar30: linear-gradient(90deg,#e8632a,#a04010);
+    --bar60: linear-gradient(90deg,#ff2d9b,#a01060);
+    --bar90: linear-gradient(90deg,#00cfff,#007090);
+    --nav-bg: #050505;
+    --nav-border: #ff2d9b;
+    --table-row-border: #1a1a1a;
+    --table-hover: #141414;
+    --gantt-today: rgba(0,255,136,.08);
+    --gantt-th-border: #1a3a2a;
+    --progress-bg: #1a1a1a;
+    --save-bg: #0a1a0a;
+    --belt-card-bg: #0d0d0d;
+    --belt-obs-bg: #0d0d0d;
+    --belt-obs-color: #e8e8e8;
+    --belt-alerta-bg: #1a1500;
+    --belt-alerta-color: #ffd700;
+    --belt-alerta-border: #3a3000;
+    --input-bg: #0a0a0a;
+    --input-border: #2a2a2a;
+    --font: 'Share Tech Mono', monospace;
+    --head: 'Orbitron', monospace;
+    --head-w: 400;
+    --logo-shadow: 0 0 10px #ff2d9b;
+    --nav-active-text: #000000;
+    --card-shadow: none;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 1.5;
+    transition: background .25s, color .25s;
+  }
+
+  /* NAV */
+  nav { background: var(--nav-bg); border-bottom: 1px solid var(--nav-border); padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; transition: background .25s, border-color .25s; }
+  nav .logo { font-family: var(--head); font-weight: var(--head-w); font-size: 14px; color: var(--magenta); text-shadow: var(--logo-shadow); letter-spacing: 2px; white-space: nowrap; }
+  nav .subt { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  nav .spacer { flex: 1; }
+  nav .nav-btn { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font); font-size: 11px; padding: 4px 11px; border-radius: 20px; cursor: pointer; transition: all .2s; white-space: nowrap; font-weight: 500; }
+  nav .nav-btn:hover, nav .nav-btn.active { background: var(--cyan); color: var(--nav-active-text); }
+  [data-theme="dark"] nav .nav-btn:hover, [data-theme="dark"] nav .nav-btn.active { box-shadow: 0 0 10px var(--cyan); }
+  .theme-toggle { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all .2s; white-space: nowrap; }
+  .theme-toggle:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* TABS */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* HERO */
+  .hero { padding: 20px 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); padding: 14px 16px; box-shadow: var(--card-shadow); transition: background .25s, border-color .25s; }
+  .kpi .lbl { font-size: 10px; color: var(--amber); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .kpi .val { font-family: var(--head); font-weight: var(--head-w); font-size: 32px; line-height: 1.1; margin-top: 4px; }
+  .kpi .sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .kpi.c-m .val { color: var(--magenta); }
+  .kpi.c-g .val { color: var(--green); }
+  .kpi.c-r .val { color: var(--red); }
+  .kpi.c-c .val { color: var(--cyan); }
+  .kpi.c-a .val { color: var(--amber); }
+  [data-theme="dark"] .kpi.c-m .val { text-shadow: 0 0 12px var(--magenta); }
+  [data-theme="dark"] .kpi.c-g .val { text-shadow: 0 0 12px var(--green); }
+  [data-theme="dark"] .kpi.c-r .val { text-shadow: 0 0 10px var(--red); }
+  [data-theme="dark"] .kpi.c-c .val { text-shadow: 0 0 10px var(--cyan); }
+  [data-theme="dark"] .kpi.c-a .val { text-shadow: 0 0 10px var(--amber); }
+
+  /* SECTION */
+  .section { padding: 18px 20px; }
+  .section-title { font-family: var(--head); font-weight: var(--head-w); font-size: 11px; letter-spacing: 3px; color: var(--magenta); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: '▶'; font-size: 8px; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--card-shadow); transition: background .25s, border-color .25s; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+  .card-title { font-family: var(--head); font-weight: var(--head-w); font-size: 11px; letter-spacing: 2px; color: var(--cyan); }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 10px; letter-spacing: 1px; font-weight: 600; }
+  .badge-red { border: 1px solid var(--red); color: var(--red); }
+  .badge-amber { border: 1px solid var(--amber); color: var(--amber); }
+  .badge-green { border: 1px solid var(--green); color: var(--green); }
+  .badge-cyan { border: 1px solid var(--cyan); color: var(--cyan); }
+
+  /* GANTT */
+  .gantt-wrap { overflow-x: auto; }
+  .gantt-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+  .gantt-table th { font-size: 9px; color: var(--amber); letter-spacing: 1px; text-transform: uppercase; padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--gantt-th-border); white-space: nowrap; font-weight: 700; }
+  .gantt-table td { padding: 5px 4px; border-bottom: 1px solid var(--table-row-border); vertical-align: middle; }
+  .gantt-table .row-label { font-size: 10px; color: var(--white); white-space: nowrap; padding-right: 12px; min-width: 220px; }
+  .gantt-table .row-suc { font-size: 9px; color: var(--amber); font-weight: 700; }
+  .gantt-table .row-code { font-size: 9px; color: var(--muted); }
+  .gantt-bar-cell { text-align: center; }
+  .gantt-bar { display: inline-block; height: 14px; border-radius: 2px; position: relative; }
+  .bar-30 { background: var(--bar30); }
+  .bar-60 { background: var(--bar60); }
+  .bar-90 { background: var(--bar90); }
+  .gantt-today { background: var(--gantt-today); }
+  .gantt-hdr-today { color: var(--green) !important; }
+  .gantt-week-lbl { font-size: 8px; color: var(--muted); display: block; }
+  .gantt-dead { font-size: 9px; font-weight: bold; }
+  .dead-30 { color: var(--amber); }
+  .dead-60 { color: var(--magenta); }
+  .dead-90 { color: var(--cyan); }
+
+  /* CHECKLIST */
+  .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .check-card { background: var(--card); border: 1px solid var(--border); padding: 14px; box-shadow: var(--card-shadow); }
+  .check-card-title { font-family: var(--head); font-weight: var(--head-w); font-size: 10px; letter-spacing: 2px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .suc-cba { color: var(--cyan); }
+  .suc-rio { color: var(--magenta); }
+  .suc-vme { color: var(--green); }
+  .check-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--table-row-border); }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input[type=checkbox] { accent-color: var(--green); width: 14px; height: 14px; margin-top: 2px; cursor: pointer; flex-shrink: 0; }
+  .check-item input[type=checkbox]:checked + .ci-label { color: var(--muted); text-decoration: line-through; }
+  .ci-label { font-size: 11px; flex: 1; cursor: pointer; }
+  .ci-code { font-size: 10px; color: var(--amber); margin-right: 4px; font-weight: 700; }
+  .ci-dead { font-size: 10px; padding: 1px 6px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; font-weight: 600; }
+  .ci-d30 { border: 1px solid var(--amber); color: var(--amber); }
+  .ci-d60 { border: 1px solid var(--magenta); color: var(--magenta); }
+  .ci-d90 { border: 1px solid var(--cyan); color: var(--cyan); }
+  .progress-bar-wrap { height: 5px; background: var(--progress-bg); margin-top: 10px; border-radius: 2px; }
+  .progress-bar-fill { height: 5px; background: var(--green); transition: width .4s; border-radius: 2px; }
+
+  /* AVANCES */
+  .avance-form { background: var(--card); border: 1px solid var(--border); padding: 14px; margin-bottom: 16px; box-shadow: var(--card-shadow); }
+  .avance-form label { font-size: 10px; color: var(--amber); display: block; margin-bottom: 4px; letter-spacing: 1px; font-weight: 700; }
+  .avance-form select, .avance-form textarea, .avance-form input[type=text], .avance-form input[type=date] {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--white);
+    font-family: var(--font); font-size: 12px; padding: 6px 8px; margin-bottom: 10px; outline: none; transition: border-color .2s;
+  }
+  .avance-form select:focus, .avance-form textarea:focus { border-color: var(--cyan); }
+  .avance-form textarea { height: 70px; resize: vertical; }
+  .btn-primary { background: transparent; border: 1px solid var(--green); color: var(--green); font-family: var(--font); font-size: 11px; padding: 7px 20px; border-radius: 20px; cursor: pointer; letter-spacing: 1px; transition: all .2s; font-weight: 600; }
+  .btn-primary:hover { background: var(--green); color: var(--bg); }
+  .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); font-family: var(--font); font-size: 10px; padding: 2px 8px; border-radius: 10px; cursor: pointer; }
+  .avance-log { margin-top: 8px; }
+  .avance-entry { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--cyan); padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .avance-entry .ae-meta { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .avance-entry .ae-suc { font-size: 10px; color: var(--amber); font-weight: 700; }
+  .avance-entry .ae-text { font-size: 11px; flex: 1; }
+
+  /* PLANNER */
+  .planner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .planner-month { background: var(--card); border: 1px solid var(--border); padding: 12px; box-shadow: var(--card-shadow); }
+  .planner-month-title { font-family: var(--head); font-weight: var(--head-w); font-size: 10px; letter-spacing: 2px; color: var(--magenta); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .planner-event { padding: 5px 0; border-bottom: 1px solid var(--table-row-border); display: flex; gap: 8px; align-items: flex-start; }
+  .planner-event:last-child { border-bottom: none; }
+  .pe-date { font-size: 10px; color: var(--cyan); white-space: nowrap; min-width: 50px; font-weight: 700; }
+  .pe-text { font-size: 11px; }
+  .pe-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .dot-30 { background: var(--amber); }
+  .dot-60 { background: var(--magenta); }
+  .dot-90 { background: var(--cyan); }
+  .dot-ok { background: var(--green); }
+
+  /* BELTRAMINO */
+  .belt-card { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--border2); padding: 12px 14px; margin-bottom: 10px; box-shadow: var(--card-shadow); }
+  .belt-card .bc-suc { font-size: 10px; color: var(--amber); letter-spacing: 2px; margin-bottom: 4px; font-weight: 700; }
+  .belt-card .bc-rmg { font-family: var(--head); font-weight: var(--head-w); font-size: 10px; color: var(--magenta); margin-bottom: 6px; }
+  .belt-card .bc-orig { font-size: 11px; color: var(--muted); border-left: 2px solid var(--border2); padding-left: 8px; margin-bottom: 8px; font-style: italic; }
+  .belt-card .bc-obs { font-size: 11px; border-left: 3px solid var(--green); padding: 6px 10px; background: var(--belt-obs-bg); color: var(--belt-obs-color); }
+  .belt-card .bc-alerta { font-size: 10px; color: var(--belt-alerta-color); background: var(--belt-alerta-bg); border: 1px solid var(--belt-alerta-border); padding: 6px 8px; margin-top: 8px; }
+
+  /* PÓLIZA */
+  .poliza-table { width: 100%; border-collapse: collapse; }
+  .poliza-table td { padding: 6px 10px; border-bottom: 1px solid var(--table-row-border); font-size: 12px; }
+  .poliza-table td:first-child { color: var(--amber); font-size: 10px; width: 180px; font-weight: 700; }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+
+  /* RESUMEN TABLE */
+  .res-table { width: 100%; border-collapse: collapse; }
+  .res-table th { font-size: 9px; color: var(--amber); letter-spacing: 1px; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); font-weight: 700; }
+  .res-table td { padding: 7px 8px; border-bottom: 1px solid var(--table-row-border); font-size: 11px; vertical-align: middle; }
+  .res-table tr:hover td { background: var(--table-hover); }
+
+  /* Sticky save notice */
+  .save-notice { position: fixed; bottom: 16px; right: 16px; background: var(--save-bg); border: 1px solid var(--green); color: var(--green); font-family: var(--font); font-size: 10px; padding: 8px 14px; border-radius: 4px; display: none; z-index: 200; font-weight: 700; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero { grid-template-columns: repeat(2, 1fr); }
+    nav .nav-btn { font-size: 10px; padding: 3px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="logo">COFARSUR // RMG TRACKER</div>
+    <div class="subt">SANCOR SEGUROS · PÓLIZA 9315 · VIGENCIA 05/05/2026–05/05/2027</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="nav-btn active" onclick="showTab('tab-resumen', this)">RESUMEN</button>
+  <button class="nav-btn" onclick="showTab('tab-gantt', this)">GANTT</button>
+  <button class="nav-btn" onclick="showTab('tab-check', this)">CHECKLISTS</button>
+  <button class="nav-btn" onclick="showTab('tab-avances', this)">AVANCES</button>
+  <button class="nav-btn" onclick="showTab('tab-planner', this)">PLANNER</button>
+  <button class="nav-btn" onclick="showTab('tab-beltramino', this)">BELTRAMINO</button>
+  <button class="nav-btn" onclick="showTab('tab-poliza', this)">PÓLIZA</button>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 OSCURO</button>
+</nav>
+
+<!-- ═══════════════════════════ RESUMEN ═══════════════════════════ -->
+<div id="tab-resumen" class="tab-content active">
+  <div class="hero">
+    <div class="kpi c-m"><div class="lbl">RMG TOTALES</div><div class="val" id="kpi-total">10</div><div class="sub">3 sucursales</div></div>
+    <div class="kpi c-r"><div class="lbl">VENCE 30 DÍAS</div><div class="val" id="kpi-d30">3</div><div class="sub">hasta 25/06/2026</div></div>
+    <div class="kpi c-a"><div class="lbl">VENCE 60 DÍAS</div><div class="val" id="kpi-d60">1</div><div class="sub">hasta 25/07/2026</div></div>
+    <div class="kpi c-c"><div class="lbl">VENCE 90 DÍAS</div><div class="val" id="kpi-d90">6</div><div class="sub">hasta 23/08/2026</div></div>
+    <div class="kpi c-g"><div class="lbl">COMPLETADOS</div><div class="val" id="kpi-done">0</div><div class="sub">de 10 ítems</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ESTADO GLOBAL POR SUCURSAL</div>
+    <table class="res-table">
+      <thead><tr>
+        <th>SUCURSAL</th><th>DIRECCIÓN</th><th>RELEVAMIENTO</th><th>RMG</th><th>30D</th><th>60D</th><th>90D</th><th>PROGRESO</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span style="color:var(--cyan)">● CD CÓRDOBA</span></td>
+          <td style="color:var(--muted)">Colonia Impira 2479</td>
+          <td style="color:var(--muted)">15/05/2026</td>
+          <td style="color:var(--magenta)">5</td>
+          <td><span class="badge badge-amber">1</span></td>
+          <td><span class="badge badge-red">1</span></td>
+          <td><span class="badge badge-cyan">3</span></td>
+          <td><div class="progress-bar-wrap" style="width:100px"><div class="progress-bar-fill" id="prog-cba" style="width:0%"></div></div></td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--magenta)">● RÍO CUARTO</span></td>
+          <td style="color:var(--muted)">Corrientes 174</td>
+          <td style="color:var(--muted)">13/05/2026</td>
+          <td style="color:var(--magenta)">2</td>
+          <td><span class="badge badge-amber">1</span></td>
+          <td>—</td>
+          <td><span class="badge badge-cyan">1</span></td>
+          <td><div class="progress-bar-wrap" style="width:100px"><div class="progress-bar-fill" id="prog-rio" style="width:0%"></div></div></td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--green)">● VILLA MERCEDES</span></td>
+          <td style="color:var(--muted)">Suipacha 320</td>
+          <td style="color:var(--muted)">14/05/2026</td>
+          <td style="color:var(--magenta)">3</td>
+          <td><span class="badge badge-amber">1</span></td>
+          <td>—</td>
+          <td><span class="badge badge-cyan">2</span></td>
+          <td><div class="progress-bar-wrap" style="width:100px"><div class="progress-bar-fill" id="prog-vme" style="width:0%"></div></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">TODOS LOS RMG – VISTA CONSOLIDADA</div>
+    <table class="res-table">
+      <thead><tr><th>COD</th><th>DESCRIPCIÓN</th><th>SUCURSAL</th><th>PLAZO</th><th>VENCIMIENTO</th><th>ESTADO</th></tr></thead>
+      <tbody id="rmg-all-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ GANTT ═══════════════════════════ -->
+<div id="tab-gantt" class="tab-content">
+  <div class="section">
+    <div class="section-title">DIAGRAMA DE GANTT – REQUERIMIENTOS DE MEJORA</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> 30 días</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--magenta)"></div> 60 días</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div> 90 días</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green); border-radius:50%"></div> Hoy (17/06)</div>
+    </div>
+    <div class="card">
+      <p style="font-size:10px;color:var(--muted);margin-bottom:12px">Fecha de inicio de referencia: <span style="color:var(--amber)">26/05/2026</span> · Fecha hoy: <span style="color:var(--green)">17/06/2026</span> · Día +22 desde inicio</p>
+      <div class="gantt-wrap">
+        <table class="gantt-table" id="ganttTable"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CHECKLISTS ═══════════════════════════ -->
+<div id="tab-check" class="tab-content">
+  <div class="section">
+    <div class="section-title">CHECKLISTS POR SUCURSAL</div>
+    <p style="font-size:10px;color:var(--muted);margin-bottom:16px">Tildá cada ítem completado. El progreso se guarda automáticamente en el navegador.</p>
+    <div class="checklist-grid" id="checklistGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ AVANCES ═══════════════════════════ -->
+<div id="tab-avances" class="tab-content">
+  <div class="section">
+    <div class="section-title">REGISTRO DE AVANCES</div>
+    <div class="avance-form">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:8px">
+        <div>
+          <label>SUCURSAL</label>
+          <select id="av-suc">
+            <option value="CD CÓRDOBA">CD CÓRDOBA</option>
+            <option value="RÍO CUARTO">RÍO CUARTO</option>
+            <option value="VILLA MERCEDES">VILLA MERCEDES</option>
+            <option value="GENERAL">GENERAL</option>
+          </select>
+        </div>
+        <div>
+          <label>RMG</label>
+          <select id="av-rmg">
+            <option value="RMG-04-H">RMG-04-H – Tableros eléctricos (CBA)</option>
+            <option value="RMG-08-A">RMG-08-A – Pararrayos (CBA)</option>
+            <option value="RMG-011-B">RMG-011-B – Zona recarga baterías (CBA)</option>
+            <option value="RMG-025-A">RMG-025-A – Brigada incendios (CBA)</option>
+            <option value="RMG-010-D">RMG-010-D – Corte energía autoelevadores (CBA)</option>
+            <option value="RMG-025-B">RMG-025-B – Capacitaciones incendio (RIO4)</option>
+            <option value="RMG-020-A (RIO4)">RMG-020-A – Detección y alarma (RIO4)</option>
+            <option value="RMG-014-A">RMG-014-A – Orden y limpieza (VME)</option>
+            <option value="RMG-01-G">RMG-01-G – Puestos incendio (VME)</option>
+            <option value="RMG-020-A (VME)">RMG-020-A – Detección y alarma (VME)</option>
+            <option value="GENERAL">GENERAL</option>
+          </select>
+        </div>
+        <div>
+          <label>FECHA</label>
+          <input type="date" id="av-fecha" value="2026-06-17">
+        </div>
+      </div>
+      <label>AVANCE / OBSERVACIÓN</label>
+      <textarea id="av-texto" placeholder="Describí la acción realizada, evidencia fotográfica disponible, pendientes..."></textarea>
+      <div style="display:flex;gap:10px;align-items:center">
+        <select id="av-estado" style="width:auto;background:#0a0a0a;border:1px solid #2a2a2a;color:var(--white);font-family:var(--font);font-size:12px;padding:6px 8px">
+          <option value="EN CURSO">EN CURSO</option>
+          <option value="COMPLETADO">COMPLETADO</option>
+          <option value="BLOQUEADO">BLOQUEADO</option>
+          <option value="EXTENSIÓN SOLICITADA">EXTENSIÓN SOLICITADA</option>
+        </select>
+        <button class="btn-primary" onclick="addAvance()">+ REGISTRAR AVANCE</button>
+      </div>
+    </div>
+    <div id="avance-log" class="avance-log"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PLANNER ═══════════════════════════ -->
+<div id="tab-planner" class="tab-content">
+  <div class="section">
+    <div class="section-title">PLANNER / AGENDA DE VENCIMIENTOS</div>
+    <p style="font-size:10px;color:var(--muted);margin-bottom:16px">Todos los plazos calculados desde el <span style="color:var(--amber)">26/05/2026</span>. Fecha hoy: <span style="color:var(--green)">17/06/2026</span></p>
+    <div class="planner-grid" id="plannerGrid"></div>
+
+    <div style="margin-top:24px">
+      <div class="section-title">ACCIONES CLAVE RECOMENDADAS</div>
+      <div class="card">
+        <table class="res-table">
+          <thead><tr><th>FECHA</th><th>ACCIÓN</th><th>RESPONSABLE</th><th>PRIORIDAD</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--red)">25/06/2026</td><td>Capacitación incendios RIO4 (RMG-025-B)</td><td>DT Federico Rojas</td><td><span class="badge badge-red">URGENTE</span></td></tr>
+            <tr><td style="color:var(--red)">25/06/2026</td><td>Orden y limpieza VME – retiro excedentes (RMG-014-A)</td><td>DT María Lucía Mesa</td><td><span class="badge badge-red">URGENTE</span></td></tr>
+            <tr><td style="color:var(--amber)">25/06/2026</td><td>Corte energía autoelevadores CBA (RMG-010-D)</td><td>Logística CBA</td><td><span class="badge badge-amber">ALTA</span></td></tr>
+            <tr><td style="color:var(--amber)">Julio 2026</td><td>Visita Beltramino VME – Plan personalizado Orden y Limpieza</td><td>F. Beltramino</td><td><span class="badge badge-amber">PLANIFICADA</span></td></tr>
+            <tr><td style="color:var(--amber)">Julio 2026</td><td>Capacitación incendios RIO4 (registro ya en proceso)</td><td>F. Beltramino</td><td><span class="badge badge-amber">PLANIFICADA</span></td></tr>
+            <tr><td style="color:var(--magenta)">25/07/2026</td><td>Brigada contra incendios CBA (RMG-025-A) – actualizar registros RRHH</td><td>RRHH / Logística CBA</td><td><span class="badge badge-red">60 DÍAS</span></td></tr>
+            <tr><td style="color:var(--cyan)">23/08/2026</td><td>Instalar sistema detección y alarma VME (RMG-020-A)</td><td>Dir. COFARSUR / VME</td><td><span class="badge badge-cyan">90 DÍAS</span></td></tr>
+            <tr><td style="color:var(--cyan)">23/08/2026</td><td>Instalar sistema detección y alarma RIO4 (RMG-020-A)</td><td>Dir. COFARSUR / RIO4</td><td><span class="badge badge-cyan">90 DÍAS</span></td></tr>
+            <tr><td style="color:var(--cyan)">23/08/2026</td><td>Tableros eléctricos CBA – separación paneles sándwich (RMG-04-H)</td><td>Mantenimiento CBA</td><td><span class="badge badge-cyan">90 DÍAS</span></td></tr>
+            <tr><td style="color:var(--cyan)">23/08/2026</td><td>Pararrayos CBA – certificación Arq. Pisani (RMG-08-A)</td><td>Dir. / Arq. Pisani</td><td><span class="badge badge-cyan">90 DÍAS</span></td></tr>
+            <tr><td style="color:var(--cyan)">23/08/2026</td><td>Zona recarga baterías CBA – bateas metálicas (RMG-011-B)</td><td>Logística CBA</td><td><span class="badge badge-cyan">90 DÍAS</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ BELTRAMINO ═══════════════════════════ -->
+<div id="tab-beltramino" class="tab-content">
+  <div class="section">
+    <div class="section-title">MINUTA FEDERICO BELTRAMINO – LIC. HIG. Y SEG. (COPHISEC)</div>
+    <p style="font-size:10px;color:var(--muted);margin-bottom:16px">Estado de situación emitido el <span style="color:var(--amber)">09/06/2026</span>. Criterio profesional y observaciones integradas al plan de acción.</p>
+
+    <!-- VME -->
+    <div class="card"><div class="card-header"><div class="card-title suc-vme">VILLA MERCEDES</div></div>
+
+      <div class="belt-card">
+        <div class="bc-suc">VME · RMG-014-A – ORDEN Y LIMPIEZA</div>
+        <div class="bc-rmg">Plazo seguro: 30 días → Vence 25/06/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Implementar programa de orden y limpieza general, respetar pasillos, sitio exclusivo para scrap.</div>
+        <div class="bc-obs">⟩ En próxima visita de <strong>julio</strong> se elaborará plan personalizado de O&amp;L con espacios técnicos de acopio. Mientras tanto: retirar excedentes, despejar pasillos, demarcar a nivel de piso. Se realizará capacitación específica.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">VME · RMG-01-G – PUESTOS DE INCENDIO</div>
+        <div class="bc-obs">⟩ Demarcar recuadro rojo 0.5×0.5m (franjas 0.08m) en cada extintor. Puede usarse cinta roja 3M si no es posible pintar. Mantener en caso de desgaste por tránsito.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">VME · RMG-020-A – SISTEMA DETECCIÓN Y ALARMA</div>
+        <div class="bc-rmg">Plazo seguro: 90 días → Vence 23/08/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Sistema de detección automática con central de alarma, avisos sonoros/lumínicos y llamadas automáticas.</div>
+        <div class="bc-obs">⟩ Se puede plantear extensión de plazo. Importante determinar cómo será la próxima inspección del seguro.</div>
+        <div class="bc-alerta">⚠ ANÁLISIS LEGAL: La ley de higiene y seguridad exige red a base de agua (hidrantes + sala de bombas + cisterna) dado la superficie del depósito. La detección automática es MÁS ECONÓMICA y cumple con el seguro, aunque técnicamente no cubre la exigencia legal si el depósito se clasifica como Riesgo 3 (Muy Combustible). Alternativa: reclasificar como Riesgo 4 (Combustible). DECISIÓN A NIVEL DIRECTIVO.</div>
+      </div>
+    </div>
+
+    <!-- RIO4 -->
+    <div class="card"><div class="card-header"><div class="card-title suc-rio">RÍO CUARTO</div></div>
+
+      <div class="belt-card">
+        <div class="bc-suc">RIO4 · RMG-025-B – CAPACITACIONES INCENDIO</div>
+        <div class="bc-rmg">Plazo seguro: 30 días → Vence 25/06/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Capacitación anual en extintores, prácticas, plan de emergencia con roles asignados y registro escrito.</div>
+        <div class="bc-obs">⟩ Se hará firmar al personal un <strong>registro de capacitación por adelantado</strong>. La capacitación presencial se realizará en julio. Estrategia: documentar el compromiso ahora, ejecutar en el próximo mes.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">RIO4 · RMG-020-A – SISTEMA DETECCIÓN Y ALARMA</div>
+        <div class="bc-rmg">Plazo seguro: 90 días → Vence 23/08/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Sistema de detección automática con central homologada y detectores.</div>
+        <div class="bc-obs">⟩ Por las dimensiones del establecimiento y cantidad de niveles, es necesaria central con detectores homologados. Se requiere relevar el establecimiento y solicitar <strong>extensión de plazos</strong> para presupuestos e instalación.</div>
+      </div>
+    </div>
+
+    <!-- CBA -->
+    <div class="card"><div class="card-header"><div class="card-title suc-cba">CD CÓRDOBA</div></div>
+
+      <div class="belt-card">
+        <div class="bc-suc">CBA · RMG-04-H – TABLEROS ELÉCTRICOS</div>
+        <div class="bc-rmg">Plazo seguro: 90 días → Vence 23/08/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Separar tableros de paneles sándwich/cámaras frigoríficas ≥3-5cm con espaciadores metálicos.</div>
+        <div class="bc-obs">⟩ Observación correcta. Se puede plantear <strong>plan de adecuación progresivo de 180/365 días</strong>. Es importante evaluar consecuencias del no cumplimiento vs. beneficios/reducción de cuota si se cumple. <strong>Beltramino propone participar en reuniones con la aseguradora</strong> para negociar estos términos.</div>
+        <div class="bc-alerta">⚠ ACCIÓN ESTRATÉGICA: Evaluar costo-beneficio del cumplimiento en términos de reducción de prima. Coordinar reunión con aseguradora incluyendo a Beltramino.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">CBA · RMG-08-A – PARARRAYOS</div>
+        <div class="bc-rmg">Plazo seguro: 90 días → Vence 23/08/2026</div>
+        <div class="bc-orig">Requerim. Sancor: Control anual del sistema de pararrayos con registro escrito firmado.</div>
+        <div class="bc-obs">⟩ Solicitar a <strong>Arq. Javier Pisani</strong> la certificación profesional del proyecto (firmada). Establecer mantenimiento preventivo anual. Esta documentación fue solicitada antes de la instalación pero nunca fue presentada.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">CBA · RMG-011-B – ZONA RECARGA BATERÍAS</div>
+        <div class="bc-rmg">Plazo seguro: 90 días → Vence 23/08/2026</div>
+        <div class="bc-obs">⟩ Lo correcto es colocar <strong>bateas metálicas</strong> para contención ante derrames (la señalización sola es visual y no previene incendios). Acondicionar cartelería. Se evaluará en próximas visitas.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">CBA · RMG-025-A – BRIGADA CONTRA INCENDIOS</div>
+        <div class="bc-rmg">Plazo seguro: 60 días → Vence 25/07/2026</div>
+        <div class="bc-obs">⟩ Dentro de los próximos días se actualizará brigada y capacitación. <strong>Existen registros vigentes</strong> de últimas capacitaciones y simulacro. RRHH tiene dichos registros. Gestionar su entrega.</div>
+      </div>
+
+      <div class="belt-card">
+        <div class="bc-suc">CBA · RMG-010-D – CORTE ENERGÍA AUTOELEVADORES</div>
+        <div class="bc-rmg">Plazo seguro: 30 días → Vence 25/06/2026</div>
+        <div class="bc-obs">⟩ Establecer lugar exclusivo y señalizado de acopio de autoelevadores, lo más alejado posible de la carga de fuego. Relevamiento en próxima visita. <strong>Beltramino propone nueva reunión para definir estos puntos.</strong></div>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:#2a1a30">
+      <div class="card-title" style="color:var(--magenta);margin-bottom:10px">▶ PROPUESTA DE BELTRAMINO – PARTICIPACIÓN EN REUNIONES CON ASEGURADORA</div>
+      <p style="font-size:12px;line-height:1.8">El Lic. Beltramino propone formalmente <strong style="color:var(--yellow)">participar en las reuniones con Sancor Seguros</strong> para negociar extensiones de plazos y evaluar el impacto de cada mejora en la prima del seguro. Esta es una oportunidad estratégica para:</p>
+      <ul style="margin:10px 0 0 16px;font-size:11px;line-height:1.8;color:var(--white)">
+        <li>Negociar extensiones de plazo en ítems complejos (sistema detección, tableros)</li>
+        <li>Evaluar reclasificación de riesgo del depósito (Riesgo 3 → Riesgo 4) para reducir exigencias</li>
+        <li>Conocer impacto de cada mejora en reducción de costo de cuota</li>
+        <li>Alinear el plan de adecuación con los ciclos de inspección del seguro</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PÓLIZA ═══════════════════════════ -->
+<div id="tab-poliza" class="tab-content">
+  <div class="section">
+    <div class="section-title">DATOS DE PÓLIZA – SANCOR SEGUROS</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px">CD CÓRDOBA</div>
+        <table class="poliza-table">
+          <tr><td>Establecimiento</td><td>Cofarsur - Centro de Distribución (Droguería)</td></tr>
+          <tr><td>Dirección</td><td>Colonia Impira 2479, Córdoba</td></tr>
+          <tr><td>Superficie</td><td>8.400 m² (PB: 7.000 · PA: 1.400)</td></tr>
+          <tr><td>Relevamiento</td><td>15/05/2026 · Nº 38411</td></tr>
+          <tr><td>Póliza Ref.</td><td style="color:var(--cyan)">9315</td></tr>
+          <tr><td>Ramo</td><td>2400 – Todo Riesgo Operativo</td></tr>
+          <tr><td>Vigencia</td><td style="color:var(--green)">05/05/2026 – 05/05/2027</td></tr>
+          <tr><td>CUIT</td><td>30-51964753-9</td></tr>
+          <tr><td>Suscriptor</td><td>Kucharczuk Ana Ayelén</td></tr>
+          <tr><td>RMG asignados</td><td style="color:var(--magenta)">5 requerimientos</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px">SUCURSAL RÍO CUARTO</div>
+        <table class="poliza-table">
+          <tr><td>Establecimiento</td><td>Cofarsur - Sucursal Río Cuarto (Droguería)</td></tr>
+          <tr><td>Dirección</td><td>Corrientes 174, Río Cuarto, Córdoba</td></tr>
+          <tr><td>Superficie</td><td>400 m² (terreno + construido, chapa/madera/hormigón)</td></tr>
+          <tr><td>Relevamiento</td><td>13/05/2026 · Nº 38410</td></tr>
+          <tr><td>Póliza Ref.</td><td style="color:var(--cyan)">9315</td></tr>
+          <tr><td>Ramo</td><td>2400 – Todo Riesgo Operativo</td></tr>
+          <tr><td>Vigencia</td><td style="color:var(--green)">05/05/2026 – 05/05/2027</td></tr>
+          <tr><td>CUIT</td><td>30-51964753-9</td></tr>
+          <tr><td>Suscriptor</td><td>Kucharczuk Ana Ayelén</td></tr>
+          <tr><td>RMG asignados</td><td style="color:var(--magenta)">2 requerimientos</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px">SUCURSAL VILLA MERCEDES</div>
+        <table class="poliza-table">
+          <tr><td>Establecimiento</td><td>Cofarsur - Sucursal Villa Mercedes (Droguería)</td></tr>
+          <tr><td>Dirección</td><td>Suipacha 320, Villa Mercedes, San Luis</td></tr>
+          <tr><td>Superficie</td><td>917 m² cubiertos</td></tr>
+          <tr><td>Relevamiento</td><td>14/05/2026 · Nº 38412</td></tr>
+          <tr><td>Póliza Ref.</td><td style="color:var(--cyan)">9315</td></tr>
+          <tr><td>Ramo</td><td>2400 – Todo Riesgo Operativo</td></tr>
+          <tr><td>Vigencia</td><td style="color:var(--green)">05/05/2026 – 05/05/2027</td></tr>
+          <tr><td>CUIT</td><td>30-51964753-9</td></tr>
+          <tr><td>Suscriptor</td><td>Kucharczuk Ana Ayelén</td></tr>
+          <tr><td>RMG asignados</td><td style="color:var(--magenta)">3 requerimientos</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;border-color:#2a1500">
+      <div class="card-title" style="color:var(--amber);margin-bottom:8px">▶ NOTA IMPORTANTE – CONDICIONES PARTICULARES ESPECÍFICAS</div>
+      <p style="font-size:11px;line-height:1.8">Las mejoras descriptas en los informes de Sancor Seguros se encuentran plasmadas en la <strong style="color:var(--yellow)">póliza 9315 – apartado "Condiciones Particulares Específicas"</strong>. Su cumplimiento en los plazos establecidos es obligatorio para el asegurado como condición del contrato de seguro. El incumplimiento puede afectar la cobertura ante siniestros. Se recomienda coordinar con la aseguradora antes de los vencimientos para gestionar extensiones formales.</p>
+    </div>
+  </div>
+</div>
+
+<div class="save-notice" id="saveNotice">✓ GUARDADO</div>
+
+<script>
+// ─── THEME ──────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️ CLARO' : '🌙 OSCURO';
+  try { localStorage.setItem('rmg_theme', next); } catch(e){}
+}
+(function initTheme() {
+  let t = 'light';
+  try { const s = localStorage.getItem('rmg_theme'); if(s) t = s; } catch(e){}
+  document.documentElement.setAttribute('data-theme', t);
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = t === 'dark' ? '☀️ CLARO' : '🌙 OSCURO';
+})();
+
+// ─── DATA ───────────────────────────────────────────────────────────────
+const START = new Date('2026-05-26');
+const TODAY = new Date('2026-06-17');
+
+const rmgs = [
+  // CBA
+  { id:'cba-1', code:'RMG-04-H',  suc:'CD CÓRDOBA',    days:90, desc:'Tableros eléctricos – separación paneles sándwich' },
+  { id:'cba-2', code:'RMG-08-A',  suc:'CD CÓRDOBA',    days:90, desc:'Pararrayos – mantenimiento y control' },
+  { id:'cba-3', code:'RMG-011-B', suc:'CD CÓRDOBA',    days:90, desc:'Zona recarga baterías – demarcar y bateas metálicas' },
+  { id:'cba-4', code:'RMG-025-A', suc:'CD CÓRDOBA',    days:60, desc:'Brigada contra incendios – conformar y capacitar' },
+  { id:'cba-5', code:'RMG-010-D', suc:'CD CÓRDOBA',    days:30, desc:'Corte energía eléctrica en autoelevadores' },
+  // RIO4
+  { id:'rio-1', code:'RMG-025-B', suc:'RÍO CUARTO',   days:30, desc:'Capacitaciones ante principios de incendio' },
+  { id:'rio-2', code:'RMG-020-A', suc:'RÍO CUARTO',   days:90, desc:'Sistema detección y alarma contra incendios' },
+  // VME
+  { id:'vme-1', code:'RMG-014-A', suc:'VILLA MERCEDES', days:30, desc:'Orden y limpieza general' },
+  { id:'vme-2', code:'RMG-01-G',  suc:'VILLA MERCEDES', days:30, desc:'Puestos de incendio – señalización y demarcación' },
+  { id:'vme-3', code:'RMG-020-A', suc:'VILLA MERCEDES', days:90, desc:'Sistema detección y alarma contra incendios' },
+];
+
+function addDays(d, n) { let r = new Date(d); r.setDate(r.getDate()+n); return r; }
+function fmtDate(d) { return d.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'}); }
+function daysDiff(a, b) { return Math.round((b-a)/(1000*60*60*24)); }
+
+function getDeadline(rmg) { return addDays(START, rmg.days); }
+
+function getSucColor(suc) {
+  if(suc==='CD CÓRDOBA') return 'var(--cyan)';
+  if(suc==='RÍO CUARTO') return 'var(--magenta)';
+  return 'var(--green)';
+}
+
+function getDaysLeft(rmg) { return daysDiff(TODAY, getDeadline(rmg)); }
+
+// ─── STORAGE ────────────────────────────────────────────────────────────
+function save(key, val) { try { localStorage.setItem('rmg_'+key, JSON.stringify(val)); } catch(e){} }
+function load(key, def) { try { const v=localStorage.getItem('rmg_'+key); return v?JSON.parse(v):def; } catch(e){ return def; } }
+
+// ─── GANTT ──────────────────────────────────────────────────────────────
+function buildGantt() {
+  const totalDays = 100;
+  const tbl = document.getElementById('ganttTable');
+  // header: weeks
+  let hdr = '<thead><tr><th style="text-align:left;min-width:220px">REQUERIMIENTO</th><th style="min-width:70px">SUC.</th><th style="min-width:60px">PLAZO</th>';
+  // days columns grouped by weeks
+  for(let w=0; w<Math.ceil(totalDays/7); w++){
+    const dayN = w*7+1;
+    const d = addDays(START, w*7);
+    const isNow = daysDiff(START, TODAY) >= w*7 && daysDiff(START, TODAY) < (w+1)*7;
+    hdr += `<th class="${isNow?'gantt-hdr-today':''}" style="min-width:40px"><span class="gantt-week-lbl">W${w+1}</span>${d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})}</th>`;
+  }
+  hdr += '<th style="min-width:90px">VENCIMIENTO</th></tr></thead>';
+
+  const todayCol = Math.floor(daysDiff(START, TODAY)/7);
+
+  let body = '<tbody>';
+  rmgs.forEach(r => {
+    const barWeeks = Math.ceil(r.days/7);
+    const deadWeek = Math.ceil(r.days/7)-1;
+    const barClass = r.days===30?'bar-30': r.days===60?'bar-60':'bar-90';
+    const deadClass= r.days===30?'dead-30': r.days===60?'dead-60':'dead-90';
+    const daysLeft = getDaysLeft(r);
+    const dl = getDeadline(r);
+
+    body += `<tr>
+      <td class="row-label"><span class="row-code" style="color:${getSucColor(r.suc)}">${r.code}</span> ${r.desc}</td>
+      <td class="row-suc" style="color:${getSucColor(r.suc)};white-space:nowrap;font-size:9px">${r.suc.split(' ')[0]}</td>
+      <td style="text-align:center"><span class="${deadClass} gantt-dead">${r.days}d</span></td>`;
+
+    const weeksCount = Math.ceil(totalDays/7);
+    for(let w=0; w<weeksCount; w++){
+      const isNow = w===todayCol;
+      if(w<barWeeks){
+        body += `<td class="${isNow?'gantt-today':''}"><div class="gantt-bar ${barClass}" style="width:32px"></div></td>`;
+      } else if(w===barWeeks){
+        body += `<td class="${isNow?'gantt-today':''}"><span style="font-size:10px;color:${r.days===30?'var(--amber)':r.days===60?'var(--magenta)':'var(--cyan)'}">▲</span></td>`;
+      } else {
+        body += `<td class="${isNow?'gantt-today':''}"></td>`;
+      }
+    }
+
+    const statusColor = daysLeft < 0 ? 'var(--red)' : daysLeft <= 10 ? 'var(--amber)' : 'var(--white)';
+    body += `<td style="color:${statusColor};font-size:10px;white-space:nowrap">${fmtDate(dl)}<br><span style="font-size:9px;color:${statusColor}">${daysLeft<0?'VENCIDO':daysLeft+'d restantes'}</span></td>`;
+    body += '</tr>';
+  });
+  body += '</tbody>';
+  tbl.innerHTML = hdr+body;
+}
+
+// ─── CHECKLIST ──────────────────────────────────────────────────────────
+function buildChecklists() {
+  const checks = load('checks', {});
+  const grid = document.getElementById('checklistGrid');
+  const groups = {};
+  rmgs.forEach(r => { if(!groups[r.suc]) groups[r.suc]=[]; groups[r.suc].push(r); });
+
+  Object.keys(groups).forEach(suc => {
+    const items = groups[suc];
+    const sucClass = suc==='CD CÓRDOBA'?'suc-cba':suc==='RÍO CUARTO'?'suc-rio':'suc-vme';
+    const done = items.filter(r => checks[r.id]).length;
+    const pct = Math.round(done/items.length*100);
+
+    let html = `<div class="check-card">
+      <div class="check-card-title"><span class="${sucClass}">${suc}</span><span style="color:var(--muted);font-size:10px">${done}/${items.length}</span></div>`;
+
+    items.forEach(r => {
+      const deadClass = r.days===30?'ci-d30':r.days===60?'ci-d60':'ci-d90';
+      const checked = checks[r.id] ? 'checked' : '';
+      html += `<div class="check-item">
+        <input type="checkbox" id="chk_${r.id}" data-id="${r.id}" ${checked} onchange="toggleCheck(this)">
+        <label class="ci-label" for="chk_${r.id}"><span class="ci-code">${r.code}</span>${r.desc}</label>
+        <span class="ci-dead ${deadClass}">${r.days}d</span>
+      </div>`;
+    });
+
+    html += `<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+    grid.innerHTML += html;
+  });
+}
+
+function toggleCheck(el) {
+  const checks = load('checks', {});
+  checks[el.dataset.id] = el.checked;
+  save('checks', checks);
+  updateKPIs();
+  updateResumenProgress();
+  showSaved();
+}
+
+// ─── AVANCES ────────────────────────────────────────────────────────────
+function addAvance() {
+  const suc = document.getElementById('av-suc').value;
+  const rmg = document.getElementById('av-rmg').value;
+  const fecha = document.getElementById('av-fecha').value;
+  const texto = document.getElementById('av-texto').value.trim();
+  const estado = document.getElementById('av-estado').value;
+  if(!texto) return;
+
+  const avances = load('avances', []);
+  avances.unshift({ suc, rmg, fecha, texto, estado, ts: Date.now() });
+  save('avances', avances);
+  document.getElementById('av-texto').value = '';
+  renderAvances();
+  showSaved();
+}
+
+function deleteAvance(ts) {
+  let avances = load('avances', []);
+  avances = avances.filter(a => a.ts !== ts);
+  save('avances', avances);
+  renderAvances();
+}
+
+function renderAvances() {
+  const avances = load('avances', []);
+  const log = document.getElementById('avance-log');
+  if(!avances.length) { log.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:10px 0">Sin registros aún.</div>'; return; }
+  
+  const estadoColors = { 'COMPLETADO':'var(--green)', 'EN CURSO':'var(--cyan)', 'BLOQUEADO':'var(--red)', 'EXTENSIÓN SOLICITADA':'var(--amber)' };
+
+  log.innerHTML = avances.map(a => `
+    <div class="avance-entry">
+      <div style="flex:1">
+        <div style="margin-bottom:4px"><span class="ae-suc">${a.suc}</span> · <span style="color:var(--magenta);font-size:10px">${a.rmg}</span> · <span style="color:${estadoColors[a.estado]||'var(--white)'};font-size:10px;border:1px solid ${estadoColors[a.estado]||'var(--white)'};padding:1px 6px;border-radius:10px">${a.estado}</span></div>
+        <div class="ae-text">${a.texto}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="ae-meta">${a.fecha}</div>
+        <button class="btn-danger" style="margin-top:4px" onclick="deleteAvance(${a.ts})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─── PLANNER ────────────────────────────────────────────────────────────
+function buildPlanner() {
+  const months = [
+    { key:'jun', label:'JUNIO 2026', range:[new Date('2026-06-01'), new Date('2026-06-30')] },
+    { key:'jul', label:'JULIO 2026',  range:[new Date('2026-07-01'), new Date('2026-07-31')] },
+    { key:'ago', label:'AGOSTO 2026', range:[new Date('2026-08-01'), new Date('2026-08-31')] },
+  ];
+
+  const events = [];
+  rmgs.forEach(r => {
+    const dl = getDeadline(r);
+    events.push({ date: dl, text: `${r.code} – ${r.desc.substring(0,35)}...`, suc: r.suc, days: r.days, type:'deadline' });
+  });
+  // Beltramino events
+  events.push({ date: new Date('2026-07-01'), text:'Visita Beltramino VME – Plan O&L personalizado', suc:'VILLA MERCEDES', days:0, type:'visit' });
+  events.push({ date: new Date('2026-07-15'), text:'Capacitación incendios RIO4 (programada)', suc:'RÍO CUARTO', days:0, type:'cap' });
+
+  const grid = document.getElementById('plannerGrid');
+  months.forEach(m => {
+    const mevs = events.filter(e => e.date >= m.range[0] && e.date <= m.range[1]);
+    mevs.sort((a,b)=>a.date-b.date);
+
+    let html = `<div class="planner-month"><div class="planner-month-title">${m.label}</div>`;
+    if(!mevs.length) { html += '<div style="color:var(--muted);font-size:10px">Sin eventos</div>'; }
+    mevs.forEach(ev => {
+      const dotClass = ev.type==='visit'||ev.type==='cap' ? 'dot-ok' : ev.days===30?'dot-30':ev.days===60?'dot-60':'dot-90';
+      const sucColor = getSucColor(ev.suc);
+      html += `<div class="planner-event">
+        <div class="pe-dot ${dotClass}" style="margin-top:4px"></div>
+        <div><div class="pe-date">${ev.date.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})}</div>
+        <div class="pe-text">${ev.text}</div>
+        <div style="font-size:9px;color:${sucColor}">${ev.suc}</div></div>
+      </div>`;
+    });
+    html += '</div>';
+    grid.innerHTML += html;
+  });
+}
+
+// ─── RESUMEN TABLE ───────────────────────────────────────────────────────
+function buildResumenTable() {
+  const checks = load('checks', {});
+  const tbody = document.getElementById('rmg-all-rows');
+  tbody.innerHTML = rmgs.map(r => {
+    const dl = getDeadline(r);
+    const dLeft = getDaysLeft(r);
+    const isDone = checks[r.id];
+    const deadClass = r.days===30?'badge-amber':r.days===60?'badge-red':'badge-cyan';
+    const statusColor = isDone ? 'var(--green)' : dLeft < 0 ? 'var(--red)' : dLeft <= 10 ? 'var(--amber)' : 'var(--muted)';
+    const statusText = isDone ? 'COMPLETADO' : dLeft < 0 ? 'VENCIDO' : `${dLeft}d restantes`;
+    return `<tr>
+      <td><span style="color:var(--magenta)">${r.code}</span></td>
+      <td>${r.desc}</td>
+      <td style="color:${getSucColor(r.suc)};white-space:nowrap">${r.suc}</td>
+      <td><span class="badge ${deadClass}">${r.days}d</span></td>
+      <td style="white-space:nowrap;font-size:10px">${fmtDate(dl)}</td>
+      <td style="color:${statusColor};font-size:10px">${statusText}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── KPIS ────────────────────────────────────────────────────────────────
+function updateKPIs() {
+  const checks = load('checks', {});
+  const done = rmgs.filter(r => checks[r.id]).length;
+  document.getElementById('kpi-done').textContent = done;
+  buildResumenTable();
+}
+
+function updateResumenProgress() {
+  const checks = load('checks', {});
+  const sucs = {'CD CÓRDOBA':[],'RÍO CUARTO':[],'VILLA MERCEDES':[]};
+  rmgs.forEach(r => sucs[r.suc].push(r));
+  const pcts = {
+    'CD CÓRDOBA': Math.round(sucs['CD CÓRDOBA'].filter(r=>checks[r.id]).length/5*100),
+    'RÍO CUARTO': Math.round(sucs['RÍO CUARTO'].filter(r=>checks[r.id]).length/2*100),
+    'VILLA MERCEDES': Math.round(sucs['VILLA MERCEDES'].filter(r=>checks[r.id]).length/3*100),
+  };
+  if(document.getElementById('prog-cba')) document.getElementById('prog-cba').style.width = pcts['CD CÓRDOBA']+'%';
+  if(document.getElementById('prog-rio')) document.getElementById('prog-rio').style.width = pcts['RÍO CUARTO']+'%';
+  if(document.getElementById('prog-vme')) document.getElementById('prog-vme').style.width = pcts['VILLA MERCEDES']+'%';
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function showSaved() {
+  const n = document.getElementById('saveNotice');
+  n.style.display='block';
+  setTimeout(()=>n.style.display='none', 2000);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────
+buildGantt();
+buildChecklists();
+buildPlanner();
+renderAvances();
+updateKPIs();
+updateResumenProgress();
+</script>
+</body>
+</html>
