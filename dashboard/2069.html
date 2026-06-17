@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="es" data-theme="light" data-palette="azul">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Disposición ANMAT 2069/2018 — Buenas Prácticas de Distribución de Medicamentos. Navegá la norma capítulo por capítulo con checklists, glosario y links de referencia.">
+<title>BPD · ANMAT 2069/2018</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS — PALETAS (light)
+═══════════════════════════════════════════ */
+:root,[data-theme="light"] {
+  --bg:#f4f6fa;
+  --surface:#ffffff;
+  --surface2:#eef1f7;
+  --border:#d6dce8;
+  --text:#0e1628;
+  --muted:#5a6478;
+  --shadow:0 2px 12px rgba(14,22,40,.09);
+  --shadow-lg:0 8px 32px rgba(14,22,40,.13);
+  --radius:14px;
+  --radius-sm:8px;
+  --maxw:1140px;
+}
+/* Azul (default) */
+[data-palette="azul"] {
+  --accent:#1a6fdb;
+  --accent-soft:#e4eefb;
+  --accent-dark:#124fa3;
+  --accent2:#0ea5e9;
+  --hero-grad:linear-gradient(135deg,#1a6fdb 0%,#0ea5e9 100%);
+}
+/* Verde */
+[data-palette="verde"] {
+  --accent:#16a34a;
+  --accent-soft:#dcfce7;
+  --accent-dark:#14532d;
+  --accent2:#22c55e;
+  --hero-grad:linear-gradient(135deg,#16a34a 0%,#22c55e 100%);
+}
+/* Violeta */
+[data-palette="violeta"] {
+  --accent:#7c3aed;
+  --accent-soft:#ede9fe;
+  --accent-dark:#4c1d95;
+  --accent2:#a855f7;
+  --hero-grad:linear-gradient(135deg,#7c3aed 0%,#a855f7 100%);
+}
+/* Coral */
+[data-palette="coral"] {
+  --accent:#e04b30;
+  --accent-soft:#fde8e4;
+  --accent-dark:#991b1b;
+  --accent2:#f97316;
+  --hero-grad:linear-gradient(135deg,#e04b30 0%,#f97316 100%);
+}
+/* Teal */
+[data-palette="teal"] {
+  --accent:#0d9488;
+  --accent-soft:#ccfbf1;
+  --accent-dark:#134e4a;
+  --accent2:#14b8a6;
+  --hero-grad:linear-gradient(135deg,#0d9488 0%,#14b8a6 100%);
+}
+
+/* ═══════════════════════════════════════════
+   DARK MODE
+═══════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:#0d1117;
+  --surface:#161c27;
+  --surface2:#1e2635;
+  --border:#2a3347;
+  --text:#e2e8f4;
+  --muted:#8b99b5;
+  --shadow:0 2px 12px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.5);
+}
+[data-theme="dark"][data-palette="azul"]   { --accent:#60a5fa; --accent-soft:#1e2e45; --accent-dark:#93c5fd; --accent2:#38bdf8; --hero-grad:linear-gradient(135deg,#1e3a5f 0%,#1e4060 100%); }
+[data-theme="dark"][data-palette="verde"]  { --accent:#4ade80; --accent-soft:#14291e; --accent-dark:#86efac; --accent2:#22c55e; --hero-grad:linear-gradient(135deg,#14291e 0%,#1a3d27 100%); }
+[data-theme="dark"][data-palette="violeta"]{ --accent:#a78bfa; --accent-soft:#1e1840; --accent-dark:#c4b5fd; --accent2:#d8b4fe; --hero-grad:linear-gradient(135deg,#1e1840 0%,#2a1a52 100%); }
+[data-theme="dark"][data-palette="coral"]  { --accent:#fb923c; --accent-soft:#3a1a12; --accent-dark:#fdba74; --accent2:#fcd34d; --hero-grad:linear-gradient(135deg,#3a1a12 0%,#3d2210 100%); }
+[data-theme="dark"][data-palette="teal"]   { --accent:#2dd4bf; --accent-soft:#0f2a27; --accent-dark:#5eead4; --accent2:#34d399; --hero-grad:linear-gradient(135deg,#0f2a27 0%,#0f3430 100%); }
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+  transition:background .25s,color .25s;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%}
+ul,ol{padding-left:1.4rem}
+li{margin-bottom:.3rem}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.skip-link{position:absolute;left:-999px;top:0;padding:8px 14px;background:var(--accent);color:#fff;border-radius:0 0 var(--radius-sm) var(--radius-sm);z-index:9999}
+.skip-link:focus{left:0}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+header{
+  position:sticky;top:0;z-index:100;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow);
+  transition:background .25s,border-color .25s;
+}
+.nav-wrap{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;
+  justify-content:space-between;
+}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brand-badge{
+  width:40px;height:40px;border-radius:12px;
+  background:var(--hero-grad);
+  display:grid;place-items:center;
+  color:#fff;font-family:'Sora',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:-.3px;
+  transition:background .3s;
+}
+.brand-text strong{font-size:15px;font-weight:700;color:var(--text)}
+.brand-text small{display:block;font-size:11px;color:var(--muted);line-height:1.2}
+
+nav.desktop-nav{display:flex;gap:2px;align-items:center}
+nav.desktop-nav a{
+  padding:7px 11px;border-radius:8px;
+  font-size:13.5px;font-weight:500;
+  color:var(--muted);
+  transition:background .15s,color .15s;
+}
+nav.desktop-nav a:hover{background:var(--surface2);color:var(--text);text-decoration:none}
+nav.desktop-nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+.nav-actions{display:flex;align-items:center;gap:8px}
+
+/* Botón base */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:all .15s;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.btn:hover{background:var(--surface2);text-decoration:none;color:var(--text)}
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+  border-color:transparent;
+  font-weight:600;
+}
+.btn-primary:hover{background:var(--accent-dark);color:#fff}
+.btn-ghost{background:transparent;border-color:transparent}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-icon{padding:8px;border-radius:var(--radius-sm)}
+
+/* Paletas de color */
+.palette-btn{
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:transform .15s,border-color .15s;
+  outline:none;
+}
+.palette-btn:hover,.palette-btn.active{border-color:var(--text);transform:scale(1.2)}
+.palette-dot-azul{background:linear-gradient(135deg,#1a6fdb,#0ea5e9)}
+.palette-dot-verde{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.palette-dot-violeta{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+.palette-dot-coral{background:linear-gradient(135deg,#e04b30,#f97316)}
+.palette-dot-teal{background:linear-gradient(135deg,#0d9488,#14b8a6)}
+.palette-strip{display:flex;align-items:center;gap:6px;padding:4px 8px;background:var(--surface2);border-radius:20px;border:1px solid var(--border)}
+
+/* Menú móvil */
+.hamburger{display:none}
+.mobile-menu{
+  display:none;
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.5);
+}
+.mobile-menu.open{display:block}
+.mobile-panel{
+  position:absolute;right:0;top:0;bottom:0;
+  width:min(300px,85vw);
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  padding:20px;
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:4px;
+}
+.mobile-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mobile-panel a{
+  display:block;padding:10px 12px;
+  border-radius:var(--radius-sm);
+  color:var(--text);font-weight:500;
+  transition:background .15s;
+}
+.mobile-panel a:hover{background:var(--surface2);text-decoration:none}
+.mobile-panel a.active{background:var(--accent-soft);color:var(--accent)}
+.mobile-sep{height:1px;background:var(--border);margin:8px 0}
+
+/* ═══════════════════════════════════════════
+   PÁGINAS (SPA)
+═══════════════════════════════════════════ */
+.page{display:none}
+.page.active{display:block}
+
+/* ═══════════════════════════════════════════
+   HERO (inicio)
+═══════════════════════════════════════════ */
+.hero{
+  padding:52px 0 40px;
+  background:var(--hero-grad);
+  color:#fff;
+  transition:background .3s;
+}
+.hero-inner{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(26px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:12px}
+.hero p{font-size:16px;opacity:.9;max-width:520px;line-height:1.6}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hero-badge{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.3);
+  padding:5px 12px;border-radius:20px;
+  font-size:12px;font-weight:500;
+}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.hero-actions .btn{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);color:#fff}
+.hero-actions .btn:hover{background:rgba(255,255,255,.28);color:#fff;text-decoration:none}
+.hero-actions .btn-primary{background:#fff;color:var(--accent);border-color:transparent}
+.hero-actions .btn-primary:hover{background:rgba(255,255,255,.9)}
+.hero-pill{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.25);
+  padding:20px 24px;border-radius:var(--radius);
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  min-width:120px;
+}
+.hero-pill strong{font-size:32px;font-weight:800;font-family:'Sora',sans-serif}
+.hero-pill span{font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.8px}
+
+/* ═══════════════════════════════════════════
+   SECCIONES GENERALES
+═══════════════════════════════════════════ */
+.section{padding:36px 0}
+.section-title{
+  font-family:'Sora',sans-serif;
+  font-size:clamp(18px,2.5vw,24px);
+  font-weight:700;color:var(--text);
+  margin-bottom:6px;
+}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+
+/* Grid tarjetas */
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+
+/* Cards */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  transition:box-shadow .2s,transform .2s,border-color .2s,background .25s;
+}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.card.clickable{cursor:pointer}
+a.card{color:inherit;text-decoration:none;display:block}
+a.card:hover{text-decoration:none}
+.card-icon{font-size:28px;margin-bottom:10px;display:block}
+.card h3{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--muted);line-height:1.55}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pill{
+  font-size:11px;padding:3px 9px;border-radius:12px;
+  background:var(--accent-soft);color:var(--accent);
+  font-weight:600;
+}
+.pill-muted{background:var(--surface2);color:var(--muted)}
+.card-arrow{color:var(--accent);font-size:18px;margin-left:auto;opacity:.6}
+
+/* Number badge */
+.num-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:8px;
+  background:var(--accent-soft);color:var(--accent);
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════════
+   STATS ROW
+═══════════════════════════════════════════ */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+  margin:24px 0;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;text-align:center;
+  box-shadow:var(--shadow);
+  transition:background .25s;
+}
+.stat-num{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:var(--accent);line-height:1}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ═══════════════════════════════════════════
+   CAPÍTULO DETAIL
+═══════════════════════════════════════════ */
+.chapter-layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:24px;
+  align-items:start;
+  padding:28px 0;
+}
+.chapter-toc{
+  position:sticky;top:76px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  transition:background .25s;
+}
+.chapter-toc h4{
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:12px;
+}
+.chapter-toc a{
+  display:block;padding:7px 10px;
+  border-radius:var(--radius-sm);
+  font-size:13px;color:var(--muted);
+  transition:background .12s,color .12s;
+}
+.chapter-toc a:hover{background:var(--surface2);color:var(--text);text-decoration:none}
+.chapter-toc a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc-sep{height:1px;background:var(--border);margin:8px 0}
+
+.chapter-content h2{
+  font-family:'Sora',sans-serif;
+  font-size:22px;font-weight:700;
+  color:var(--text);margin:0 0 12px;
+}
+.chapter-content h3{
+  font-size:16px;font-weight:700;
+  color:var(--text);margin:28px 0 8px;
+}
+.chapter-content p{font-size:14.5px;color:var(--text);margin-bottom:12px;line-height:1.65}
+.chapter-content ul li{font-size:14px;color:var(--muted)}
+
+.callout{
+  border-left:3px solid var(--accent);
+  background:var(--accent-soft);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:14px 16px;margin:16px 0;
+}
+.callout strong{display:block;margin-bottom:6px;color:var(--text);font-size:14px}
+.callout p,.callout li{font-size:13px;color:var(--muted)}
+.callout.warn{border-color:#f59e0b;background:#fef3c7}
+[data-theme="dark"] .callout.warn{background:#2a220a;color:var(--text)}
+.callout.tip{border-color:#10b981;background:#d1fae5}
+[data-theme="dark"] .callout.tip{background:#0a2919}
+
+/* Checklist */
+.checklist-grid{display:grid;gap:8px;margin-top:12px}
+.check-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:border-color .15s,background .15s;
+}
+.check-item:hover{border-color:var(--accent);background:var(--accent-soft)}
+.check-item input[type=checkbox]{
+  width:16px;height:16px;flex-shrink:0;
+  accent-color:var(--accent);margin-top:2px;cursor:pointer;
+}
+.check-item span{font-size:13.5px;color:var(--text);line-height:1.45}
+.check-item:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.check-item:has(input:checked) span{color:var(--muted)}
+.progress-bar-wrap{margin-bottom:16px}
+.progress-bar-wrap label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--hero-grad);border-radius:3px;transition:width .3s}
+
+/* Sección navegación entre capítulos */
+.chapter-nav{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:24px 0 8px;
+  border-top:1px solid var(--border);
+  margin-top:24px;
+}
+
+/* ═══════════════════════════════════════════
+   GLOSARIO
+═══════════════════════════════════════════ */
+.search-input-wrap{
+  position:relative;margin-bottom:20px;
+}
+.search-input-wrap svg{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--muted);pointer-events:none;
+}
+.search-input{
+  width:100%;padding:11px 16px 11px 40px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  color:var(--text);font-size:14px;
+  outline:none;transition:border-color .15s;
+}
+.search-input:focus{border-color:var(--accent)}
+.gloss-table{width:100%;border-collapse:collapse}
+.gloss-table th{
+  text-align:left;padding:10px 14px;
+  font-size:12px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);
+  border-bottom:2px solid var(--border);
+  background:var(--surface);
+}
+.gloss-table td{
+  padding:11px 14px;font-size:13.5px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.gloss-table tr:hover td{background:var(--surface2)}
+.gloss-table td:first-child{font-weight:600;color:var(--text);white-space:nowrap;width:200px}
+.gloss-table td:nth-child(2){color:var(--muted)}
+.gloss-table td:last-child{font-size:12px;color:var(--accent);white-space:nowrap}
+
+
+/* ═══════════════════════════════════════════
+   LINKS / TABLA
+═══════════════════════════════════════════ */
+.links-table{width:100%;border-collapse:collapse}
+.links-table th{
+  text-align:left;padding:10px 14px;
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--muted);border-bottom:2px solid var(--border);
+  background:var(--surface);
+}
+.links-table td{padding:11px 14px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle}
+.links-table tr:hover td{background:var(--surface2)}
+.links-table a{color:var(--accent);font-weight:500}
+.links-table .badge-org{
+  display:inline-block;font-size:11px;
+  padding:2px 8px;border-radius:10px;
+  background:var(--surface2);color:var(--muted);
+  font-weight:600;
+}
+
+/* ═══════════════════════════════════════════
+   NORMA (estructura)
+═══════════════════════════════════════════ */
+.norma-timeline{position:relative;padding-left:32px;margin-top:20px}
+.norma-timeline::before{
+  content:'';position:absolute;left:10px;top:0;bottom:0;
+  width:2px;background:var(--border);
+}
+.timeline-item{
+  position:relative;margin-bottom:20px;
+  padding:16px 18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.timeline-item::before{
+  content:'';position:absolute;left:-26px;top:20px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--accent);
+  border:2px solid var(--surface);
+  box-shadow:0 0 0 2px var(--accent);
+}
+.timeline-item h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.timeline-item p{font-size:13px;color:var(--muted);margin:0}
+
+/* ═══════════════════════════════════════════
+   DESCARGAS
+═══════════════════════════════════════════ */
+.download-card{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  transition:box-shadow .2s,border-color .2s;
+}
+.download-card:hover{box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.download-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:var(--accent-soft);
+  display:grid;place-items:center;
+  font-size:22px;flex-shrink:0;
+}
+.download-info h3{font-size:14px;font-weight:600;margin-bottom:3px}
+.download-info p{font-size:12.5px;color:var(--muted)}
+.download-actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+
+/* ═══════════════════════════════════════════
+   SUGERENCIAS
+═══════════════════════════════════════════ */
+.sug-form{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow:var(--shadow);
+  max-width:600px;
+}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--surface2);
+  color:var(--text);font-size:14px;
+  outline:none;transition:border-color .15s;
+  font-family:inherit;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--accent);background:var(--surface);
+}
+.field textarea{resize:vertical;min-height:100px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  padding:28px 0;
+  margin-top:40px;
+  transition:background .25s;
+}
+.footer-inner{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-text{font-size:13px;color:var(--muted)}
+.footer-text strong{color:var(--text)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12.5px;color:var(--muted)}
+.footer-links a:hover{color:var(--accent)}
+
+/* ═══════════════════════════════════════════
+   BREADCRUMB
+═══════════════════════════════════════════ */
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--muted);
+  padding:14px 0 0;
+}
+.breadcrumb a{color:var(--muted);font-weight:500}
+.breadcrumb a:hover{color:var(--accent);text-decoration:none}
+.breadcrumb span{color:var(--border)}
+
+/* ═══════════════════════════════════════════
+   NORMA INTRO CARD
+═══════════════════════════════════════════ */
+.intro-card{
+  background:var(--hero-grad);
+  border-radius:var(--radius);
+  padding:28px;color:#fff;
+  margin-bottom:24px;
+  transition:background .3s;
+}
+.intro-card h2{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
+.intro-card p{font-size:14px;opacity:.9;line-height:1.6}
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:24px}
+.tab-btn{
+  padding:10px 16px;font-size:13.5px;font-weight:500;
+  border:none;background:transparent;color:var(--muted);
+  cursor:pointer;position:relative;bottom:-2px;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ═══════════════════════════════════════════
+   BACK TO TOP + misc
+═══════════════════════════════════════════ */
+.sep{height:1px;background:var(--border);margin:20px 0}
+.text-muted{color:var(--muted)}
+.text-small{font-size:13px}
+.mt-16{margin-top:16px}
+.mb-24{margin-bottom:24px}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  nav.desktop-nav{display:none}
+  .hamburger{display:inline-flex}
+  .hero-inner{grid-template-columns:1fr;gap:20px}
+  .hero-pill{display:none}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .chapter-layout{grid-template-columns:1fr}
+  .chapter-toc{position:static;display:none}
+  .chapter-toc.open{display:block}
+  .gloss-table td:last-child{display:none}
+  .gloss-table td:first-child{width:auto}
+  .links-table .badge-org{display:none}
+  .footer-inner{flex-direction:column;gap:8px}
+  .palette-strip .palette-label{display:none}
+  .download-card{flex-wrap:wrap}
+  .download-actions{margin-left:0;width:100%}
+  .chapter-nav .btn-text{display:none}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:22px}
+  .hero-badges{display:none}
+  h1{font-size:20px!important}
+}
+@media print{
+  header,.nav-actions,.chapter-toc,footer,.hamburger,.mobile-menu,.hero-actions,nav.desktop-nav{display:none!important}
+  .page{display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Saltar al contenido</a>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+<div class="container">
+<div class="nav-wrap">
+  <div class="brand" onclick="navigate('inicio')" style="cursor:pointer">
+    <div class="brand-badge">BPD</div>
+    <div class="brand-text">
+      <strong>ANMAT 2069/2018</strong>
+      <small>Buenas Prácticas de Distribución</small>
+    </div>
+  </div>
+
+  <nav class="desktop-nav" role="navigation" aria-label="Principal">
+    <a href="#" onclick="navigate('inicio');return false" class="active" id="nav-inicio">Inicio</a>
+    <a href="#" onclick="navigate('norma');return false" id="nav-norma">La Norma</a>
+    <a href="#" onclick="navigate('capitulos');return false" id="nav-capitulos">Capítulos</a>
+    <a href="#" onclick="navigate('glosario');return false" id="nav-glosario">Glosario</a>
+    <a href="#" onclick="navigate('links');return false" id="nav-links">Links</a>
+    <a href="#" onclick="navigate('descargas');return false" id="nav-descargas">Descargas</a>
+  </nav>
+
+  <div class="nav-actions">
+    <!-- Paletas (solo modo claro) -->
+    <div class="palette-strip" id="palette-strip" title="Elegir color">
+      <button class="palette-btn palette-dot-azul active" data-pal="azul" title="Azul" onclick="setPalette('azul')"></button>
+      <button class="palette-btn palette-dot-verde" data-pal="verde" title="Verde" onclick="setPalette('verde')"></button>
+      <button class="palette-btn palette-dot-violeta" data-pal="violeta" title="Violeta" onclick="setPalette('violeta')"></button>
+      <button class="palette-btn palette-dot-coral" data-pal="coral" title="Coral" onclick="setPalette('coral')"></button>
+      <button class="palette-btn palette-dot-teal" data-pal="teal" title="Teal" onclick="setPalette('teal')"></button>
+    </div>
+
+    <!-- Toggle tema -->
+    <button class="btn btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+      <span id="theme-icon">🌙</span>
+    </button>
+
+    <button class="btn btn-primary" onclick="navigate('descargas')">⬇ Descargar</button>
+    <button class="btn btn-ghost btn-icon hamburger" onclick="openMenu()" aria-label="Menú">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
+  </div>
+</div>
+</div>
+</header>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-menu" id="mobileMenu" onclick="closeMenuOut(event)">
+  <div class="mobile-panel">
+    <div class="mobile-panel-header">
+      <strong>Menú</strong>
+      <button class="btn btn-ghost btn-icon" onclick="closeMenu()">✕</button>
+    </div>
+    <a href="#" onclick="navigate('inicio');closeMenu();return false" id="mnav-inicio">🏠 Inicio</a>
+    <a href="#" onclick="navigate('norma');closeMenu();return false" id="mnav-norma">📋 La Norma</a>
+    <a href="#" onclick="navigate('capitulos');closeMenu();return false" id="mnav-capitulos">📖 Capítulos</a>
+    <a href="#" onclick="navigate('glosario');closeMenu();return false" id="mnav-glosario">🔤 Glosario</a>
+    <a href="#" onclick="navigate('links');closeMenu();return false" id="mnav-links">🔗 Links</a>
+    <a href="#" onclick="navigate('descargas');closeMenu();return false" id="mnav-descargas">⬇ Descargas</a>
+    <a href="#" onclick="navigate('sugerencias');closeMenu();return false" id="mnav-sugerencias">💬 Sugerencias</a>
+    <div class="mobile-sep"></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0">
+      <span style="font-size:12px;color:var(--muted)">Color:</span>
+      <button class="palette-btn palette-dot-azul" data-pal="azul" onclick="setPalette('azul')"></button>
+      <button class="palette-btn palette-dot-verde" data-pal="verde" onclick="setPalette('verde')"></button>
+      <button class="palette-btn palette-dot-violeta" data-pal="violeta" onclick="setPalette('violeta')"></button>
+      <button class="palette-btn palette-dot-coral" data-pal="coral" onclick="setPalette('coral')"></button>
+      <button class="palette-btn palette-dot-teal" data-pal="teal" onclick="setPalette('teal')"></button>
+    </div>
+    <button class="btn" onclick="toggleTheme()" style="margin-top:4px;justify-content:center">
+      <span id="theme-icon-m">🌙</span> Cambiar tema
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main id="main">
+
+<!-- ══════════════════════════════════
+     PÁGINA: INICIO
+══════════════════════════════════ -->
+<div class="page active" id="page-inicio">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div style="font-size:13px;font-weight:600;opacity:.75;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px">Disposición ANMAT</div>
+          <h1>Buenas Prácticas de<br>Distribución de Medicamentos</h1>
+          <p>Navegá la estructura completa de la Disposición 2069/2018 capítulo por capítulo, con síntesis operativa, checklists, glosario y recursos de formación.</p>
+          <div class="hero-badges">
+            <span class="hero-badge">📋 10 capítulos</span>
+            <span class="hero-badge">✅ Checklists por capítulo</span>
+            <span class="hero-badge">🔤 Glosario con búsqueda</span>
+            <span class="hero-badge">🖨️ Imprimible</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="navigate('capitulos')">Ver Capítulos →</button>
+            <button class="btn" onclick="navigate('norma')">Estructura de la norma</button>
+            <button class="btn" onclick="navigate('glosario')">Glosario</button>
+          </div>
+        </div>
+        <div class="hero-pill">
+          <strong>2069</strong>
+          <span>Disposición</span>
+          <div style="height:8px"></div>
+          <strong style="font-size:20px">2018</strong>
+          <span>Año</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">10</div>
+        <div class="stat-label">Capítulos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">45+</div>
+        <div class="stat-label">Items checklist</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">30</div>
+        <div class="stat-label">Definiciones</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2018</div>
+        <div class="stat-label">Vigente desde</div>
+      </div>
+    </div>
+
+    <!-- Organización -->
+    <div class="section" style="padding-top:8px">
+      <h2 class="section-title">¿Cómo está organizado este sitio?</h2>
+      <p class="section-sub">Cada sección tiene un propósito concreto para facilitar el estudio y la implementación.</p>
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="card-icon">📋</span>
+          <h3>La Norma</h3>
+          <p>Estructura general de la disposición: introducción, propósito, alcances y lectura recomendada.</p>
+          <div class="card-meta">
+            <button class="btn" onclick="navigate('norma')" style="margin-top:4px">Ver norma →</button>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">📖</span>
+          <h3>Capítulos</h3>
+          <p>Los 10 capítulos del Anexo BPD con subtemas, evidencias típicas y checklist persistente.</p>
+          <div class="card-meta">
+            <button class="btn" onclick="navigate('capitulos')" style="margin-top:4px">Ver capítulos →</button>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">🔤</span>
+          <h3>Glosario</h3>
+          <p>Términos clave del Anexo (Definiciones) + vocabulario operativo habitual en BPD.</p>
+          <div class="card-meta">
+            <button class="btn" onclick="navigate('glosario')" style="margin-top:4px">Abrir glosario →</button>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">🔗</span>
+          <h3>Links oficiales</h3>
+          <p>Acceso a la norma en Argentina.gob.ar, ANMAT, InfoLEG y documentos complementarios.</p>
+          <div class="card-meta">
+            <button class="btn" onclick="navigate('links')" style="margin-top:4px">Ver links →</button>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">⬇</span>
+          <h3>Descargas</h3>
+          <p>Acceso a la norma oficial en PDF y otros documentos de referencia para imprimir o compartir.</p>
+          <div class="card-meta">
+            <button class="btn" onclick="navigate('descargas')" style="margin-top:4px">Ver descargas →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini lectura recomendada -->
+    <div class="callout" style="margin-bottom:32px">
+      <strong>💡 Orden de lectura recomendado para implementación</strong>
+      <p>Cap. 1 (Calidad) → Cap. 3 (Documentación) → Cap. 4 (Personal) → Cap. 5 (Instalaciones) → Cap. 6 (Operaciones) → luego Cap. 2, 7, 8, 9 y 10.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: LA NORMA
+══════════════════════════════════ -->
+<div class="page" id="page-norma">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>La Norma</div>
+
+    <div class="intro-card" style="margin-top:20px">
+      <h2>La norma en una frase</h2>
+      <p>La Disposición ANMAT 2069/2018 aprueba las "Buenas Prácticas de Distribución de Medicamentos", fijando estándares mínimos para almacenamiento, distribución y transporte en la cadena legal, con foco en calidad, integridad y prevención de medicamentos ilegítimos.</p>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:28px">
+      <div class="card">
+        <h3>📅 Datos de la norma</h3>
+        <div class="sep"></div>
+        <p style="font-size:14px"><strong>Norma:</strong> Disposición ANMAT N° 2069/2018</p>
+        <p style="font-size:14px"><strong>Publicación:</strong> Boletín Oficial – 15 de marzo de 2018</p>
+        <p style="font-size:14px"><strong>Objeto:</strong> Aprobar el Anexo "BPD de Medicamentos"</p>
+        <p style="font-size:14px;margin-bottom:0"><strong>Vigencia:</strong> Plena vigencia desde su publicación</p>
+      </div>
+      <div class="card">
+        <h3>🎯 ¿A quién aplica?</h3>
+        <div class="sep"></div>
+        <ul style="font-size:14px;color:var(--muted)">
+          <li>Droguerías y distribuidores de medicamentos</li>
+          <li>Depósitos de medicamentos</li>
+          <li>Empresas de transporte de productos farmacéuticos</li>
+          <li>Establecimientos con depósito de trasbordo</li>
+          <li>Laboratorios con distribución propia (cuando aplique)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-title">Estructura del Anexo BPD</h2>
+    <p class="section-sub">El Anexo aprobado por la disposición tiene la siguiente organización:</p>
+
+    <div class="norma-timeline">
+      <div class="timeline-item">
+        <h4>1 — Introducción</h4>
+        <p>Contexto regulatorio y relación con las Buenas Prácticas de Fabricación.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>2 — Propósito</h4>
+        <p>Garantizar la calidad e integridad del medicamento en toda la cadena de distribución.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>3 — Alcances</h4>
+        <p>Define quiénes deben cumplir: distribuidores, droguerías, transportistas y depósitos de trasbordo.</p>
+      </div>
+      <div class="timeline-item">
+        <h4>Definiciones</h4>
+        <p>Glosario oficial de términos usados en el Anexo. <button class="btn" onclick="navigate('glosario')" style="margin-left:8px;padding:3px 10px;font-size:12px">Ver glosario →</button></p>
+      </div>
+      <div class="timeline-item">
+        <h4>Capítulos 1–10</h4>
+        <p>El cuerpo normativo: Gestión de la Calidad, Cadena Legal, Documentación, Personal, Instalaciones, Operaciones, Actividades Contratadas, Reclamos/Retiros, Autoinspecciones y Transporte. <button class="btn" onclick="navigate('capitulos')" style="margin-left:8px;padding:3px 10px;font-size:12px">Ver capítulos →</button></p>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+    <h2 class="section-title" style="margin-top:20px">Documentos oficiales</h2>
+    <p class="section-sub">Accedé al texto oficial para auditorías e inspecciones.</p>
+    <div class="grid grid-2" style="gap:10px">
+      <a href="https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-2069-2018-307891" target="_blank" rel="noopener" class="download-card" style="text-decoration:none;color:inherit">
+        <div class="download-icon">🏛️</div>
+        <div class="download-info"><h3>Argentina.gob.ar — Ficha de la norma</h3><p>Información oficial del Poder Ejecutivo Nacional</p></div>
+        <div class="download-actions"><span class="btn" style="font-size:12px">Abrir ↗</span></div>
+      </a>
+      <a href="https://boletin.anmat.gob.ar/BO/Disposicion_2069-2018.pdf" target="_blank" rel="noopener" class="download-card" style="text-decoration:none;color:inherit">
+        <div class="download-icon">📄</div>
+        <div class="download-info"><h3>PDF — Boletín ANMAT</h3><p>Texto completo de la disposición con el Anexo BPD</p></div>
+        <div class="download-actions"><span class="btn" style="font-size:12px">Abrir ↗</span></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: CAPÍTULOS (grilla)
+══════════════════════════════════ -->
+<div class="page" id="page-capitulos">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>Capítulos</div>
+    <div class="section" style="padding-top:16px">
+      <h1 class="section-title">Los 10 Capítulos del Anexo BPD</h1>
+      <p class="section-sub">Hacé clic en un capítulo para ver subtemas, evidencias típicas y checklist de cumplimiento.</p>
+      <div class="grid grid-2" id="chapters-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: CAPÍTULO DETALLE
+══════════════════════════════════ -->
+<div class="page" id="page-chapter">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>
+      <a href="#" onclick="navigate('capitulos');return false">Capítulos</a><span>/</span>
+      <span id="chapter-bc-title">Capítulo</span>
+    </div>
+    <div class="chapter-layout">
+      <aside>
+        <div class="chapter-toc" id="chapter-toc">
+          <h4>En este capítulo</h4>
+          <div id="toc-links"></div>
+          <div class="toc-sep"></div>
+          <a href="#chk" onclick="scrollToId('chk')">✅ Checklist</a>
+          <a href="#fuentes" onclick="scrollToId('fuentes')">📚 Fuentes</a>
+        </div>
+        <!-- Toggle TOC móvil -->
+        <button class="btn" id="toc-toggle-btn" onclick="toggleToc()" style="width:100%;justify-content:center;margin-bottom:12px;display:none">📑 Ver índice del capítulo</button>
+      </aside>
+      <div id="chapter-body" class="chapter-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: GLOSARIO
+══════════════════════════════════ -->
+<div class="page" id="page-glosario">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>Glosario</div>
+    <div class="section" style="padding-top:16px">
+      <h1 class="section-title">Glosario BPD</h1>
+      <p class="section-sub">Términos clave del Anexo de Definiciones + vocabulario operativo habitual. Buscá por palabra o concepto.</p>
+      <div class="search-input-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="gloss-search" placeholder="Buscar término..." oninput="filterGloss()">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="gloss-table" id="gloss-table">
+          <thead><tr><th>Término</th><th>Definición</th><th>Fuente</th></tr></thead>
+          <tbody id="gloss-body"></tbody>
+        </table>
+      </div>
+      <p id="gloss-empty" style="display:none;text-align:center;color:var(--muted);padding:24px">No se encontraron resultados.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: LINKS
+══════════════════════════════════ -->
+<div class="page" id="page-links">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>Links</div>
+    <div class="section" style="padding-top:16px">
+      <h1 class="section-title">Links de Referencia</h1>
+      <p class="section-sub">Fuentes oficiales y complementarias sobre la Disposición 2069/2018 y el entorno regulatorio farmacéutico.</p>
+      <div style="overflow-x:auto">
+        <table class="links-table">
+          <thead><tr><th>Recurso</th><th>Organismo</th><th>Tipo</th></tr></thead>
+          <tbody id="links-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: DESCARGAS
+══════════════════════════════════ -->
+<div class="page" id="page-descargas">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>Descargas</div>
+    <div class="section" style="padding-top:16px">
+      <h1 class="section-title">Descargas</h1>
+      <p class="section-sub">Documentos oficiales y recursos de referencia disponibles para descargar.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:720px">
+
+        <a href="https://boletin.anmat.gob.ar/BO/Disposicion_2069-2018.pdf" target="_blank" rel="noopener" class="download-card" style="text-decoration:none;color:inherit">
+          <div class="download-icon">📄</div>
+          <div class="download-info">
+            <h3>Disposición ANMAT 2069/2018 — PDF completo</h3>
+            <p>Texto oficial publicado en el Boletín ANMAT incluyendo el Anexo "Buenas Prácticas de Distribución de Medicamentos". Fuente primaria para auditorías e inspecciones.</p>
+          </div>
+          <div class="download-actions">
+            <span class="btn btn-primary" style="font-size:13px">⬇ Descargar PDF</span>
+          </div>
+        </a>
+
+        <a href="https://cilfa.org.ar/wp1/wp-content/uploads/2018/10/Disp.-ANMAT-2069-15.3.18-BPDistribuci%C3%B3n-Anexo.pdf" target="_blank" rel="noopener" class="download-card" style="text-decoration:none;color:inherit">
+          <div class="download-icon">📋</div>
+          <div class="download-info">
+            <h3>Anexo BPD — versión CILFA</h3>
+            <p>Versión del Anexo "Buenas Prácticas de Distribución de Medicamentos" publicada por la Cámara Industrial de Laboratorios Farmacéuticos Argentinos.</p>
+          </div>
+          <div class="download-actions">
+            <span class="btn" style="font-size:13px">⬇ Descargar</span>
+          </div>
+        </a>
+
+        <a href="https://www.argentina.gob.ar/sites/default/files/anmat_traza_med_manual_bpt_v1_0_2015-02-18.pdf" target="_blank" rel="noopener" class="download-card" style="text-decoration:none;color:inherit">
+          <div class="download-icon">🔍</div>
+          <div class="download-info">
+            <h3>Manual SNT — Sistema Nacional de Trazabilidad</h3>
+            <p>Guía del Sistema Nacional de Trazabilidad de Medicamentos (ANMAT). Complementa los requisitos del Capítulo 6 (Operaciones).</p>
+          </div>
+          <div class="download-actions">
+            <span class="btn" style="font-size:13px">⬇ Descargar</span>
+          </div>
+        </a>
+
+        <div class="card" style="border-style:dashed">
+          <h3>🖨️ Imprimir esta página</h3>
+          <p class="text-muted text-small" style="margin:6px 0 12px">Podés imprimir cualquier capítulo de este sitio directamente desde tu navegador. El diseño está optimizado para impresión (Ctrl+P / Cmd+P).</p>
+          <button class="btn" onclick="window.print()">Imprimir página actual</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PÁGINA: SUGERENCIAS
+══════════════════════════════════ -->
+<div class="page" id="page-sugerencias">
+  <div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigate('inicio');return false">Inicio</a><span>/</span>Sugerencias</div>
+    <div class="section" style="padding-top:16px">
+      <h1 class="section-title">Sugerencias y Mejoras</h1>
+      <p class="section-sub" style="margin-bottom:20px">¿Encontraste un error, querés proponer un tema o comentar algo? Dejá tu sugerencia acá.</p>
+      <div class="sug-form">
+        <div class="field">
+          <label>Tipo de sugerencia</label>
+          <select id="sug-tipo">
+            <option value="">Seleccioná una opción…</option>
+            <option>Error o inexactitud en el contenido</option>
+            <option>Falta un tema o capítulo</option>
+            <option>Sugerencia de link externo</option>
+            <option>Problema técnico del sitio</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="sug-desc" placeholder="Describí tu sugerencia con el mayor detalle posible…"></textarea>
+        </div>
+        <div class="field">
+          <label>Tu nombre (opcional)</label>
+          <input type="text" id="sug-nombre" placeholder="Nombre o apodo">
+        </div>
+        <div class="callout tip" style="margin-bottom:16px">
+          <strong>ℹ Nota</strong>
+          <p>Este formulario no envía datos a ningún servidor. Es solo para uso de referencia interna. Podés copiar el texto y enviarlo por el canal que corresponda.</p>
+        </div>
+        <button class="btn btn-primary" onclick="copySug()">Copiar sugerencia al portapapeles</button>
+        <span id="sug-ok" style="display:none;margin-left:10px;font-size:13px;color:var(--accent)">✅ Copiado</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-text">
+        <strong>ANMAT 2069/2018 · BPD</strong> — Sitio de estudio/uso interno sobre la Disposición ANMAT 2069/2018 y su Anexo "Buenas Prácticas de Distribución de Medicamentos". No reemplaza el texto oficial ni el asesoramiento profesional.
+      </div>
+      <div class="footer-links">
+        <a href="#" onclick="navigate('sugerencias');return false">Sugerencias</a>
+        <a href="https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-2069-2018-307891" target="_blank" rel="noopener">Norma oficial ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════
+   DATOS
+═══════════════════════════════ */
+const CHAPTERS = [
+  {
+    id:'c1',num:'1',emoji:'⚙️',
+    title:'Gestión de la Calidad',
+    desc:'El "sistema nervioso" de las BPD: un SGC que ordena responsabilidades, procesos, recursos y documentación, incorporando gestión de riesgos y ciclo de mejora continua.',
+    subtemas:['1.1 Principio','1.2 Sistema de calidad','1.3 Actividades contratadas','1.4 Aseguramiento de la calidad','1.5 Gestión de riesgo'],
+    contenido:[
+      {id:'1-1',titulo:'1.1 Principio',texto:'La gestión de la calidad abarca todo lo que puede afectar la calidad del producto y reúne medidas para garantizar que el medicamento sea apto para su uso.'},
+      {id:'1-2',titulo:'1.2 Sistema de calidad',texto:'Exige establecer, implementar y mantener un sistema documentado (manual o equivalente) bajo responsabilidad de la Dirección Técnica y la Dirección, con recursos adecuados, control de cambios, registros en tiempo real, gestión de desvíos, CAPA, trazabilidad, contingencias y autoinspecciones.'},
+      {id:'1-3',titulo:'1.3 Actividades contratadas',texto:'El sistema debe contemplar revisión y control de actividades tercerizadas: evaluación de idoneidad, definición de responsabilidades/comunicación y seguimiento del desempeño.'},
+      {id:'1-4',titulo:'1.4 Aseguramiento de la calidad',texto:'La Dirección debe revisar periódicamente el sistema: objetivos, indicadores, resultados de auditorías/reclamos/CAPA, cambios regulatorios y del negocio; documentar y comunicar.'},
+      {id:'1-5',titulo:'1.5 Gestión de riesgo',texto:'Proceso sistemático (evaluar, controlar, comunicar, revisar) basado en ciencia y protección del paciente; el esfuerzo y la documentación deben ser proporcionales al riesgo.'},
+    ],
+    evidencias:['Manual de Calidad (o equivalente) y mapa de procesos.','Procedimiento de control de cambios y registros.','Gestión de desvíos + investigaciones + CAPA.','Programa anual de autoinspecciones y reportes.','Plan de contingencias (energía, cadena de frío, derrames).'],
+    checklist:[
+      {id:'c1.1',texto:'Existe un Manual de Calidad (o equivalente) aprobado por Dirección Técnica.'},
+      {id:'c1.2',texto:'Las responsabilidades están definidas y comunicadas (organigrama + roles clave).'},
+      {id:'c1.3',texto:'Hay proceso de control de cambios documentado (y validación cuando aplica).'},
+      {id:'c1.4',texto:'Se registran desvíos en tiempo real; se investigan y se documentan CAPA.'},
+      {id:'c1.5',texto:'Hay plan de contingencias (corte de energía, pérdida de cadena de frío, etc.).'},
+      {id:'c1.6',texto:'Se ejecutan autoinspecciones al menos una vez al año y se hace seguimiento.'},
+    ]
+  },
+  {
+    id:'c2',num:'2',emoji:'⛓️',
+    title:'Cadena Legal de Abastecimiento',
+    desc:'Prevención del ingreso de medicamentos ilegítimos. El distribuidor verifica procedencia y legitimidad, opera sólo con establecimientos habilitados y evalúa proveedores antes de cada transacción.',
+    subtemas:['2.1 Principios','2.2 Generalidades','2.3 Evaluación de proveedores y destinatarios'],
+    contenido:[
+      {id:'2-1',titulo:'2.1 Principios',texto:'Responsabilidad del distribuidor sobre la legitimidad y procedencia de lo que adquiere y comercializa; medidas para prevenir ingreso de productos ilegítimos.'},
+      {id:'2-2',titulo:'2.2 Generalidades',texto:'La cadena comprende sólo establecimientos autorizados; se prohíbe adquirir/entregar a no autorizados. La procedencia debe ser conocida y documentada; los productos deben contar con registro/autorización y verificarse al dar de alta un nuevo producto.'},
+      {id:'2-3',titulo:'2.3 Evaluación de proveedores y destinatarios',texto:'Evaluación previa a cualquier transacción; documentación verificada de habilitaciones, registro de la verificación y reevaluación periódica. Atención a entregas BPD, ofertas inusuales y ventas sospechosas (control especial).'},
+    ],
+    evidencias:['Listado de proveedores y destinatarios aprobados.','Registros de verificación de habilitaciones.','Procedimiento para ofertas inusuales o sospechosas.','Verificación de registro ANMAT al alta de producto.'],
+    checklist:[
+      {id:'c2.1',texto:'Se evalúan proveedores y destinatarios antes de la primera transacción.'},
+      {id:'c2.2',texto:'Se conserva documentación de habilitaciones sanitarias y su verificación registrada.'},
+      {id:'c2.3',texto:'Existe un listado actualizado de proveedores y destinatarios.'},
+      {id:'c2.4',texto:'Hay criterios para detectar ofertas/ventas inusuales y gestionar sospechas.'},
+      {id:'c2.5',texto:'Se verifica que el producto tenga registro/autorización al alta de producto.'},
+    ]
+  },
+  {
+    id:'c3',num:'3',emoji:'📄',
+    title:'Documentación',
+    desc:'Si no está escrito y controlado, no existe. Regula procedimientos, instructivos, contratos y registros para que el sistema sea trazable, reproducible y auditable.',
+    subtemas:['3.1 Principios','3.2 Generalidades','3.3 POE (Procedimientos Operativos Estándar)','3.4 Registros'],
+    contenido:[
+      {id:'3-1',titulo:'3.1 Principios',texto:'La documentación evita errores de comunicación verbal y permite reconstruir la historia de cada operación y la trayectoria de los productos.'},
+      {id:'3-2',titulo:'3.2 Generalidades',texto:'Toda documentación debe estar claramente redactada, sin ambigüedades, aprobada por los responsables correspondientes, y disponible en el lugar de uso.'},
+      {id:'3-3',titulo:'3.3 Procedimientos Operativos Estándar',texto:'Los POE deben describir las operaciones críticas, estar disponibles en el lugar donde se realizan, con versión vigente controlada, y tener registro de entrenamiento del personal que los aplica.'},
+      {id:'3-4',titulo:'3.4 Registros',texto:'Los registros deben completarse en el momento de la operación ("en tiempo real"), ser legibles, estar firmados, conservarse por el tiempo reglamentario (mínimo 2 años) y estar disponibles para inspección.'},
+    ],
+    evidencias:['Sistema de control de documentos (versionado, distribución, archivo).','POE críticos aprobados por Dirección Técnica.','Registros completos, en tiempo real y firmados.','Política de retención de documentos.'],
+    checklist:[
+      {id:'c3.1',texto:'Existe un sistema de control de documentos (versionado, distribución, archivo).'},
+      {id:'c3.2',texto:'POE críticos están aprobados por Dirección Técnica y disponibles al personal.'},
+      {id:'c3.3',texto:'Los cambios documentales preservan legibilidad del original y justifican el cambio.'},
+      {id:'c3.4',texto:'Registros se completan en tiempo real y se conservan ≥ 2 años.'},
+      {id:'c3.5',texto:'La documentación está disponible y es de fácil recuperación ante inspección.'},
+    ]
+  },
+  {
+    id:'c4',num:'4',emoji:'👥',
+    title:'Personal',
+    desc:'La distribución depende del personal. Establece cantidad suficiente, competencia, responsabilidades claras, Dirección Técnica con autoridad real y programa de entrenamiento continuo.',
+    subtemas:['4.1 Principios','4.2 Generalidades','4.3 Persona responsable (Dirección Técnica)','4.4 Entrenamiento'],
+    contenido:[
+      {id:'4-1',titulo:'4.1 Principios',texto:'El personal debe ser suficiente en cantidad y competente para las tareas asignadas. Incluye definición clara de responsabilidades y líneas de autoridad.'},
+      {id:'4-2',titulo:'4.2 Generalidades',texto:'Organigrama actualizado, descripciones de puesto para roles críticos, y cobertura de ausencias planificada. Higiene y ropa adecuada para el tipo de producto manejado.'},
+      {id:'4-3',titulo:'4.3 Persona responsable (Dirección Técnica)',texto:'Exige una Dirección Técnica farmacéutica con autoridad real y responsabilidades definidas por escrito: asegura cumplimiento BPD, aprueba/rechaza procedimientos y supervisa el SGC.'},
+      {id:'4-4',titulo:'4.4 Entrenamiento',texto:'Plan de entrenamiento inicial y continuo, con registros completos. Entrenamiento específico para cadena de frío, productos psicotrópicos/estupefacientes y otros de manejo especial.'},
+    ],
+    evidencias:['Organigrama actualizado y descripciones de puesto.','Designación formal de la Dirección Técnica.','Plan de entrenamiento y registros de capacitación.','Evaluaciones de efectividad del entrenamiento.'],
+    checklist:[
+      {id:'c4.1',texto:'Organigrama actualizado y descripciones de puesto para roles críticos.'},
+      {id:'c4.2',texto:'Dirección Técnica farmacéutica designada con autoridad y responsabilidades por escrito.'},
+      {id:'c4.3',texto:'Plan de entrenamiento inicial y continuo, con registros completos.'},
+      {id:'c4.4',texto:'Entrenamiento específico para cadena de frío y productos de manejo especial.'},
+      {id:'c4.5',texto:'Planes de suplencia definidos para puestos clave.'},
+    ]
+  },
+  {
+    id:'c5',num:'5',emoji:'🏭',
+    title:'Instalaciones y Equipos',
+    desc:'Traduce la calidad en ladrillos, racks, heladeras y logs de temperatura. Requisitos para instalaciones, control ambiental, cadena de frío, sistemas informatizados y calificaciones.',
+    subtemas:['5.1 Principios','5.2 Instalaciones','5.3 Limpieza y seguridad','5.4 Control de temperatura','5.5 Cadena de frío','5.6 Sistemas informatizados','5.7 Calificaciones y validaciones'],
+    contenido:[
+      {id:'5-1',titulo:'5.1 Principios',texto:'Las instalaciones deben diseñarse, construirse y mantenerse para proteger los productos almacenados contra contaminación, adulteración y deterioro.'},
+      {id:'5-2',titulo:'5.2 Instalaciones',texto:'Diseño que facilita limpieza y mantenimiento, segregación de áreas (cuarentena, no conformes, devoluciones), control de plagas y acceso controlado.'},
+      {id:'5-3',titulo:'5.3 Limpieza y seguridad',texto:'Plan de limpieza documentado, registros de ejecución, control de roedores/insectos y procedimiento para derrames de productos peligrosos.'},
+      {id:'5-4',titulo:'5.4 Control de temperatura y ambiente',texto:'Mapeo térmico inicial representativo, monitoreo continuo con equipos calibrados, alarmas verificadas periódicamente e investigación documentada de desvíos.'},
+      {id:'5-5',titulo:'5.5 Cadena de frío',texto:'Equipos de refrigeración con energía alternativa, mantenimiento preventivo registrado y procedimiento para pérdida de cadena de frío.'},
+      {id:'5-6',titulo:'5.6 Sistemas informatizados',texto:'Validación del sistema, control de acceso, backups periódicos y procedimiento de recuperación ante falla.'},
+      {id:'5-7',titulo:'5.7 Calificaciones y validaciones',texto:'Basadas en análisis de riesgo: calificación de instalación (CI), operación (CO) y desempeño (CD) según aplique. Revalidación ante cambios.'},
+    ],
+    evidencias:['Mapa térmico y monitoreo continuo con equipos calibrados.','Sistema de alarmas con registro de pruebas periódicas.','Cadena de frío con energía alternativa documentada.','Backups y procedimientos de recuperación de sistemas.','Calificaciones documentadas basadas en riesgo.'],
+    checklist:[
+      {id:'c5.1',texto:'Zonas segregadas e identificadas (cuarentena, no conformes, devoluciones, etc.).'},
+      {id:'c5.2',texto:'Mapa térmico / estudio inicial y monitoreo continuo con equipos calibrados.'},
+      {id:'c5.3',texto:'Sistema de alarmas probado periódicamente y registro de desvíos.'},
+      {id:'c5.4',texto:'Cadena de frío con energía alternativa y mantenimiento preventivo registrado.'},
+      {id:'c5.5',texto:'Backups y procedimientos de recuperación para sistemas informatizados.'},
+      {id:'c5.6',texto:'Validaciones/calificaciones definidas con base en análisis de riesgo.'},
+    ]
+  },
+  {
+    id:'c6',num:'6',emoji:'🔄',
+    title:'Operaciones',
+    desc:'Lo que pasa cuando el camión llega, cuando se arma un pedido y cuando sale a destino. Regula recepción, almacenamiento, preparación de pedidos, despacho y SNT.',
+    subtemas:['6.1 Principios','6.2 Recepción','6.3 Almacenamiento','6.4 No conformes y vencidos','6.5 Preparación de pedidos','6.6 Despacho','6.7 Inventarios','6.8 Trazabilidad (SNT)'],
+    contenido:[
+      {id:'6-1',titulo:'6.1 Principios',texto:'Las operaciones deben estar diseñadas para minimizar el riesgo de errores y garantizar que los medicamentos se manejan y almacenan correctamente en todo momento.'},
+      {id:'6-2',titulo:'6.2 Recepción de productos',texto:'Verificación del proveedor aprobado, revisión de documentación (remito/factura), inspección visual de daños y condiciones de transporte, y registro completo de recepción (con número de lote).'},
+      {id:'6-3',titulo:'6.3 Almacenamiento',texto:'Aplicación de FEFO (First Expired First Out), segregación física de áreas según condición del producto, rotación de stock y control de incompatibilidades.'},
+      {id:'6-4',titulo:'6.4 No conformes y vencidos',texto:'Identificación y segregación inmediata de vencidos y no conformes, disposición segura documentada, área específica con acceso restringido.'},
+      {id:'6-5',titulo:'6.5 Preparación de pedidos',texto:'Procedimiento que preserve integridad del producto. Para cadena de frío: control de tiempo y temperatura documentado durante la preparación.'},
+      {id:'6-6',titulo:'6.6 Despacho',texto:'Sólo a destinatarios habilitados, con documentación completa (remitos/facturas con datos mínimos requeridos).'},
+      {id:'6-7',titulo:'6.7 Inventarios',texto:'Inventarios periódicos con investigación y documentación de discrepancias. Control de reingreso de devoluciones bajo condiciones estrictas.'},
+      {id:'6-8',titulo:'6.8 Sistema Nacional de Trazabilidad (SNT)',texto:'Reportes en tiempo real al SNT cuando aplique; controles de reingreso con validación en el sistema y etiquetado correcto.'},
+    ],
+    evidencias:['Registros de recepción con lote, fecha y proveedor.','Evidencia de aplicación FEFO y segregación.','Inventarios periódicos con investigación de diferencias.','Documentación de despacho (remitos con datos mínimos).','Reportes SNT cuando aplica la trazabilidad por unidad.'],
+    checklist:[
+      {id:'c6.1',texto:'Recepción con verificación de proveedor aprobado + documentación + inspección de daños.'},
+      {id:'c6.2',texto:'Registro de recepción con campos mínimos (incluye lote).'},
+      {id:'c6.3',texto:'Inventarios periódicos con investigación de discrepancias.'},
+      {id:'c6.4',texto:'Segregación y disposición segura de vencidos/no conformes con registros.'},
+      {id:'c6.5',texto:'Preparación de pedidos que preserva condiciones; cadena de frío con control definido.'},
+      {id:'c6.6',texto:'Despacho sólo a destinatarios habilitados; remitos/facturas con datos mínimos.'},
+      {id:'c6.7',texto:'SNT: reportes en tiempo real y controles de reingreso/etiquetado.'},
+    ]
+  },
+  {
+    id:'c7',num:'7',emoji:'🤝',
+    title:'Actividades Contratadas',
+    desc:'Tercerizar no terceriza la responsabilidad. Exige acuerdos escritos claros, evaluación de competencia, auditorías y mecanismos de comunicación con proveedores externos.',
+    subtemas:['7.1 Principio','7.2 El contratante'],
+    contenido:[
+      {id:'7-1',titulo:'7.1 Principio',texto:'Las actividades contratadas deben estar definidas, acordadas y controladas para evitar malentendidos que puedan derivar en productos o servicios de calidad insatisfactoria.'},
+      {id:'7-2',titulo:'7.2 El contratante',texto:'Responsable de evaluar la competencia del contratado antes del inicio, de definir en contrato escrito el alcance, las responsabilidades, los requisitos BPD y los canales de comunicación; de realizar auditorías basadas en riesgo y de controlar la subcontratación.'},
+    ],
+    evidencias:['Contratos escritos vigentes con requisitos BPD.','Evaluaciones de competencia previas al inicio.','Registros de auditorías a contratados.','Control de subcontratación aprobada.'],
+    checklist:[
+      {id:'c7.1',texto:'Contrato escrito vigente con alcance, responsabilidades y requisitos BPD.'},
+      {id:'c7.2',texto:'Evaluación de competencia del contratado documentada (previa al inicio).'},
+      {id:'c7.3',texto:'Auditorías iniciales y periódicas basadas en riesgo.'},
+      {id:'c7.4',texto:'Control de subcontratación: aprobación previa y trazabilidad de acuerdos.'},
+      {id:'c7.5',texto:'Canales de comunicación y gestión de incidentes definidos.'},
+    ]
+  },
+  {
+    id:'c8',num:'8',emoji:'↩️',
+    title:'Reclamos, Devoluciones, Retiros e Ilegítimos',
+    desc:'Cuando algo sale mal, importa cómo respondés. Investigación de quejas, manejo de devoluciones, retiros del mercado y control de medicamentos ilegítimos.',
+    subtemas:['8.1 Quejas y reclamos','8.2 Devoluciones','8.3 Retiro de mercado','8.4 Medicamentos ilegítimos'],
+    contenido:[
+      {id:'8-1',titulo:'8.1 Quejas y reclamos',texto:'Procedimiento escrito con registro, investigación, CAPA y comunicación al titular del registro cuando corresponda.'},
+      {id:'8-2',titulo:'8.2 Devoluciones',texto:'Área segregada y controlada para devoluciones. El reingreso a stock sólo bajo criterios documentados estrictos (incluye verificación en SNT cuando aplique).'},
+      {id:'8-3',titulo:'8.3 Retiro de mercado',texto:'Procedimiento con lista actualizada de destinatarios, canales de comunicación definidos y prueba anual de efectividad. Comunicación inmediata a ANMAT.'},
+      {id:'8-4',titulo:'8.4 Sospechas de medicamentos ilegítimos',texto:'Segregación inmediata del producto sospechoso, sin reingreso a cadena, y notificación a la Autoridad Sanitaria (ANMAT). Investigación y documentación completa.'},
+    ],
+    evidencias:['POE de reclamos con registro e investigación.','Área segregada para devoluciones identificada.','Criterios documentados de reingreso a stock.','Procedimiento de retiro con prueba anual.','Registro de sospechas de ilegítimos notificadas.'],
+    checklist:[
+      {id:'c8.1',texto:'POE de reclamos con investigación y CAPA.'},
+      {id:'c8.2',texto:'Área segregada y controlada para devoluciones y no conformes.'},
+      {id:'c8.3',texto:'Criterios documentados de reingreso a stock (incluye SNT cuando aplique).'},
+      {id:'c8.4',texto:'Procedimiento de retiro con lista de destinatarios y comunicación; prueba anual.'},
+      {id:'c8.5',texto:'Procedimiento para sospecha/identificación de ilegítimos y notificación a ANMAT.'},
+    ]
+  },
+  {
+    id:'c9',num:'9',emoji:'🔎',
+    title:'Auto‑inspecciones',
+    desc:'El "espejo" del sistema: muestra lo que está funcionando y lo que sólo funciona en el papel. Programa que abarca todos los aspectos BPD con seguimiento documentado.',
+    subtemas:['9.1 Principio','9.2 Alcance'],
+    contenido:[
+      {id:'9-1',titulo:'9.1 Principio',texto:'La autoinspección es un proceso sistemático, programado e imparcial de evaluación interna del cumplimiento de las BPD, que identifica deficiencias y genera CAPA con seguimiento.'},
+      {id:'9-2',titulo:'9.2 Alcance',texto:'El programa debe cubrir todos los capítulos de las BPD. Las auditorías deben realizarse con listas de verificación escritas, por personal competente e imparcial, con informe de observaciones, responsables, plazos y verificación de efectividad.'},
+    ],
+    evidencias:['Programa anual de autoinspecciones aprobado.','Listas de verificación por proceso.','Informes con observaciones, responsables y plazos.','Registros de seguimiento y cierre de CAPA.'],
+    checklist:[
+      {id:'c9.1',texto:'Programa anual de autoinspecciones que cubre todos los capítulos BPD.'},
+      {id:'c9.2',texto:'Listas de verificación y criterios de evaluación por proceso.'},
+      {id:'c9.3',texto:'Informes con observaciones, responsables, plazos y evidencia de cierre.'},
+      {id:'c9.4',texto:'Seguimiento y verificación de efectividad de CAPA.'},
+    ]
+  },
+  {
+    id:'c10',num:'10',emoji:'🚚',
+    title:'Transporte',
+    desc:'El tramo más expuesto del medicamento: vibración, clima, demoras, robos. Protección contra adulteración, mantenimiento de condiciones y gestión de trasbordos.',
+    subtemas:['10.1 Principio','10.2 Condiciones de conservación y entrega','10.3 Trasbordo','10.4 Embalajes y contenedores'],
+    contenido:[
+      {id:'10-1',titulo:'10.1 Principio',texto:'El transporte debe proteger los medicamentos contra roturas, adulteración y robo, y mantener las condiciones de conservación requeridas durante todo el trayecto.'},
+      {id:'10-2',titulo:'10.2 Condiciones de conservación y entrega',texto:'Evaluación de riesgo de rutas y condiciones climáticas; definición de monitoreo ambiental cuando corresponda. POE para operación, mantenimiento y limpieza de vehículos y equipos de frío.'},
+      {id:'10-3',titulo:'10.3 Trasbordo',texto:'Las instalaciones de trasbordo deben estar auditadas, con control ambiental y de temperatura definido, y no pueden incorporar productos de fuente no verificada.'},
+      {id:'10-4',titulo:'10.4 Embalajes y contenedores',texto:'Seleccionados en función del tipo de producto y condiciones de transporte; calificados cuando aplique (especialmente para cadena de frío). Procedimiento para pérdida de condiciones durante el transporte.'},
+    ],
+    evidencias:['Evaluación de riesgo de rutas documentada.','POE de operación/mantenimiento/limpieza de vehículos.','Gestión de incidencias: daño, demoras, pérdida de frío.','Embalajes/contenedores seleccionados y calificados.'],
+    checklist:[
+      {id:'c10.1',texto:'Evaluación de riesgo de rutas y condiciones climáticas; definición de monitoreo.'},
+      {id:'c10.2',texto:'POE para operación/mantenimiento/limpieza de vehículos y equipos.'},
+      {id:'c10.3',texto:'Gestión de incidencias: daño, demoras, pérdida de cadena de frío.'},
+      {id:'c10.4',texto:'Trasbordo: instalaciones auditadas y con control ambiental/temperatura.'},
+      {id:'c10.5',texto:'Embalajes/contenedores seleccionados y (cuando aplique) calificados.'},
+    ]
+  }
+];
+
+const GLOSSARY = [
+  {term:'Almacenamiento',def:'Tenencia y custodia de productos dentro de un espacio físico definido.',src:'Definiciones'},
+  {term:'Buenas Prácticas de Distribución (BPD)',def:'Acciones tendientes a garantizar que la calidad de los medicamentos se mantiene en todas las etapas de la cadena de suministro.',src:'Definiciones'},
+  {term:'Distribución',def:'Cualquier actividad de tenencia, venta, abastecimiento y expedición de medicamentos, sea a título oneroso o gratuito, excluida la dispensa al público.',src:'Definiciones'},
+  {term:'Dispensa / Dispensación',def:'Provisión al público de especialidades medicinales, sea a título oneroso o gratuito.',src:'Definiciones'},
+  {term:'Distribuidor de medicamentos',def:'Empresa que se dedica al almacenamiento y distribución de medicamentos, conforme a las figuras previstas por la normativa sanitaria aplicable.',src:'Definiciones'},
+  {term:'Empresa transportista',def:'Empresa que realiza únicamente el transporte de los medicamentos.',src:'Definiciones'},
+  {term:'Trasbordo / Cross docking',def:'Acción de consolidar mercadería de diferentes orígenes para su posterior envío a destino final.',src:'Definiciones'},
+  {term:'Depósito de trasbordo',def:'Depósito para almacenamiento temporario de medicamentos en tránsito, a la espera del trasbordo hacia destinos finales.',src:'Definiciones'},
+  {term:'Medicamento',def:'Preparación o producto farmacéutico para prevención, diagnóstico y/o tratamiento, o para modificar sistemas fisiológicos en beneficio de la persona.',src:'Definiciones'},
+  {term:'Medicamento falsificado',def:'Producto deliberadamente elaborado y/o etiquetado de manera fraudulenta, con información incorrecta sobre identidad u origen; puede incluir ausencia, exceso o insuficiencia de principios activos, o empaque falsificado.',src:'Definiciones'},
+  {term:'Cuarentena',def:'Situación en que los productos son aislados a la espera de decisión respecto de su aprobación, rechazo o reprocesamiento.',src:'Definiciones'},
+  {term:'Gestión de la calidad',def:'Actividades coordinadas para dirigir y controlar una organización en lo relativo a la calidad.',src:'Definiciones'},
+  {term:'Sistema de calidad',def:'Suma de los aspectos de un sistema que aplica la política de calidad y garantiza el cumplimiento de objetivos.',src:'Definiciones'},
+  {term:'Riesgo',def:'Combinación de la probabilidad de que un daño suceda y la gravedad de dicho daño.',src:'Definiciones'},
+  {term:'Gestión de riesgos para la calidad',def:'Proceso sistemático para valoración, control, comunicación y revisión de riesgos para la calidad a lo largo del ciclo de vida del producto.',src:'Definiciones'},
+  {term:'Análisis de riesgo',def:'Proceso sistemático para evaluar riesgos asociados a peligros identificados; se basa en ciencia y experiencia y se sustenta por control, revisión y comunicación.',src:'Definiciones'},
+  {term:'Persona responsable',def:'Persona que participa en decisiones y/o aprobación de procesos, gestiones o transacciones comerciales por su función dentro de la organización.',src:'Definiciones'},
+  {term:'Calibración',def:'Operaciones que establecen la relación entre los valores indicados por un instrumento y los valores conocidos de un estándar de referencia, bajo condiciones específicas.',src:'Definiciones'},
+  {term:'Calificación',def:'Acción para evidenciar que áreas y/o equipos trabajan correctamente y conducen a los resultados esperados.',src:'Definiciones'},
+  {term:'Validación',def:'Demostración de que un procedimiento, proceso, actividad o sistema produce realmente los resultados esperados.',src:'Definiciones'},
+  {term:'Retiro de mercado',def:'Remoción definitiva de un producto presente en el mercado ante infracción normativa o sospecha; puede iniciarse por titular o Autoridad Sanitaria.',src:'Definiciones'},
+  {term:'Área segregada',def:'Área que provee separación completa de todos los aspectos de una operación, incluyendo movimiento de personal y equipamiento; incluye barreras físicas.',src:'Definiciones'},
+  {term:'Trazabilidad por unidad',def:'Sistema de seguimiento y rastreo colocado en el empaque (unidad de venta) que permite reconstruir la cadena de distribución de cada unidad individualmente.',src:'Definiciones'},
+  {term:'CAPA',def:'Acciones Correctivas y Preventivas: acciones para corregir una no conformidad y prevenir su recurrencia (término de gestión de calidad usado en el texto).',src:'Uso habitual BPD/GxP'},
+  {term:'POE',def:'Procedimiento Operativo Estándar: documento que describe paso a paso cómo realizar una tarea de forma uniforme y consistente.',src:'Capítulo 3'},
+  {term:'Mapa térmico',def:'Estudio representativo para identificar fluctuaciones y puntos críticos de temperatura en un área o equipo, y ubicar registradores de forma adecuada.',src:'Capítulo 5'},
+  {term:'FEFO',def:'First Expired, First Out: criterio de despacho priorizando el lote con vencimiento más próximo.',src:'Buenas prácticas logísticas'},
+  {term:'GLN / CUFE',def:'Identificadores usados en trazabilidad para origen/destino en transacciones; cuando aplica el SNT deben consignarse en documentación.',src:'Capítulo 6 (SNT)'},
+  {term:'SNT',def:'Sistema Nacional de Trazabilidad de Medicamentos: sistema de ANMAT para el seguimiento y rastreo de productos farmacéuticos a lo largo de la cadena.',src:'Capítulo 6'},
+  {term:'Estudio clínico',def:'Conjunto de actividades para obtener conocimiento generalizable sobre salud humana; puede ser observacional o experimental.',src:'Definiciones'},
+];
+
+const LINKS = [
+  {url:'https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-2069-2018-307891',label:'Disposición 2069/2018 — Ficha oficial',org:'Argentina.gob.ar',tipo:'Norma'},
+  {url:'https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-2069-2018-307891/texto',label:'Disposición 2069/2018 — Texto completo',org:'Argentina.gob.ar',tipo:'Norma'},
+  {url:'https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=307891',label:'Disposición 2069/2018 — InfoLEG',org:'InfoLEG',tipo:'Norma'},
+  {url:'https://boletin.anmat.gob.ar/BO/Disposicion_2069-2018.pdf',label:'Disposición 2069/2018 — PDF (Boletín ANMAT)',org:'ANMAT',tipo:'PDF'},
+  {url:'https://www.anmat.gob.ar/comunicados/Disp_2069-17_BPDistribMed.pdf',label:'Comunicado ANMAT: Nueva normativa BPD (15/03/2018)',org:'ANMAT',tipo:'PDF'},
+  {url:'https://www.anmat.gob.ar/webanmat/normativas_medicamentos_cuerpo.asp',label:'Normativa de medicamentos — Listado ANMAT',org:'ANMAT',tipo:'Portal'},
+  {url:'https://cilfa.org.ar/wp1/disposicion-anmat-2069-2018-y-su-anexo-boletin-oficial-15-3-2018-aprueba-las-buenas-practicas-de-distribucion-de-medicamentos/',label:'CILFA — Nota sobre la Disposición 2069/2018',org:'CILFA',tipo:'Referencia'},
+  {url:'https://cilfa.org.ar/wp1/wp-content/uploads/2018/10/Disp.-ANMAT-2069-15.3.18-BPDistribuci%C3%B3n-Anexo.pdf',label:'CILFA — Anexo BPD en PDF',org:'CILFA',tipo:'PDF'},
+  {url:'https://www.argentina.gob.ar/anmat/sistema-nacional-de-trazabilidad/preguntas-frecuentes',label:'SNT — Preguntas frecuentes',org:'ANMAT',tipo:'Portal'},
+  {url:'https://www.argentina.gob.ar/sites/default/files/anmat_traza_med_manual_bpt_v1_0_2015-02-18.pdf',label:'Manual del Sistema Nacional de Trazabilidad (SNT)',org:'ANMAT',tipo:'PDF'},
+];
+
+/* ═══════════════════════════════
+   STORAGE
+═══════════════════════════════ */
+const S = {
+  get:(k)=>{ try{return localStorage.getItem(k)}catch{return null} },
+  set:(k,v)=>{ try{localStorage.setItem(k,v)}catch{} }
+};
+
+/* ═══════════════════════════════
+   NAVEGACIÓN SPA
+═══════════════════════════════ */
+let currentPage = 'inicio';
+let currentChapterId = null;
+
+function navigate(page, chapterId){
+  // Ocultar todas las páginas
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // Actualizar nav links
+  document.querySelectorAll('[id^="nav-"],[id^="mnav-"]').forEach(a=>a.classList.remove('active'));
+  const navKey = page === 'chapter' ? 'capitulos' : page;
+  const el = document.getElementById('nav-'+navKey);
+  if(el) el.classList.add('active');
+  const mel = document.getElementById('mnav-'+navKey);
+  if(mel) mel.classList.add('active');
+
+  currentPage = page;
+
+  if(page === 'chapter' && chapterId){
+    currentChapterId = chapterId;
+    renderChapter(chapterId);
+    document.getElementById('page-chapter').classList.add('active');
+  } else {
+    const target = document.getElementById('page-'+page);
+    if(target) target.classList.add('active');
+  }
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════
+   RENDER CAPÍTULOS GRILLA
+═══════════════════════════════ */
+function renderChaptersGrid(){
+  const grid = document.getElementById('chapters-grid');
+  if(!grid || grid.children.length > 0) return;
+  grid.innerHTML = CHAPTERS.map(c=>`
+    <a class="card clickable" onclick="navigate('chapter','${c.id}');return false" href="#">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div class="num-badge">${c.num}</div>
+        <span style="font-size:22px">${c.emoji}</span>
+      </div>
+      <h3>${c.title}</h3>
+      <p>${c.desc}</p>
+      <div class="card-meta">
+        <span class="pill">${c.subtemas.length} subtemas</span>
+        <span class="pill">${c.checklist.length} items</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+/* ═══════════════════════════════
+   RENDER CAPÍTULO DETALLE
+═══════════════════════════════ */
+function renderChapter(id){
+  const c = CHAPTERS.find(x=>x.id===id);
+  if(!c) return;
+
+  document.getElementById('chapter-bc-title').textContent = `Capítulo ${c.num} — ${c.title}`;
+
+  // TOC
+  const tocLinks = document.getElementById('toc-links');
+  tocLinks.innerHTML = c.contenido.map(s=>`<a href="#${s.id}" onclick="scrollToId('${s.id}');return false">${s.titulo}</a>`).join('');
+
+  // Progreso checklist
+  const total = c.checklist.length;
+  const done = c.checklist.filter(x=>S.get('chk.'+x.id)==='1').length;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  // Body
+  const body = document.getElementById('chapter-body');
+  body.innerHTML = `
+    <h2 style="margin-bottom:4px">${c.emoji} Capítulo ${c.num} — ${c.title}</h2>
+    <p class="text-muted text-small" style="margin-bottom:20px">${c.desc}</p>
+
+    <div class="callout warn">
+      <strong>💡 Consejo de implementación</strong>
+      <p>Al diseñar POE y registros, preguntate: (1) ¿Cómo pruebo que hice lo correcto? (2) ¿Cómo detecto rápido cuando algo se desvió?</p>
+    </div>
+
+    <h3>Evidencias típicas</h3>
+    <ul style="margin-bottom:20px">${c.evidencias.map(e=>`<li>${e}</li>`).join('')}</ul>
+
+    <div class="sep"></div>
+
+    ${c.contenido.map(s=>`
+      <section id="${s.id}" style="scroll-margin-top:90px">
+        <h3>${s.titulo}</h3>
+        <p>${s.texto}</p>
+        <div class="callout">
+          <strong>Qué buscar como evidencia</strong>
+          <ul>
+            <li>Procedimientos/POE relacionados y versión vigente.</li>
+            <li>Registros en tiempo real (fechas, firmas, trazabilidad de decisiones).</li>
+            <li>Roles/responsables definidos y evidencias de entrenamiento.</li>
+          </ul>
+        </div>
+      </section>
+    `).join('')}
+
+    <div class="sep"></div>
+
+    <section id="chk" style="scroll-margin-top:90px">
+      <h3>✅ Checklist del Capítulo ${c.num}</h3>
+      <p class="text-muted text-small" style="margin-bottom:12px">Las tildes se guardan en tu navegador (localStorage). No se envía nada a ningún servidor.</p>
+      <div class="progress-bar-wrap">
+        <label><span>Progreso</span><span id="chk-count-${c.id}">${done}/${total} (${pct}%)</span></label>
+        <div class="progress-bar"><div class="progress-fill" id="chk-fill-${c.id}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="checklist-grid">
+        ${c.checklist.map(item=>`
+          <label class="check-item" for="chk-${item.id}">
+            <input type="checkbox" id="chk-${item.id}" data-check="${item.id}" ${S.get('chk.'+item.id)==='1'?'checked':''} onchange="updateCheck('${item.id}','${c.id}')">
+            <span>${item.texto}</span>
+          </label>
+        `).join('')}
+      </div>
+    </section>
+
+    <div class="sep"></div>
+    <section id="fuentes" style="scroll-margin-top:90px">
+      <h3>📚 Fuentes</h3>
+      <ul>
+        <li>Texto oficial de la Disposición 2069/2018 en Argentina.gob.ar</li>
+        <li>Anexo "Buenas Prácticas de Distribución de Medicamentos" (PDF oficial ANMAT)</li>
+      </ul>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <a href="https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-2069-2018-307891" target="_blank" rel="noopener" class="btn">Argentina.gob.ar ↗</a>
+        <a href="https://boletin.anmat.gob.ar/BO/Disposicion_2069-2018.pdf" target="_blank" rel="noopener" class="btn">PDF ANMAT ↗</a>
+      </div>
+    </section>
+
+    <div class="chapter-nav">
+      ${getPrevChapterBtn(c.id)}
+      <button class="btn" onclick="navigate('capitulos')" style="display:flex;align-items:center;gap:6px">
+        <span>📚</span><span>Ver todos los capítulos</span>
+      </button>
+      ${getNextChapterBtn(c.id)}
+    </div>
+  `;
+
+  // Mostrar toggle TOC en mobile
+  const toggleBtn = document.getElementById('toc-toggle-btn');
+  if(toggleBtn){
+    const isMobile = window.innerWidth <= 900;
+    toggleBtn.style.display = isMobile ? 'flex' : 'none';
+  }
+}
+
+function getPrevChapterBtn(id){
+  const idx = CHAPTERS.findIndex(c=>c.id===id);
+  if(idx<=0) return '<div></div>';
+  const prev = CHAPTERS[idx-1];
+  return `<button class="btn" onclick="navigate('chapter','${prev.id}')" style="display:flex;align-items:center;gap:6px">← <span class="btn-text">Cap. ${prev.num}</span></button>`;
+}
+function getNextChapterBtn(id){
+  const idx = CHAPTERS.findIndex(c=>c.id===id);
+  if(idx>=CHAPTERS.length-1) return '<div></div>';
+  const next = CHAPTERS[idx+1];
+  return `<button class="btn btn-primary" onclick="navigate('chapter','${next.id}')" style="display:flex;align-items:center;gap:6px"><span class="btn-text">Cap. ${next.num}</span> →</button>`;
+}
+
+function updateCheck(itemId, chapterId){
+  const cb = document.getElementById('chk-'+itemId);
+  S.set('chk.'+itemId, cb.checked?'1':'0');
+  // Recalcular progreso
+  const c = CHAPTERS.find(x=>x.id===chapterId);
+  if(!c) return;
+  const total = c.checklist.length;
+  const done = c.checklist.filter(x=>S.get('chk.'+x.id)==='1').length;
+  const pct = Math.round(done/total*100);
+  const fill = document.getElementById('chk-fill-'+chapterId);
+  const count = document.getElementById('chk-count-'+chapterId);
+  if(fill) fill.style.width = pct+'%';
+  if(count) count.textContent = `${done}/${total} (${pct}%)`;
+}
+
+function scrollToId(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleToc(){
+  const toc = document.getElementById('chapter-toc');
+  toc.classList.toggle('open');
+  const btn = document.getElementById('toc-toggle-btn');
+  btn.textContent = toc.classList.contains('open') ? '✕ Cerrar índice' : '📑 Ver índice del capítulo';
+}
+
+/* ═══════════════════════════════
+   GLOSARIO
+═══════════════════════════════ */
+function renderGlossary(){
+  const tbody = document.getElementById('gloss-body');
+  if(!tbody || tbody.children.length > 0) return;
+  tbody.innerHTML = GLOSSARY.map(g=>`
+    <tr data-hay="${(g.term+' '+g.def).toLowerCase()}">
+      <td>${g.term}</td>
+      <td>${g.def}</td>
+      <td><span class="badge-org" style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--muted)">${g.src}</span></td>
+    </tr>
+  `).join('');
+}
+
+function filterGloss(){
+  const q = document.getElementById('gloss-search').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#gloss-body tr');
+  let visible = 0;
+  rows.forEach(r=>{
+    const match = !q || r.getAttribute('data-hay').includes(q);
+    r.style.display = match ? '' : 'none';
+    if(match) visible++;
+  });
+  const empty = document.getElementById('gloss-empty');
+  if(empty) empty.style.display = visible === 0 ? '' : 'none';
+}
+
+/* ═══════════════════════════════
+   LINKS
+═══════════════════════════════ */
+function renderLinks(){
+  const tbody = document.getElementById('links-body');
+  if(!tbody || tbody.children.length > 0) return;
+  tbody.innerHTML = LINKS.map(l=>`
+    <tr>
+      <td><a href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a></td>
+      <td><span class="badge-org">${l.org}</span></td>
+      <td><span class="pill-muted" style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--surface2);color:var(--muted)">${l.tipo}</span></td>
+    </tr>
+  `).join('');
+}
+
+/* ═══════════════════════════════
+   SUGERENCIAS
+═══════════════════════════════ */
+function copySug(){
+  const tipo = document.getElementById('sug-tipo').value || 'Sin categoría';
+  const desc = document.getElementById('sug-desc').value || '(sin descripción)';
+  const nombre = document.getElementById('sug-nombre').value || 'Anónimo';
+  const texto = `SUGERENCIA — ${tipo}\n\nDescripción: ${desc}\n\nEnviado por: ${nombre}`;
+  navigator.clipboard.writeText(texto).then(()=>{
+    const ok = document.getElementById('sug-ok');
+    if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none',2500); }
+  }).catch(()=>alert(texto));
+}
+
+/* ═══════════════════════════════
+   TEMA
+═══════════════════════════════ */
+function toggleTheme(){
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  S.set('theme', newTheme);
+  updateThemeIcon(newTheme);
+  updatePaletteStripVisibility(newTheme);
+}
+
+function updateThemeIcon(theme){
+  const icon = document.getElementById('theme-icon');
+  const iconM = document.getElementById('theme-icon-m');
+  const v = theme === 'dark' ? '☀️' : '🌙';
+  if(icon) icon.textContent = v;
+  if(iconM) iconM.textContent = v;
+}
+
+function updatePaletteStripVisibility(theme){
+  const strip = document.getElementById('palette-strip');
+  if(strip) strip.style.opacity = theme === 'dark' ? '0.5' : '1';
+}
+
+/* ═══════════════════════════════
+   PALETA
+═══════════════════════════════ */
+function setPalette(pal){
+  document.documentElement.setAttribute('data-palette', pal);
+  S.set('palette', pal);
+  document.querySelectorAll('.palette-btn').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('data-pal')===pal);
+  });
+}
+
+/* ═══════════════════════════════
+   MENÚ MÓVIL
+═══════════════════════════════ */
+function openMenu(){
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeMenuOut(e){
+  if(e.target===document.getElementById('mobileMenu')) closeMenu();
+}
+
+/* ═══════════════════════════════
+   INIT
+═══════════════════════════════ */
+(function init(){
+  // Restaurar preferencias
+  const theme = S.get('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeIcon(theme);
+  updatePaletteStripVisibility(theme);
+
+  const pal = S.get('palette') || 'azul';
+  setPalette(pal);
+
+  // Render inicial
+  renderChaptersGrid();
+  renderGlossary();
+  renderLinks();
+
+  // Ctrl+K en glosario
+  document.addEventListener('keydown', e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
+      const s = document.getElementById('gloss-search');
+      if(s){ e.preventDefault(); navigate('glosario'); s.focus(); }
+    }
+    if(e.key==='Escape') closeMenu();
+  });
+})();
+</script>
+</body>
+</html>
