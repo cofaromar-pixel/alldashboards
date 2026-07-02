@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Créditos y Retiros · COFARSUR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+
+:root{
+  --bg:#eef1f8;
+  --card:#ffffff;
+  --ink:#101828;
+  --sub:#4a5578;
+  --line:#dde3f0;
+  --blue:#2151d3;
+  --blue-lt:#e8edfd;
+  --orange:#c2560c;
+  --orange-lt:#fdece0;
+  --green:#0f8a3f;
+  --green-lt:#e6f7ec;
+  --red:#c81e3a;
+  --red-lt:#fdeaee;
+  --amber:#b06a00;
+  --amber-lt:#fff4e0;
+  --teal:#0a7c86;
+  --teal-lt:#e2f6f7;
+  --purple:#6a3fc2;
+  --purple-lt:#f0eaff;
+  --shadow: 0 1px 2px rgba(16,24,56,.04), 0 6px 20px rgba(16,24,56,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Segoe UI',Arial,Helvetica,sans-serif;
+  line-height:1.4;
+}
+.wrap{max-width:1320px;margin:0 auto;padding:20px 22px 60px;}
+
+/* Header */
+header.top{
+  background:linear-gradient(120deg,#173bb5 0%, #2151d3 45%, #3a6df0 100%);
+  color:#fff;
+  border-radius:16px;
+  padding:26px 30px;
+  box-shadow:var(--shadow);
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
+}
+header.top::after{
+  content:"";
+  position:absolute; right:-60px; top:-60px; width:260px;height:260px;
+  background:radial-gradient(circle, rgba(255,255,255,.14), transparent 70%);
+}
+header.top h1{margin:0 0 4px;font-size:26px;font-weight:700;letter-spacing:.2px;}
+header.top p.tagline{margin:0;font-size:14px;color:#dbe4ff;font-weight:400;}
+.header-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center;}
+.pill{
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.28);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:100px;
+  font-size:12.5px;
+  font-weight:600;
+}
+
+/* Upload panel */
+.upload-panel{
+  display:flex; gap:14px; flex-wrap:wrap; margin-top:18px;
+}
+.upload-box{
+  background:rgba(255,255,255,.1);
+  border:1.5px dashed rgba(255,255,255,.55);
+  border-radius:12px;
+  padding:12px 16px;
+  flex:1;
+  min-width:260px;
+  display:flex; align-items:center; gap:12px;
+}
+.upload-box label.filebtn{
+  background:#fff;color:var(--blue);
+  font-weight:700; font-size:12.5px;
+  padding:8px 14px; border-radius:8px; cursor:pointer;
+  white-space:nowrap;
+}
+.upload-box input[type=file]{display:none;}
+.upload-box .ub-text{font-size:12px;color:#eef2ff;}
+.upload-box .ub-status{font-size:11.5px;color:#c9f7d5;font-weight:600;margin-top:2px;display:block;}
+#applyBtn{
+  background:#ffb020;color:#3a2400;border:none;font-weight:800;font-size:13px;
+  padding:11px 22px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow);
+}
+#applyBtn:disabled{opacity:.5;cursor:not-allowed;}
+#resetBtn{
+  background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);font-weight:700;font-size:12.5px;
+  padding:10px 16px;border-radius:10px;cursor:pointer;
+}
+
+/* Section titles */
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  margin:34px 0 14px;
+}
+.section-title .dot{width:10px;height:10px;border-radius:50%;}
+.section-title h2{font-size:19px;margin:0;font-weight:750;color:var(--ink);}
+.section-title .stag{
+  font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:.3px;text-transform:uppercase;
+}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.kpi{
+  background:var(--card);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);
+  border-left:5px solid var(--blue);
+}
+.kpi.o{border-left-color:var(--orange);}
+.kpi.g{border-left-color:var(--green);}
+.kpi.r{border-left-color:var(--red);}
+.kpi.t{border-left-color:var(--teal);}
+.kpi .lbl{font-size:12px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.kpi .val{font-size:25px;font-weight:800;margin-top:4px;color:var(--ink);}
+.kpi .delta{font-size:12.5px;font-weight:700;margin-top:6px;display:inline-flex;align-items:center;gap:4px;}
+.delta.up{color:var(--red);}
+.delta.down{color:var(--green);}
+.delta.flat{color:var(--sub);}
+
+/* Cards */
+.card{background:var(--card);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px;}
+.card h3{margin:0 0 14px;font-size:15.5px;font-weight:750;color:var(--ink);}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+@media (max-width:980px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--sub);
+  padding:8px 10px;border-bottom:2px solid var(--line);font-weight:700;
+}
+td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f7f9ff;}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
+.bar-mini{height:7px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:5px;}
+.bar-mini > span{display:block;height:100%;border-radius:5px;}
+
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:100px;}
+.tag.blue{background:var(--blue-lt);color:var(--blue);}
+.tag.orange{background:var(--orange-lt);color:var(--orange);}
+.tag.green{background:var(--green-lt);color:var(--green);}
+.tag.red{background:var(--red-lt);color:var(--red);}
+.tag.amber{background:var(--amber-lt);color:var(--amber);}
+.tag.teal{background:var(--teal-lt);color:var(--teal);}
+.tag.purple{background:var(--purple-lt);color:var(--purple);}
+
+/* Alerts */
+.alert{
+  border-radius:12px;padding:14px 18px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;
+  box-shadow:var(--shadow);
+}
+.alert.critica{background:var(--red-lt);border-left:5px solid var(--red);}
+.alert.atencion{background:var(--amber-lt);border-left:5px solid var(--amber);}
+.alert.info{background:var(--blue-lt);border-left:5px solid var(--blue);}
+.alert.ok{background:var(--green-lt);border-left:5px solid var(--green);}
+.alert .icon{font-size:19px;line-height:1;margin-top:1px;}
+.alert .body b{display:block;font-size:13.5px;margin-bottom:3px;}
+.alert .body span{font-size:12.8px;color:#333c58;}
+.alert.critica .body b{color:var(--red);}
+.alert.atencion .body b{color:var(--amber);}
+.alert.info .body b{color:var(--blue);}
+.alert.ok .body b{color:var(--green);}
+
+.rec-list{margin:0;padding:0;list-style:none;}
+.rec-list li{
+  padding:12px 16px;border-radius:10px;background:#f7f9ff;border:1px solid var(--line);
+  margin-bottom:10px;font-size:13.3px;display:flex;gap:10px;
+}
+.rec-list li b{color:var(--blue);}
+.rec-list .n{
+  background:var(--blue);color:#fff;font-weight:800;font-size:12px;
+  width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;
+}
+
+canvas{max-width:100%;}
+.chart-box{position:relative;height:300px;}
+.chart-box.tall{height:340px;}
+
+footer.foot{
+  margin-top:40px;padding:20px 8px;color:var(--sub);font-size:12px;text-align:center;
+  border-top:1px solid var(--line);
+}
+.muted{color:var(--sub);font-size:12.5px;}
+.two-col-note{display:flex;gap:16px;flex-wrap:wrap;}
+.two-col-note > div{flex:1;min-width:260px;}
+.badge-count{
+  background:#fff; color:var(--ink); font-weight:800; border-radius:8px; padding:1px 8px; font-size:12px;
+  border:1px solid var(--line);
+}
+#toast{
+  position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;
+  font-size:13px;box-shadow:var(--shadow);display:none;z-index:999;max-width:320px;
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>📊 Dashboard de Créditos y Retiros de Stock</h1>
+    <p class="tagline">COFARSUR S.A. · Seguimiento mensual de créditos por errores logísticos/comerciales y retiros de depósito por vencimiento, siniestro o mal estado</p>
+    <div class="header-meta">
+      <span class="pill" id="metaMes">Período analizado: —</span>
+      <span class="pill" id="metaGenerado">Generado: —</span>
+      <span class="pill">Sucursales: CBA · RIO4 · VME</span>
+    </div>
+
+    <div class="upload-panel">
+      <div class="upload-box">
+        <label class="filebtn" for="fileCreditos">📁 Cargar archivo de Créditos (.xlsx)</label>
+        <input type="file" id="fileCreditos" accept=".xlsx,.xls">
+        <div>
+          <div class="ub-text">Debe contener la hoja <b>"Base"</b> (igual estructura que Junio_CR.xlsx)</div>
+          <span class="ub-status" id="statusCreditos">Sin archivo nuevo cargado</span>
+        </div>
+      </div>
+      <div class="upload-box">
+        <label class="filebtn" for="fileRetiros">📁 Cargar archivo de Retiros (.xlsx)</label>
+        <input type="file" id="fileRetiros" accept=".xlsx,.xls">
+        <div>
+          <div class="ub-text">Debe contener la hoja <b>"Base Retiros"</b> (igual estructura que juNIO_R.xlsx)</div>
+          <span class="ub-status" id="statusRetiros">Sin archivo nuevo cargado</span>
+        </div>
+      </div>
+      <button id="applyBtn" disabled>Actualizar dashboard</button>
+      <button id="resetBtn" type="button">Ver datos originales</button>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="section-title"><div class="dot" style="background:var(--blue)"></div><h2>Indicadores del mes</h2></div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- ALERTS -->
+  <div class="section-title">
+    <div class="dot" style="background:var(--red)"></div>
+    <h2>Alertas y desvíos detectados</h2>
+    <span class="stag" style="background:var(--red-lt);color:var(--red)">Críticas: <span id="alertCritCount">0</span></span>
+    <span class="stag" style="background:var(--amber-lt);color:var(--amber)">Atención: <span id="alertAtenCount">0</span></span>
+  </div>
+  <div id="alertsBox"></div>
+
+  <!-- TRENDS -->
+  <div class="section-title"><div class="dot" style="background:var(--blue)"></div><h2>Evolución mensual</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Créditos (sin transfers) — unidades y monto por mes</h3>
+      <div class="chart-box"><canvas id="chartTrendCredits"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Retiros de depósito — unidades y monto por mes</h3>
+      <div class="chart-box"><canvas id="chartTrendRetiros"></canvas></div>
+    </div>
+  </div>
+
+  <!-- MOTIVOS -->
+  <div class="section-title"><div class="dot" style="background:var(--orange)"></div><h2>Detalle por motivo — mes actual</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Créditos por motivo</h3>
+      <div class="chart-box"><canvas id="chartMotivoCreditos"></canvas></div>
+      <table style="margin-top:14px;">
+        <thead><tr><th>Motivo</th><th class="num">Unidades</th><th class="num">Monto</th><th></th></tr></thead>
+        <tbody id="motivoCreditosBody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Retiros por motivo</h3>
+      <div class="chart-box"><canvas id="chartMotivoRetiros"></canvas></div>
+      <table style="margin-top:14px;">
+        <thead><tr><th>Motivo</th><th class="num">Unidades</th><th class="num">Monto</th><th></th></tr></thead>
+        <tbody id="motivoRetirosBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SUCURSALES -->
+  <div class="section-title"><div class="dot" style="background:var(--teal)"></div><h2>Retiros por sucursal</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Participación del mes por sucursal</h3>
+      <div class="chart-box"><canvas id="chartSucursal"></canvas></div>
+      <table style="margin-top:10px;">
+        <thead><tr><th>Sucursal</th><th class="num">Unidades</th><th class="num">Monto</th><th class="num">% del mes</th></tr></thead>
+        <tbody id="sucursalBody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Evolución mensual de unidades retiradas por sucursal</h3>
+      <div class="chart-box tall"><canvas id="chartSucursalTrend"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div class="section-title"><div class="dot" style="background:var(--purple)"></div><h2>Categorías de producto</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Créditos por categoría de producto (A/B/C/X)</h3>
+      <div class="chart-box"><canvas id="chartCatCreditos"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Retiros por rubro — monto</h3>
+      <div class="chart-box"><canvas id="chartRubroRetiros"></canvas></div>
+    </div>
+  </div>
+
+  <!-- RANKINGS -->
+  <div class="section-title"><div class="dot" style="background:var(--green)"></div><h2>Rankings del mes</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Top 10 usuarios generadores de créditos (unidades, sin transfers)</h3>
+      <table><thead><tr><th>Usuario</th><th class="num">Unidades</th><th></th></tr></thead><tbody id="topUsuariosBody"></tbody></table>
+    </div>
+    <div class="card">
+      <h3>Top 10 clientes/cuentas por monto de créditos (sin transfers)</h3>
+      <table><thead><tr><th>Cliente</th><th class="num">Monto</th><th></th></tr></thead><tbody id="topClientesBody"></tbody></table>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Top proveedores — monto retirado por vencimiento</h3>
+      <table><thead><tr><th>Proveedor</th><th class="num">Monto</th><th></th></tr></thead><tbody id="topProvVencBody"></tbody></table>
+    </div>
+    <div class="card">
+      <h3>Top proveedores — unidades por falla de laboratorio</h3>
+      <table><thead><tr><th>Proveedor</th><th class="num">Unidades</th><th></th></tr></thead><tbody id="topProvFallaBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- RECOMENDACIONES -->
+  <div class="section-title"><div class="dot" style="background:var(--blue)"></div><h2>Recomendaciones del mes</h2></div>
+  <div class="card">
+    <ul class="rec-list" id="recList"></ul>
+  </div>
+
+  <footer class="foot">
+    <p><b>Cómo actualizar este dashboard cada mes:</b> subí el nuevo archivo de Créditos (con la hoja "Base") y el nuevo archivo de Retiros (con la hoja "Base Retiros") en los recuadros de arriba y hacé clic en "Actualizar dashboard". Todo el procesamiento ocurre en tu navegador — los archivos no se suben a ningún servidor. Podés volver a los datos originales con "Ver datos originales".</p>
+    <p class="muted">COFARSUR S.A. · Gestión de Calidad · Tablero generado para uso interno.</p>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const DEFAULT_DATA = {"credits":{"months":["enero","febrero","marzo","abril","mayo","junio"],"monthly":{"enero":{"unidades":189275,"monto":3237365871.8100004,"notas":6361,"unidadesTransfer":153754,"montoTransfer":2723168198.9,"unidadesNoTransfer":35521,"montoNoTransfer":514197672.90999997,"notasNoTransfer":5332},"febrero":{"unidades":195172,"monto":3181411344.71,"notas":5562,"unidadesTransfer":155028,"montoTransfer":2604370866.5699997,"unidadesNoTransfer":40144,"montoNoTransfer":577040478.14,"notasNoTransfer":4420},"marzo":{"unidades":303935,"monto":4622867150.14,"notas":6274,"unidadesTransfer":266459,"montoTransfer":4062202784.95,"unidadesNoTransfer":37476,"montoNoTransfer":560664365.19,"notasNoTransfer":4883},"abril":{"unidades":242281,"monto":2867046397.92,"notas":4877,"unidadesTransfer":209919,"montoTransfer":2526502071.16,"unidadesNoTransfer":32362,"montoNoTransfer":340544326.76,"notasNoTransfer":3742},"mayo":{"unidades":253815,"monto":3864677644.92,"notas":6004,"unidadesTransfer":214939,"montoTransfer":3326306282.54,"unidadesNoTransfer":38876,"montoNoTransfer":538371362.3799999,"notasNoTransfer":4599},"junio":{"unidades":274345,"monto":4326429504.74,"notas":4932,"unidadesTransfer":250390,"montoTransfer":3922485477.83,"unidadesNoTransfer":23955,"montoNoTransfer":403944026.90999997,"notasNoTransfer":3500}},"byMotivoMonthlyUnidades":{"A SEGUIR":{"enero":6102,"febrero":1578,"marzo":2000,"abril":3080,"mayo":1272,"junio":1272},"BONOS PAP":{"enero":0,"febrero":0,"marzo":1,"abril":0,"mayo":0,"junio":0},"DEVOLVIO EL CLIENTE":{"enero":24,"febrero":135,"marzo":106,"abril":518,"mayo":197,"junio":43},"EN INGRESO":{"enero":2,"febrero":0,"marzo":56,"abril":43,"mayo":0,"junio":0},"ENTR CTE PTE DE PAGO":{"enero":0,"febrero":0,"marzo":0,"abril":1,"mayo":0,"junio":0},"ERROR DE EXPEDICIÓN":{"enero":0,"febrero":1,"marzo":0,"abril":0,"mayo":0,"junio":0},"FALLA LABORATORIO":{"enero":164,"febrero":174,"marzo":119,"abril":338,"mayo":278,"junio":224},"MAL ENVIADO":{"enero":57,"febrero":58,"marzo":50,"abril":52,"mayo":20,"junio":19},"MAL ESTADO":{"enero":333,"febrero":120,"marzo":84,"abril":131,"mayo":501,"junio":153},"MAL FACT/PED SIN PREPARACION":{"enero":15679,"febrero":19043,"marzo":8282,"abril":4985,"mayo":16433,"junio":10712},"MAL FACTURADO":{"enero":967,"febrero":5597,"marzo":11679,"abril":9438,"mayo":4380,"junio":248},"MAL PEDIDO":{"enero":4745,"febrero":7027,"marzo":7777,"abril":7249,"mayo":8382,"junio":6624},"MAL PRECIO":{"enero":5,"febrero":0,"marzo":0,"abril":7,"mayo":107,"junio":17},"NO ENVIADO":{"enero":2227,"febrero":612,"marzo":505,"abril":484,"mayo":198,"junio":175},"NO LLEGA A TIEMPO":{"enero":1031,"febrero":15,"marzo":1,"abril":3,"mayo":0,"junio":0},"NO SOLICITADO":{"enero":2230,"febrero":3056,"marzo":847,"abril":5038,"mayo":5444,"junio":2816},"PARA PRESENTAR EN MINISTERIO":{"enero":0,"febrero":0,"marzo":0,"abril":5,"mayo":0,"junio":0},"RECALL":{"enero":2,"febrero":0,"marzo":61,"abril":1,"mayo":7,"junio":0},"REPETIDO":{"enero":49,"febrero":2,"marzo":0,"abril":43,"mayo":1,"junio":106},"SIN MOTIVO":{"enero":0,"febrero":0,"marzo":0,"abril":0,"mayo":0,"junio":0},"SINIESTRO TRANSPORTE":{"enero":0,"febrero":0,"marzo":339,"abril":0,"mayo":0,"junio":0},"TRANSFER ERROR APM":{"enero":77,"febrero":0,"marzo":145,"abril":0,"mayo":0,"junio":0},"TRANSFER MAL FACT / NO SOLIC":{"enero":0,"febrero":0,"marzo":2035,"abril":0,"mayo":0,"junio":0},"TRANSFERS":{"enero":153754,"febrero":155028,"marzo":266459,"abril":209919,"mayo":214939,"junio":250390},"TRAZABILIDAD":{"enero":51,"febrero":36,"marzo":193,"abril":13,"mayo":17,"junio":27},"VENCIDO CONVENIO":{"enero":1697,"febrero":2642,"marzo":3166,"abril":751,"mayo":1524,"junio":1284},"VENCIMIENTO PROXIMO":{"enero":79,"febrero":48,"marzo":30,"abril":182,"mayo":115,"junio":235}},"byMotivoMonthlyMonto":{"A SEGUIR":{"enero":52909540.8,"febrero":15878100.540000003,"marzo":23980133.15,"abril":21591851.58,"mayo":14457980.27,"junio":16369673.29},"BONOS PAP":{"enero":0.0,"febrero":0.0,"marzo":0.0,"abril":0.0,"mayo":0.0,"junio":0.0},"DEVOLVIO EL CLIENTE":{"enero":44500.87,"febrero":0.0,"marzo":0.0,"abril":963138.12,"mayo":3057710.1199999996,"junio":0.0},"EN INGRESO":{"enero":70650.79000000001,"febrero":0.0,"marzo":233078.97,"abril":401417.87999999995,"mayo":0.0,"junio":0.0},"ENTR CTE PTE DE PAGO":{"enero":0.0,"febrero":0.0,"marzo":0.0,"abril":6800.73,"mayo":0.0,"junio":0.0},"ERROR DE EXPEDICIÓN":{"enero":0.0,"febrero":9265.33,"marzo":0.0,"abril":0.0,"mayo":0.0,"junio":0.0},"FALLA LABORATORIO":{"enero":1608012.74,"febrero":1900934.7499999998,"marzo":838680.6700000002,"abril":3599154.39,"mayo":2584527.9699999997,"junio":1931877.71},"MAL ENVIADO":{"enero":734161.22,"febrero":897554.0700000001,"marzo":1094130.5399999998,"abril":575709.22,"mayo":228235.93000000002,"junio":452407.30999999994},"MAL ESTADO":{"enero":2067308.0200000005,"febrero":1494280.3499999999,"marzo":1378637.4899999998,"abril":2055627.98,"mayo":6343332.53,"junio":2379817.82},"MAL FACT/PED SIN PREPARACION":{"enero":252496311.53,"febrero":315534435.7,"marzo":157593454.95999998,"abril":39661998.96,"mayo":210657795.01,"junio":219191797.82},"MAL FACTURADO":{"enero":12499838.91,"febrero":16492487.15,"marzo":54560081.989999995,"abril":29118826.07,"mayo":58777465.03,"junio":890718.3800000001},"MAL PEDIDO":{"enero":84528582.92000002,"febrero":139835852.48000002,"marzo":154108639.74,"abril":130266546.6,"mayo":154353428.49,"junio":101352497.19999999},"MAL PRECIO":{"enero":53897.82,"febrero":0.0,"marzo":0.0,"abril":120090.88,"mayo":698608.6,"junio":165394.76000000004},"NO ENVIADO":{"enero":23494619.23,"febrero":7644894.03,"marzo":6785368.77,"abril":5218202.590000001,"mayo":3040343.2700000005,"junio":2093534.6400000001},"NO LLEGA A TIEMPO":{"enero":7183327.129999999,"febrero":145609.86000000002,"marzo":0.0,"abril":138953.32,"mayo":0.0,"junio":0.0},"NO SOLICITADO":{"enero":42277440.2,"febrero":32190563.439999998,"marzo":28733316.05,"abril":88198289.13,"mayo":48015097.0,"junio":27860116.61},"PARA PRESENTAR EN MINISTERIO":{"enero":0.0,"febrero":0.0,"marzo":0.0,"abril":75696.27,"mayo":0.0,"junio":0.0},"RECALL":{"enero":62438.22,"febrero":0.0,"marzo":1214333.44,"abril":32970.35,"mayo":59724.74,"junio":0.0},"REPETIDO":{"enero":1010410.42,"febrero":0.0,"marzo":0.0,"abril":622342.7,"mayo":0.0,"junio":134249.91999999998},"SIN MOTIVO":{"enero":0.0,"febrero":0.0,"marzo":0.0,"abril":0.0,"mayo":0.0,"junio":0.0},"SINIESTRO TRANSPORTE":{"enero":0.0,"febrero":0.0,"marzo":3442231.0500000003,"abril":0.0,"mayo":0.0,"junio":0.0},"TRANSFER ERROR APM":{"enero":2103091.96,"febrero":0.0,"marzo":1696681.88,"abril":0.0,"mayo":0.0,"junio":0.0},"TRANSFER MAL FACT / NO SOLIC":{"enero":0.0,"febrero":0.0,"marzo":41836153.89,"abril":0.0,"mayo":0.0,"junio":0.0},"TRANSFERS":{"enero":2723168198.9,"febrero":2604370866.5699997,"marzo":4062202784.95,"abril":2526502071.16,"mayo":3326306282.54,"junio":3922485477.83},"TRAZABILIDAD":{"enero":6777341.429999999,"febrero":3310388.4899999998,"marzo":27175489.269999996,"abril":1341507.04,"mayo":519562.67000000004,"junio":3797352.45},"VENCIDO CONVENIO":{"enero":23352780.3,"febrero":39747097.37,"marzo":55076713.13,"abril":13964516.32,"mayo":33928137.099999994,"junio":23346367.73},"VENCIMIENTO PROXIMO":{"enero":923418.4,"febrero":1959014.5800000003,"marzo":917240.2,"abril":2590686.630000001,"mayo":1649413.6500000001,"junio":3978221.27}},"currentMonth":"junio","currentYear":2026,"current":{"totalUnidades":274345,"totalMonto":4326429504.74,"totalNotas":4932,"logisticoUnidades":1619,"logisticoMonto":21295433.06,"logisticoNotas":777,"noTransferUnidades":23955,"noTransferMonto":403944026.90999997,"noTransferNotas":3500,"byMotivo":[{"Motivo":"MAL FACT/PED SIN PREPARACION","unidades":10712,"monto":219191797.82,"notas":74},{"Motivo":"MAL PEDIDO","unidades":6624,"monto":101352497.2,"notas":1937},{"Motivo":"NO SOLICITADO","unidades":2816,"monto":27860116.61,"notas":134},{"Motivo":"VENCIDO CONVENIO","unidades":1284,"monto":23346367.73,"notas":393},{"Motivo":"A SEGUIR","unidades":1272,"monto":16369673.290000001,"notas":592},{"Motivo":"MAL FACTURADO","unidades":248,"monto":890718.38,"notas":19},{"Motivo":"VENCIMIENTO PROXIMO","unidades":235,"monto":3978221.27,"notas":31},{"Motivo":"FALLA LABORATORIO","unidades":224,"monto":1931877.71,"notas":104},{"Motivo":"NO ENVIADO","unidades":175,"monto":2093534.64,"notas":95},{"Motivo":"MAL ESTADO","unidades":153,"monto":2379817.82,"notas":75},{"Motivo":"REPETIDO","unidades":106,"monto":134249.91999999998,"notas":1},{"Motivo":"DEVOLVIO EL CLIENTE","unidades":43,"monto":0.0,"notas":17},{"Motivo":"TRAZABILIDAD","unidades":27,"monto":3797352.45,"notas":15},{"Motivo":"MAL ENVIADO","unidades":19,"monto":452407.31,"notas":15},{"Motivo":"MAL PRECIO","unidades":17,"monto":165394.76,"notas":6}],"topUsuarios":[{"Usuario":"DIEGO ASPITIA","unidades":8869},{"Usuario":"MARTIN CASANOVA CALL CENTER","unidades":8314},{"Usuario":"LUCAS ALLIONE","unidades":1749},{"Usuario":"ROCIO PEREYRA","unidades":899},{"Usuario":"ANTONIO BARRERA (CALL CENTER)","unidades":409},{"Usuario":"RUBEN BASSO","unidades":333},{"Usuario":"MICAELA ZABALA","unidades":257},{"Usuario":"GONZALO LUNA","unidades":195},{"Usuario":"ROMINA GUTIERREZ","unidades":190},{"Usuario":"JOSE SANCHEZ","unidades":146}],"topClientes":[{"Cliente":"DROGUERIA CENTRAL DEPOSITO","monto":174476420.89},{"Cliente":".DISTRIFARMA SRL","monto":31690053.189999998},{"Cliente":"NUEVA ROSA","monto":12307906.12},{"Cliente":"DROGUERIA LIDER","monto":10038343.72},{"Cliente":"ANA LONDERO DE ARGUELLO","monto":8648641.14},{"Cliente":"ALVEAR CALERA","monto":7930060.77},{"Cliente":"SANTA LUCIA (BELL VILLE)","monto":7746775.0200000005},{"Cliente":"DEL SUBNIVEL - TRF","monto":6204296.18},{"Cliente":"NERVEGNA","monto":5484470.27},{"Cliente":"PENALBA - (MEDICARLO 18)","monto":4627300.29}],"byArea":[{"area":false,"unidades":14718},{"area":"BALDA","unidades":3069},{"area":"DINAMICA","unidades":2667},{"area":"ALTA ROTACION","unidades":2496},{"area":"GRANDES BULTOS","unidades":519},{"area":"TRAT ESPECIAL","unidades":434},{"area":"CAMARA","unidades":52}],"byCategoria":[{"categoria":"A","unidades":15157},{"categoria":"B","unidades":4016},{"categoria":"C","unidades":2458},{"categoria":"X","unidades":2324}],"incidents":[{"motivo":"MAL FACT/PED SIN PREPARACION","unidadesTotal":10712,"montoTotal":219191797.82,"fechaPico":"2026-06-29","unidadesFechaPico":8314,"shareFechaPico":0.78,"productosAfectados":166,"severidad":"atencion"},{"motivo":"VENCIDO CONVENIO","unidadesTotal":1284,"montoTotal":23346367.73,"fechaPico":"2026-06-26","unidadesFechaPico":757,"shareFechaPico":0.59,"productosAfectados":355,"severidad":"atencion"}]}},"retiros":{"months":["enero","febrero","marzo","abril","mayo","junio"],"monthly":{"enero":{"unidades":8952,"monto":49576843.18000001,"retiros":1060},"febrero":{"unidades":3914,"monto":180390524.64999998,"retiros":817},"marzo":{"unidades":4238,"monto":75436030.29,"retiros":1132},"abril":{"unidades":4103,"monto":53593880.97,"retiros":758},"mayo":{"unidades":4191,"monto":77382898.78,"retiros":1036},"junio":{"unidades":5455,"monto":72785953.12,"retiros":1206}},"byMotivoMonthlyUnidades":{"Discontinuado":{"enero":17,"febrero":34,"marzo":53,"abril":36,"mayo":0,"junio":3},"Final de Temporada":{"enero":0,"febrero":182,"marzo":3,"abril":2140,"mayo":845,"junio":0},"Mal Estado - Deposito y Estanteria":{"enero":380,"febrero":248,"marzo":418,"abril":268,"mayo":409,"junio":345},"Mal Estado - Falla Laboratorio":{"enero":375,"febrero":309,"marzo":339,"abril":376,"mayo":365,"junio":299},"Mal Estado - Por otro Producto":{"enero":86,"febrero":52,"marzo":69,"abril":66,"mayo":46,"junio":100},"Mal Estado - Recepcion Cliente":{"enero":253,"febrero":84,"marzo":103,"abril":226,"mayo":418,"junio":138},"Mal Estado - Robot":{"enero":0,"febrero":1,"marzo":0,"abril":0,"mayo":0,"junio":1},"Mal Estado - Rotura Personal":{"enero":152,"febrero":20,"marzo":75,"abril":34,"mayo":142,"junio":24},"Mal Estado - Sucursal":{"enero":14,"febrero":39,"marzo":41,"abril":209,"mayo":28,"junio":19},"No Vigente":{"enero":23,"febrero":3,"marzo":49,"abril":23,"mayo":0,"junio":46},"Recall":{"enero":4659,"febrero":159,"marzo":60,"abril":11,"mayo":2,"junio":0},"Siniestro Edilicio":{"enero":0,"febrero":943,"marzo":3,"abril":0,"mayo":0,"junio":0},"Siniestro Transporte":{"enero":0,"febrero":10,"marzo":320,"abril":1,"mayo":10,"junio":371},"Vencido Sucursal":{"enero":40,"febrero":2,"marzo":47,"abril":4,"mayo":25,"junio":53},"Vencimiento":{"enero":2953,"febrero":1828,"marzo":2658,"abril":709,"mayo":1901,"junio":4056}},"byMotivoMonthlyMonto":{"Discontinuado":{"enero":127894.87,"febrero":10307.64,"marzo":346668.18000000005,"abril":93759.84,"mayo":0.0,"junio":53708.35},"Final de Temporada":{"enero":0.0,"febrero":1630773.02,"marzo":76814.09,"abril":24898115.799999997,"mayo":30331706.64,"junio":0.0},"Mal Estado - Deposito y Estanteria":{"enero":5454214.59,"febrero":3773617.6899999995,"marzo":5550469.6899999995,"abril":3987697.49,"mayo":5199555.75,"junio":5034445.869999999},"Mal Estado - Falla Laboratorio":{"enero":3455775.33,"febrero":3347648.91,"marzo":3616991.4899999998,"abril":4088930.2600000007,"mayo":3545428.5799999996,"junio":2706417.67},"Mal Estado - Por otro Producto":{"enero":1260103.9699999997,"febrero":678418.3600000001,"marzo":1197487.8499999999,"abril":1013251.59,"mayo":561101.6,"junio":1386357.1099999999},"Mal Estado - Recepcion Cliente":{"enero":4070247.1199999996,"febrero":979230.92,"marzo":1811632.11,"abril":3567907.86,"mayo":6166296.640000001,"junio":2422961.6899999995},"Mal Estado - Robot":{"enero":0.0,"febrero":1684.8,"marzo":0.0,"abril":0.0,"mayo":0.0,"junio":11841.31},"Mal Estado - Rotura Personal":{"enero":1175986.1599999997,"febrero":309894.69,"marzo":1621231.15,"abril":522031.02999999997,"mayo":2017839.96,"junio":496404.15},"Mal Estado - Sucursal":{"enero":194889.92,"febrero":641057.9199999999,"marzo":506285.65,"abril":7555932.56,"mayo":315744.54,"junio":356197.66000000003},"No Vigente":{"enero":179552.95,"febrero":64843.47,"marzo":326798.93000000005,"abril":366134.15,"mayo":0.0,"junio":20928.16},"Recall":{"enero":2871209.77,"febrero":1290876.96,"marzo":1448710.7999999998,"abril":270110.06,"mayo":145757.0,"junio":0.0},"Siniestro Edilicio":{"enero":0.0,"febrero":131876889.84000002,"marzo":41636.97,"abril":0.0,"mayo":0.0,"junio":0.0},"Siniestro Transporte":{"enero":0.0,"febrero":155194.56999999998,"marzo":3258515.2700000005,"abril":68881.64,"mayo":262429.67,"junio":10706941.7},"Vencido Sucursal":{"enero":285157.68,"febrero":11063.27,"marzo":546859.12,"abril":41997.229999999996,"mayo":408126.33999999997,"junio":534781.49},"Vencimiento":{"enero":30501810.82,"febrero":35619022.59,"marzo":55085928.99,"abril":7119131.460000001,"mayo":28428912.06,"junio":49054967.96000001}},"bySucursalMonthlyUnidades":{"CORDOBA":{"enero":7600,"febrero":1949,"marzo":3113,"abril":3484,"mayo":3451,"junio":4357},"RIO CUARTO":{"enero":581,"febrero":783,"marzo":495,"abril":525,"mayo":319,"junio":930},"RIO TERCERO":{"enero":0,"febrero":0,"marzo":0,"abril":0,"mayo":1,"junio":0},"VILLA MERCEDES":{"enero":771,"febrero":1182,"marzo":630,"abril":94,"mayo":420,"junio":168}},"bySucursalMonthlyMonto":{"CORDOBA":{"enero":29460611.189999998,"febrero":34173475.29,"marzo":59732566.63,"abril":46034239.559999995,"mayo":65429712.03,"junio":54064005.47},"RIO CUARTO":{"enero":9272407.29,"febrero":12006733.73,"marzo":8637182.440000001,"abril":6508046.74,"mayo":5378381.550000002,"junio":17537728.92},"RIO TERCERO":{"enero":0.0,"febrero":0.0,"marzo":0.0,"abril":0.0,"mayo":6715.55,"junio":0.0},"VILLA MERCEDES":{"enero":10843824.700000001,"febrero":134210315.63000001,"marzo":7066281.220000001,"abril":1051594.6700000002,"mayo":6568089.649999999,"junio":1184218.73}},"currentMonth":"junio","current":{"totalUnidades":5455,"totalMonto":72785953.12,"totalRetiros":1206,"byMotivo":[{"MOTIVO":"Vencimiento","unidades":4056,"monto":49054967.96,"retiros":324},{"MOTIVO":"Siniestro Transporte","unidades":371,"monto":10706941.700000001,"retiros":225},{"MOTIVO":"Mal Estado - Deposito y Estanteria","unidades":345,"monto":5034445.87,"retiros":277},{"MOTIVO":"Mal Estado - Falla Laboratorio","unidades":299,"monto":2706417.67,"retiros":205},{"MOTIVO":"Mal Estado - Recepcion Cliente","unidades":138,"monto":2422961.69,"retiros":84},{"MOTIVO":"Mal Estado - Por otro Producto","unidades":100,"monto":1386357.1099999999,"retiros":39},{"MOTIVO":"Vencido Sucursal","unidades":53,"monto":534781.49,"retiros":13},{"MOTIVO":"No Vigente","unidades":46,"monto":20928.16,"retiros":1},{"MOTIVO":"Mal Estado - Rotura Personal","unidades":24,"monto":496404.15,"retiros":21},{"MOTIVO":"Mal Estado - Sucursal","unidades":19,"monto":356197.66000000003,"retiros":14},{"MOTIVO":"Discontinuado","unidades":3,"monto":53708.35,"retiros":2},{"MOTIVO":"Mal Estado - Robot","unidades":1,"monto":11841.31,"retiros":1}],"bySucursal":[{"sucursal":"CORDOBA","unidades":4357,"monto":54064005.47},{"sucursal":"RIO CUARTO","unidades":930,"monto":17537728.92},{"sucursal":"VILLA MERCEDES","unidades":168,"monto":1184218.73}],"byRubro":[{"RUBRO":"ESPECIALIDAD MEDICINAL","monto":43466467.52,"unidades":2437},{"RUBRO":"Bebé y Maternidad","monto":6291540.949999999,"unidades":552},{"RUBRO":"Nutricion y Deporte","monto":3851356.35,"unidades":376},{"RUBRO":"Dermocosmética","monto":3093859.39,"unidades":87},{"RUBRO":"Cuidado de la Piel","monto":2858890.66,"unidades":200},{"RUBRO":"Perfumes y Fragancias","monto":2040477.29,"unidades":180},{"RUBRO":"Bienestar Sexual","monto":1750409.3599999999,"unidades":80},{"RUBRO":"PSICOTROPICO/ESTUPEFACIENTE","monto":1743046.51,"unidades":62},{"RUBRO":"Maquillaje","monto":1668489.72,"unidades":122},{"RUBRO":"Hogar y Limpieza","monto":1436972.49,"unidades":236}],"byCategoria":[{"categoria":"ESPECIALIDAD MEDICINAL","monto":41873483.75,"unidades":2370},{"categoria":"COSMETICO","monto":22262863.47,"unidades":2193},{"categoria":"ALIMENTOS","monto":4018798.6500000004,"unidades":346},{"categoria":"PSICOTROPICO","monto":1213387.51,"unidades":49},{"categoria":"DOMISANITARIO","monto":1073205.24,"unidades":198},{"categoria":"SUSTANCIAS CONTROLADAS","monto":1031875.6,"unidades":24},{"categoria":"PRODUCTO MEDICO","monto":393178.36000000004,"unidades":60},{"categoria":"HIGIENE ORAL","monto":296208.14999999997,"unidades":51},{"categoria":"REACTIVO","monto":199867.72,"unidades":6},{"categoria":"ACCESORIO","monto":165364.85,"unidades":61},{"categoria":"FARMACOPEA","monto":155003.61,"unidades":57},{"categoria":"NUTRACEUTICO","monto":102716.20999999999,"unidades":40}],"topProveedorVencimiento":[{"PROVEEDOR":"ELEA S.A.","monto":15024991.3},{"PROVEEDOR":"NEW PGA S.R.L.","monto":6214290.99},{"PROVEEDOR":"BEIERSDORF S.A.","monto":3859177.11},{"PROVEEDOR":"NUTRICIA BAGO S.A.","monto":1864302.09},{"PROVEEDOR":"MONTE VERDE S.A.","monto":1763059.6500000001},{"PROVEEDOR":"BUHL S.A.","monto":1399287.2799999998},{"PROVEEDOR":"COTY ARGENTINA S.A","monto":1215637.3599999999},{"PROVEEDOR":"UNILEVER DE ARGENTINA S.A. (LIMPIEZA)","monto":1005955.28}],"topProveedorFallaLaboratorio":[{"PROVEEDOR":"UNILEVER DE ARGENTINA S.A.","unidades":64},{"PROVEEDOR":"INSTITUTO BIOLOGICO CORDOBA","unidades":29},{"PROVEEDOR":"TABLADA S.R.L","unidades":23},{"PROVEEDOR":"ALGABO S.A","unidades":16},{"PROVEEDOR":"OPELLA HEALTHCARE ARGENTINA S.A.U.","unidades":14},{"PROVEEDOR":"ELEA S.A.","unidades":12},{"PROVEEDOR":"LABORATORIOS BERNABO S.A.","unidades":8},{"PROVEEDOR":"ROEMMERS SAICF","unidades":8}],"siniestroTransporte":{"unidades":371,"monto":10706941.7,"sucursales":{"RIO CUARTO":225},"fechas":["2026-06-18"],"productos_afectados":214},"incidents":[{"motivo":"Siniestro Transporte","unidadesTotal":371,"montoTotal":10706941.7,"fechaPico":"2026-06-18","unidadesFechaPico":371,"shareFechaPico":1.0,"productosAfectados":214,"severidad":"critica"},{"motivo":"Mal Estado - Por otro Producto","unidadesTotal":100,"montoTotal":1386357.1099999999,"fechaPico":"2026-06-02","unidadesFechaPico":55,"shareFechaPico":0.55,"productosAfectados":5,"severidad":"atencion"},{"motivo":"Vencido Sucursal","unidadesTotal":53,"montoTotal":534781.49,"fechaPico":"2026-06-18","unidadesFechaPico":25,"shareFechaPico":0.47,"productosAfectados":2,"severidad":"atencion"},{"motivo":"No Vigente","unidadesTotal":46,"montoTotal":20928.16,"fechaPico":"2026-06-17","unidadesFechaPico":46,"shareFechaPico":1.0,"productosAfectados":1,"severidad":"atencion"}]}}};
+</script>
+<script>
+/* ==================== CONFIG ==================== */
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MESES_CAP = {enero:'Enero',febrero:'Febrero',marzo:'Marzo',abril:'Abril',mayo:'Mayo',junio:'Junio',julio:'Julio',agosto:'Agosto',septiembre:'Septiembre',octubre:'Octubre',noviembre:'Noviembre',diciembre:'Diciembre'};
+const COLORS = ['#2151d3','#c2560c','#0f8a3f','#c81e3a','#0a7c86','#6a3fc2','#b06a00','#7a8bb8','#d34fa0','#4e8f2f','#1f6fb2','#a34e1f'];
+const fmtInt = n => (n==null?'-':Math.round(n).toLocaleString('es-AR'));
+const fmtMoney = n => (n==null?'-':'$ '+Math.round(n).toLocaleString('es-AR'));
+const fmtMoneyShort = n => {
+  if(n==null) return '-';
+  const abs=Math.abs(n);
+  if(abs>=1e9) return '$ '+(n/1e9).toLocaleString('es-AR',{maximumFractionDigits:2})+' MM M';
+  if(abs>=1e6) return '$ '+(n/1e6).toLocaleString('es-AR',{maximumFractionDigits:1})+' M';
+  if(abs>=1e3) return '$ '+(n/1e3).toLocaleString('es-AR',{maximumFractionDigits:0})+' mil';
+  return fmtMoney(n);
+};
+const fmtPct = n => (n==null?'-':(n*100).toLocaleString('es-AR',{maximumFractionDigits:1})+'%');
+
+function trimKeys(obj){
+  const out={};
+  Object.keys(obj).forEach(k=>{ out[k.trim()] = obj[k]; });
+  return out;
+}
+function toDate(v){
+  if(v instanceof Date) return v;
+  if(typeof v === 'number'){
+    // excel serial
+    const d = new Date(Math.round((v-25569)*86400*1000));
+    return d;
+  }
+  if(typeof v === 'string'){ const d = new Date(v); if(!isNaN(d)) return d; }
+  return null;
+}
+function monthNameEs(d){ return MESES[d.getMonth()]; }
+
+/* ==================== AGGREGATION: CREDITOS ==================== */
+function aggregateCredits(rawRows){
+  let rows = rawRows.map(trimKeys).filter(r=>r['Fecha']!=null || r['Periodo']!=null);
+  rows.forEach(r=>{
+    if(r['Fecha'] && !(r['Fecha'] instanceof Date)) r['Fecha']=toDate(r['Fecha']);
+    r['Periodo'] = r['Periodo']!=null ? r['Periodo'].toString().trim().toLowerCase() : (r['Fecha']?monthNameEs(r['Fecha']):null);
+    r['Año'] = r['Año']!=null ? parseInt(r['Año'],10) : (r['Fecha']?r['Fecha'].getFullYear():null);
+    r['Motivo'] = (r['Motivo']||'SIN MOTIVO').toString().trim();
+    r['Cantidad'] = Number(r['Cantidad'])||0;
+    r['Subtotal'] = Number(r['Subtotal'])||0;
+  });
+  const anios = [...new Set(rows.map(r=>r['Año']).filter(x=>x!=null))];
+  const maxAnio = Math.max(...anios);
+  rows = rows.filter(r=>r['Año']===maxAnio);
+  let months = [...new Set(rows.map(r=>r['Periodo']))].filter(m=>MESES.includes(m));
+  months.sort((a,b)=>MESES.indexOf(a)-MESES.indexOf(b));
+  const currentMonth = months[months.length-1];
+
+  const monthly = {};
+  months.forEach(m=>{
+    const sub = rows.filter(r=>r['Periodo']===m);
+    const subT = sub.filter(r=>r['Motivo']==='TRANSFERS');
+    const subNT = sub.filter(r=>r['Motivo']!=='TRANSFERS');
+    monthly[m] = {
+      unidades: sum(sub,'Cantidad'), monto: sum(sub,'Subtotal'), notas: nunique(sub,'Credito'),
+      unidadesTransfer: sum(subT,'Cantidad'), montoTransfer: sum(subT,'Subtotal'),
+      unidadesNoTransfer: sum(subNT,'Cantidad'), montoNoTransfer: sum(subNT,'Subtotal'), notasNoTransfer: nunique(subNT,'Credito'),
+    };
+  });
+
+  const motivos = [...new Set(rows.map(r=>r['Motivo']))];
+  const byMotivoMonthlyUnidades={}, byMotivoMonthlyMonto={};
+  motivos.forEach(mo=>{
+    byMotivoMonthlyUnidades[mo]={}; byMotivoMonthlyMonto[mo]={};
+    months.forEach(m=>{
+      const sub = rows.filter(r=>r['Motivo']===mo && r['Periodo']===m);
+      byMotivoMonthlyUnidades[mo][m]=sum(sub,'Cantidad');
+      byMotivoMonthlyMonto[mo][m]=sum(sub,'Subtotal');
+    });
+  });
+
+  const cur = rows.filter(r=>r['Periodo']===currentMonth);
+  const curNT = cur.filter(r=>r['Motivo']!=='TRANSFERS');
+  const curLog = cur.filter(r=>(r['A.Logi']||'').toString().trim().toLowerCase()==='si');
+
+  const byMotivoCur = groupAgg(curNT,'Motivo',['Cantidad','Subtotal','Credito']).map(x=>({Motivo:x.key,unidades:x.Cantidad,monto:x.Subtotal,notas:x.Credito_nunique}))
+    .sort((a,b)=>b.unidades-a.unidades);
+
+  const topUsuarios = topByGroup(curNT,'Usuario','Cantidad',10).map(x=>({Usuario:x.key,unidades:x.val}));
+  const topClientes = topByGroup(curNT,'Cliente','Subtotal',10).map(x=>({Cliente:x.key,monto:x.val}));
+  let byArea = groupSumMap(curNT, r=>{ let a=r['área']; if(!a || a==='False') a='Sin clasificar'; return a; }, 'Cantidad');
+  byArea = Object.entries(byArea).map(([area,unidades])=>({area,unidades})).sort((a,b)=>b.unidades-a.unidades);
+  let byCategoria = groupSumMap(curNT, r=>r['Cat.Prod']||'N/D','Cantidad');
+  byCategoria = Object.entries(byCategoria).map(([categoria,unidades])=>({categoria,unidades})).sort((a,b)=>b.unidades-a.unidades);
+
+  const incidents = detectIncidents(cur,'Motivo','Fecha','Cantidad','Subtotal','Producto',300,0.5);
+
+  return {
+    months, monthly, byMotivoMonthlyUnidades, byMotivoMonthlyMonto, currentMonth, currentYear: maxAnio,
+    current:{
+      totalUnidades:sum(cur,'Cantidad'), totalMonto:sum(cur,'Subtotal'), totalNotas:nunique(cur,'Credito'),
+      logisticoUnidades:sum(curLog,'Cantidad'), logisticoMonto:sum(curLog,'Subtotal'), logisticoNotas:nunique(curLog,'Credito'),
+      noTransferUnidades:sum(curNT,'Cantidad'), noTransferMonto:sum(curNT,'Subtotal'), noTransferNotas:nunique(curNT,'Credito'),
+      byMotivo:byMotivoCur, topUsuarios, topClientes, byArea, byCategoria, incidents
+    }
+  };
+}
+
+/* ==================== AGGREGATION: RETIROS ==================== */
+function aggregateRetiros(rawRows){
+  let rows = rawRows.map(trimKeys).filter(r=>r['FECHA']!=null || r['PERIODO']!=null);
+  rows.forEach(r=>{
+    if(r['FECHA'] && !(r['FECHA'] instanceof Date)) r['FECHA']=toDate(r['FECHA']);
+    r['PERIODO'] = r['PERIODO']!=null ? r['PERIODO'].toString().trim().toLowerCase() : (r['FECHA']?monthNameEs(r['FECHA']):null);
+    r['AÑO'] = r['AÑO']!=null ? parseInt(r['AÑO'],10) : (r['FECHA']?r['FECHA'].getFullYear():null);
+    r['MOTIVO'] = (r['MOTIVO']||'SIN MOTIVO').toString().trim();
+    r['CANTIDAD'] = Number(r['CANTIDAD'])||0;
+    r['SUBTOTAL'] = Number(r['SUBTOTAL'])||0;
+  });
+  const anios = [...new Set(rows.map(r=>r['AÑO']).filter(x=>x!=null))];
+  const maxAnio = Math.max(...anios);
+  rows = rows.filter(r=>r['AÑO']===maxAnio);
+  let months = [...new Set(rows.map(r=>r['PERIODO']))].filter(m=>MESES.includes(m));
+  months.sort((a,b)=>MESES.indexOf(a)-MESES.indexOf(b));
+  const currentMonth = months[months.length-1];
+
+  const monthly={};
+  months.forEach(m=>{
+    const sub = rows.filter(r=>r['PERIODO']===m);
+    monthly[m]={ unidades:sum(sub,'CANTIDAD'), monto:sum(sub,'SUBTOTAL'), retiros:sub.length };
+  });
+
+  const motivos=[...new Set(rows.map(r=>r['MOTIVO']))];
+  const byMotivoMonthlyUnidades={}, byMotivoMonthlyMonto={};
+  motivos.forEach(mo=>{
+    byMotivoMonthlyUnidades[mo]={}; byMotivoMonthlyMonto[mo]={};
+    months.forEach(m=>{
+      const sub = rows.filter(r=>r['MOTIVO']===mo && r['PERIODO']===m);
+      byMotivoMonthlyUnidades[mo][m]=sum(sub,'CANTIDAD');
+      byMotivoMonthlyMonto[mo][m]=sum(sub,'SUBTOTAL');
+    });
+  });
+
+  const sucursales=[...new Set(rows.map(r=>r['SUCURSAL ORIGEN']))];
+  const bySucursalMonthlyUnidades={}, bySucursalMonthlyMonto={};
+  sucursales.forEach(su=>{
+    bySucursalMonthlyUnidades[su]={}; bySucursalMonthlyMonto[su]={};
+    months.forEach(m=>{
+      const sub = rows.filter(r=>r['SUCURSAL ORIGEN']===su && r['PERIODO']===m);
+      bySucursalMonthlyUnidades[su][m]=sum(sub,'CANTIDAD');
+      bySucursalMonthlyMonto[su][m]=sum(sub,'SUBTOTAL');
+    });
+  });
+
+  const curr = rows.filter(r=>r['PERIODO']===currentMonth);
+  const byMotivo = groupAgg(curr,'MOTIVO',['CANTIDAD','SUBTOTAL']).map(x=>({MOTIVO:x.key,unidades:x.CANTIDAD,monto:x.SUBTOTAL,retiros:x.count})).sort((a,b)=>b.unidades-a.unidades);
+  const bySucursal = groupAgg(curr,'SUCURSAL ORIGEN',['CANTIDAD','SUBTOTAL']).map(x=>({sucursal:x.key,unidades:x.CANTIDAD,monto:x.SUBTOTAL})).sort((a,b)=>b.monto-a.monto);
+  const byRubro = groupAgg(curr,'RUBRO',['CANTIDAD','SUBTOTAL']).map(x=>({RUBRO:x.key,unidades:x.CANTIDAD,monto:x.SUBTOTAL})).sort((a,b)=>b.monto-a.monto).slice(0,10);
+  const byCategoria = groupAgg(curr,'CATEGORÍA',['CANTIDAD','SUBTOTAL']).map(x=>({categoria:x.key,unidades:x.CANTIDAD,monto:x.SUBTOTAL})).sort((a,b)=>b.monto-a.monto);
+
+  const topProveedorVencimiento = topByGroup(curr.filter(r=>r['MOTIVO']==='Vencimiento'),'PROVEEDOR','SUBTOTAL',8).map(x=>({PROVEEDOR:x.key,monto:x.val}));
+  const topProveedorFallaLaboratorio = topByGroup(curr.filter(r=>r['MOTIVO']==='Mal Estado - Falla Laboratorio'),'PROVEEDOR','CANTIDAD',8).map(x=>({PROVEEDOR:x.key,unidades:x.val}));
+
+  const incidents = detectIncidents(curr,'MOTIVO','FECHA','CANTIDAD','SUBTOTAL','PRODUCTO',20,0.45);
+
+  return {
+    months, monthly, byMotivoMonthlyUnidades, byMotivoMonthlyMonto, bySucursalMonthlyUnidades, bySucursalMonthlyMonto, currentMonth, currentYear: maxAnio,
+    current:{
+      totalUnidades:sum(curr,'CANTIDAD'), totalMonto:sum(curr,'SUBTOTAL'), totalRetiros:curr.length,
+      byMotivo, bySucursal, byRubro, byCategoria, topProveedorVencimiento, topProveedorFallaLaboratorio, incidents
+    }
+  };
+}
+
+/* ==================== GENERIC HELPERS ==================== */
+function sum(arr,key){ return arr.reduce((a,r)=>a+(Number(r[key])||0),0); }
+function nunique(arr,key){ return new Set(arr.map(r=>r[key])).size; }
+function groupSumMap(arr, keyFn, valKey){
+  const m={};
+  arr.forEach(r=>{ const k=keyFn(r); m[k]=(m[k]||0)+(Number(r[valKey])||0); });
+  return m;
+}
+function topByGroup(arr, keyField, valField, n){
+  const m={};
+  arr.forEach(r=>{ const k=r[keyField]; m[k]=(m[k]||0)+(Number(r[valField])||0); });
+  return Object.entries(m).map(([key,val])=>({key,val})).sort((a,b)=>b.val-a.val).slice(0,n);
+}
+function groupAgg(arr, keyField, sumFields){
+  const m={};
+  arr.forEach(r=>{
+    const k=r[keyField];
+    if(!m[k]) m[k]={key:k,count:0,_creditoSet:new Set()};
+    m[k].count++;
+    sumFields.forEach(f=>{ if(f!=='Credito') m[k][f]=(m[k][f]||0)+(Number(r[f])||0); });
+    if(r['Credito']!=null) m[k]._creditoSet.add(r['Credito']);
+  });
+  return Object.values(m).map(v=>{
+    v.Credito_nunique = v._creditoSet.size;
+    delete v._creditoSet;
+    return v;
+  });
+}
+function detectIncidents(curRows, motivoField, dateField, qtyField, montoField, prodField, minUnits, minShare){
+  const byMotivo={};
+  curRows.forEach(r=>{ const k=r[motivoField]; (byMotivo[k]=byMotivo[k]||[]).push(r); });
+  const out=[];
+  Object.entries(byMotivo).forEach(([motivo, g])=>{
+    const total = sum(g,qtyField);
+    if(total < minUnits) return;
+    const byDate={};
+    g.forEach(r=>{ const d=r[dateField]; if(!d) return; const key=(d instanceof Date)? d.toISOString().slice(0,10): String(d); byDate[key]=(byDate[key]||0)+(Number(r[qtyField])||0); });
+    const entries = Object.entries(byDate).sort((a,b)=>b[1]-a[1]);
+    if(!entries.length) return;
+    const [topDay, topDayUnits] = entries[0];
+    const share = topDayUnits/total;
+    if(share >= minShare){
+      const sub = g.filter(r=>{ const d=r[dateField]; const key=(d instanceof Date)? d.toISOString().slice(0,10): String(d); return key===topDay; });
+      const montoTotal = sum(g,montoField);
+      const kwCritical = /SINIESTRO|ROBOT|RECALL|EDILICIO/i.test(motivo);
+      out.push({
+        motivo, unidadesTotal: Math.round(total), montoTotal,
+        fechaPico: topDay, unidadesFechaPico: Math.round(topDayUnits), shareFechaPico: Math.round(share*100)/100,
+        productosAfectados: nunique(sub, prodField),
+        severidad: (kwCritical || (share>=0.85 && montoTotal>=1000000)) ? 'critica' : 'atencion'
+      });
+    }
+  });
+  return out.sort((a,b)=>b.montoTotal-a.montoTotal);
+}
+
+/* ==================== SHEET LOADING ==================== */
+function findSheet(wb, candidates){
+  const names = wb.SheetNames;
+  for(const cand of candidates){
+    const hit = names.find(n=>n.trim().toLowerCase()===cand.toLowerCase());
+    if(hit) return hit;
+  }
+  // fallback: partial match
+  for(const cand of candidates){
+    const hit = names.find(n=>n.trim().toLowerCase().includes(cand.toLowerCase()));
+    if(hit) return hit;
+  }
+  return null;
+}
+
+function readWorkbookFile(file, cb){
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const data = new Uint8Array(e.target.result);
+    const wb = XLSX.read(data, {type:'array', cellDates:true});
+    cb(wb);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+let pendingCreditsFile=null, pendingRetirosFile=null;
+let CURRENT_STATE = JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+function setupUploads(){
+  const fc = document.getElementById('fileCreditos');
+  const fr = document.getElementById('fileRetiros');
+  const applyBtn = document.getElementById('applyBtn');
+  fc.addEventListener('change', ()=>{
+    if(fc.files[0]){ pendingCreditsFile=fc.files[0]; document.getElementById('statusCreditos').textContent='Listo: '+pendingCreditsFile.name; }
+    checkApplyEnabled();
+  });
+  fr.addEventListener('change', ()=>{
+    if(fr.files[0]){ pendingRetirosFile=fr.files[0]; document.getElementById('statusRetiros').textContent='Listo: '+pendingRetirosFile.name; }
+    checkApplyEnabled();
+  });
+  applyBtn.addEventListener('click', applyUploads);
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    CURRENT_STATE = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    renderAll();
+    showToast('Mostrando datos originales cargados.');
+  });
+}
+function checkApplyEnabled(){
+  document.getElementById('applyBtn').disabled = !(pendingCreditsFile && pendingRetirosFile);
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>{ t.style.display='none'; }, 4200);
+}
+
+function applyUploads(){
+  if(!pendingCreditsFile || !pendingRetirosFile) return;
+  document.getElementById('applyBtn').textContent='Procesando...';
+  document.getElementById('applyBtn').disabled=true;
+  let creditsResult=null, retirosResult=null;
+  const tryFinish = ()=>{
+    if(creditsResult && retirosResult){
+      CURRENT_STATE = { credits: creditsResult, retiros: retirosResult };
+      renderAll();
+      document.getElementById('applyBtn').textContent='Actualizar dashboard';
+      checkApplyEnabled();
+      showToast('Dashboard actualizado con los nuevos archivos ('+creditsResult.currentMonth+').');
+    }
+  };
+  readWorkbookFile(pendingCreditsFile, wb=>{
+    const sheetName = findSheet(wb, ['Base']);
+    if(!sheetName){ alert('No se encontró la hoja "Base" en el archivo de Créditos.'); document.getElementById('applyBtn').textContent='Actualizar dashboard'; return; }
+    const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:null, raw:true});
+    creditsResult = aggregateCredits(json);
+    tryFinish();
+  });
+  readWorkbookFile(pendingRetirosFile, wb=>{
+    const sheetName = findSheet(wb, ['Base Retiros']);
+    if(!sheetName){ alert('No se encontró la hoja "Base Retiros" en el archivo de Retiros.'); document.getElementById('applyBtn').textContent='Actualizar dashboard'; return; }
+    const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {defval:null, raw:true});
+    retirosResult = aggregateRetiros(json);
+    tryFinish();
+  });
+}
+
+</script>
+<script>
+/* ==================== RENDER ==================== */
+let CHARTS = {};
+function destroyChart(id){ if(CHARTS[id]){ CHARTS[id].destroy(); delete CHARTS[id]; } }
+
+function renderAll(){
+  const c = CURRENT_STATE.credits, r = CURRENT_STATE.retiros;
+  renderHeaderMeta(c,r);
+  renderKPIs(c,r);
+  const alerts = buildAlerts(c,r);
+  renderAlerts(alerts);
+  renderTrendCharts(c,r);
+  renderMotivoTables(c,r);
+  renderSucursalSection(r);
+  renderRankings(c,r);
+  renderRecommendations(c,r,alerts);
+  renderCategoryCharts(c,r);
+}
+
+function renderHeaderMeta(c,r){
+  document.getElementById('metaMes').textContent = 'Período analizado: ' + MESES_CAP[c.currentMonth] + ' ' + (c.currentYear||'');
+  document.getElementById('metaGenerado').textContent = 'Generado: ' + new Date().toLocaleDateString('es-AR');
+}
+
+function monthDelta(monthlyDict, months, field){
+  if(months.length<2) return null;
+  const cur = monthlyDict[months[months.length-1]][field];
+  const prev = monthlyDict[months[months.length-2]][field];
+  if(!prev) return null;
+  return (cur-prev)/prev;
+}
+function deltaBadge(pct, goodDown){
+  if(pct==null) return '<span class="delta flat">sin datos previos</span>';
+  const up = pct>0;
+  const cls = up ? (goodDown?'up':'down') : (goodDown?'down':'up');
+  const arrow = up ? '▲' : '▼';
+  return `<span class="delta ${cls}">${arrow} ${fmtPct(Math.abs(pct))} vs mes anterior</span>`;
+}
+
+function renderKPIs(c,r){
+  const el = document.getElementById('kpiGrid');
+  const dU = monthDelta(c.monthly, c.months, 'unidadesNoTransfer');
+  const dM = monthDelta(c.monthly, c.months, 'montoNoTransfer');
+  const dRu = monthDelta(r.monthly, r.months, 'unidades');
+  const dRm = monthDelta(r.monthly, r.months, 'monto');
+  el.innerHTML = `
+    <div class="kpi">
+      <div class="lbl">Créditos · Unidades (sin transfers)</div>
+      <div class="val">${fmtInt(c.current.noTransferUnidades)}</div>
+      ${deltaBadge(dU,true)}
+    </div>
+    <div class="kpi">
+      <div class="lbl">Créditos · Monto no facturado</div>
+      <div class="val">${fmtMoneyShort(c.current.noTransferMonto)}</div>
+      ${deltaBadge(dM,true)}
+    </div>
+    <div class="kpi g">
+      <div class="lbl">Notas de crédito emitidas</div>
+      <div class="val">${fmtInt(c.current.noTransferNotas)}</div>
+      <span class="delta flat">${fmtInt(c.current.totalNotas)} notas totales (incl. transfers)</span>
+    </div>
+    <div class="kpi t">
+      <div class="lbl">Créditos logísticos (A.Logi = Sí)</div>
+      <div class="val">${fmtInt(c.current.logisticoUnidades)}</div>
+      <span class="delta flat">${fmtMoneyShort(c.current.logisticoMonto)} · ${fmtInt(c.current.logisticoNotas)} notas</span>
+    </div>
+    <div class="kpi o">
+      <div class="lbl">Retiros · Unidades</div>
+      <div class="val">${fmtInt(r.current.totalUnidades)}</div>
+      ${deltaBadge(dRu,false)}
+    </div>
+    <div class="kpi o">
+      <div class="lbl">Retiros · Monto</div>
+      <div class="val">${fmtMoneyShort(r.current.totalMonto)}</div>
+      ${deltaBadge(dRm,false)}
+    </div>
+    <div class="kpi r">
+      <div class="lbl">Retiros · Movimientos registrados</div>
+      <div class="val">${fmtInt(r.current.totalRetiros)}</div>
+      <span class="delta flat">${(r.current.totalUnidades/Math.max(r.current.totalRetiros,1)).toFixed(1)} unid. promedio / retiro</span>
+    </div>
+  `;
+}
+
+/* ---------- ALERTS (auto-generated deviation detection) ---------- */
+function buildAlerts(c,r){
+  const alerts=[];
+
+  // 1) Incidents (date-concentration) already computed
+  c.current.incidents.filter(inc=>inc.montoTotal>=1000000).forEach(inc=>{
+    alerts.push({
+      sev: inc.severidad==='critica' ? 'critica':'atencion',
+      title: `Créditos · Concentración inusual en "${inc.motivo}"`,
+      text: `El ${fmtPct(inc.shareFechaPico)} de las unidades del mes (${fmtInt(inc.unidadesFechaPico)} de ${fmtInt(inc.unidadesTotal)}) se generó en un solo día (${inc.fechaPico}), afectando ${inc.productosAfectados} productos distintos. Monto asociado: ${fmtMoney(inc.montoTotal)}. Sugiere un evento puntual (carga masiva, corrección de sistema) más que un problema distribuido — revisar el detalle de ese día.`
+    });
+  });
+  r.current.incidents.filter(inc=>inc.montoTotal>=200000).forEach(inc=>{
+    alerts.push({
+      sev: inc.severidad==='critica' ? 'critica':'atencion',
+      title: `Retiros · Evento concentrado en "${inc.motivo}"`,
+      text: `El ${fmtPct(inc.shareFechaPico)} de las unidades del mes (${fmtInt(inc.unidadesFechaPico)} de ${fmtInt(inc.unidadesTotal)}) se retiró en un solo día (${inc.fechaPico}), sobre ${inc.productosAfectados} productos. Monto: ${fmtMoney(inc.montoTotal)}. ${/siniestro/i.test(inc.motivo)?'Posible siniestro de transporte puntual — verificar informe de transportista, cobertura de seguro y estado de la mercadería remanente del mismo envío.':'Revisar causa raíz del evento puntual.'}`
+    });
+  });
+
+  // 2) Month-over-month deviations by motivo (generic, both datasets)
+  function scanMotivo(byUnits, byMonto, months, label, minUnits, minPct){
+    if(months.length<2) return;
+    const curM = months[months.length-1], prevM = months[months.length-2];
+    Object.keys(byUnits).forEach(mo=>{
+      if(/TRANSFER/i.test(mo)) return; // exclude bulk transfers from deviation noise
+      const cur = byUnits[mo][curM]||0, prev = byUnits[mo][prevM]||0;
+      if(cur < minUnits && prev < minUnits) return;
+      if(prev===0 && cur>=minUnits){
+        const montoActual = byMonto[mo][curM]||0;
+        if(montoActual < 300000 && label==='Créditos') return;
+        alerts.push({sev:'atencion', title:`${label} · Motivo nuevo o reactivado: "${mo}"`,
+          text:`En ${MESES_CAP[curM]} aparecieron ${fmtInt(cur)} unidades bajo este motivo (monto ${fmtMoney(montoActual)}), sin registro en ${MESES_CAP[prevM]}. Confirmar si es un motivo nuevo en uso o un caso aislado a seguir.`});
+        return;
+      }
+      if(prev>0){
+        const pct=(cur-prev)/prev;
+        if(pct>=minPct){
+          const montoActual = byMonto[mo][curM]||0;
+          const sev = (pct>=1 && montoActual>=3000000) ? 'critica' : 'atencion';
+          alerts.push({sev, title:`${label} · Suba fuerte en "${mo}"`,
+            text:`Pasó de ${fmtInt(prev)} a ${fmtInt(cur)} unidades (${pct>=0?'+':''}${fmtPct(pct)}) entre ${MESES_CAP[prevM]} y ${MESES_CAP[curM]}. Monto actual: ${fmtMoney(montoActual)}.`});
+        } else if(pct<=-minPct && prev>=minUnits*1.5){
+          alerts.push({sev:'ok', title:`${label} · Baja relevante en "${mo}"`,
+            text:`Pasó de ${fmtInt(prev)} a ${fmtInt(cur)} unidades (${fmtPct(pct)}) entre ${MESES_CAP[prevM]} y ${MESES_CAP[curM]}. Mejora a sostener.`});
+        }
+      }
+    });
+  }
+  scanMotivo(c.byMotivoMonthlyUnidades, c.byMotivoMonthlyMonto, c.months, 'Créditos', 150, 0.45);
+  scanMotivo(r.byMotivoMonthlyUnidades, r.byMotivoMonthlyMonto, r.months, 'Retiros', 25, 0.45);
+
+  // 3) Concentration risk: top client (credits) / provider (retiros) share
+  const totClientMonto = c.current.topClientes.reduce((a,x)=>a+x.monto,0);
+  if(c.current.topClientes.length){
+    const top = c.current.topClientes[0];
+    const shareOfNT = top.monto / Math.max(c.current.noTransferMonto,1);
+    if(shareOfNT>=0.25){
+      alerts.push({sev: shareOfNT>=0.4?'critica':'atencion', title:`Créditos · Alta concentración en "${top.Cliente}"`,
+        text:`Este cliente/cuenta concentra ${fmtPct(shareOfNT)} del monto de créditos no logísticos del mes (${fmtMoney(top.monto)}). Si se trata de un depósito interno o cuenta puente, confirmar que no distorsione el indicador de "facturación no concretada"; si es un cliente externo, investigar la causa recurrente.`});
+    }
+  }
+  const totVenc = r.current.byMotivo.find(m=>m.MOTIVO==='Vencimiento');
+  if(totVenc && r.current.topProveedorVencimiento.length){
+    const topProv = r.current.topProveedorVencimiento[0];
+    const share = topProv.monto/Math.max(totVenc.monto,1);
+    if(share>=0.3){
+      alerts.push({sev: share>=0.5?'atencion':'info', title:`Retiros · Proveedor concentra vencimientos: ${topProv.PROVEEDOR}`,
+        text:`Representa ${fmtPct(share)} del monto retirado por vencimiento en el mes (${fmtMoney(topProv.monto)}). Vale la pena revisar la política de compra/rotación para ese proveedor y renegociar condiciones de devolución por vencimiento próximo.`});
+    }
+  }
+
+  // 4) Overall direction summary
+  const dCu = monthDelta(c.monthly, c.months, 'unidadesNoTransfer');
+  const dRu = monthDelta(r.monthly, r.months, 'unidades');
+  if(dCu!=null && dRu!=null){
+    if(dCu<-0.1 && dRu>0.1){
+      alerts.push({sev:'info', title:'Lectura cruzada del mes', text:`Los créditos por errores operativos bajaron ${fmtPct(Math.abs(dCu))} mientras que los retiros de depósito subieron ${fmtPct(dRu)}. Esto sugiere que la mejora está en el circuito de facturación/logística de entrega, mientras que el foco de pérdida se desplaza hacia el control de stock físico (vencimientos, estado de mercadería).`});
+    }
+  }
+
+  const order={critica:0,atencion:1,info:2,ok:3};
+  alerts.sort((a,b)=>order[a.sev]-order[b.sev]);
+  return alerts;
+}
+
+function renderAlerts(alerts){
+  const el = document.getElementById('alertsBox');
+  const countCrit = alerts.filter(a=>a.sev==='critica').length;
+  const countAten = alerts.filter(a=>a.sev==='atencion').length;
+  document.getElementById('alertCritCount').textContent = countCrit;
+  document.getElementById('alertAtenCount').textContent = countAten;
+  if(!alerts.length){
+    el.innerHTML = `<div class="alert ok"><div class="icon">✔</div><div class="body"><b>Sin desvíos relevantes</b><span>No se detectaron variaciones significativas respecto del mes anterior.</span></div></div>`;
+    return;
+  }
+  const icon = {critica:'⛔',atencion:'⚠️',info:'ℹ️',ok:'✔'};
+  el.innerHTML = alerts.map(a=>`
+    <div class="alert ${a.sev}">
+      <div class="icon">${icon[a.sev]}</div>
+      <div class="body"><b>${a.title}</b><span>${a.text}</span></div>
+    </div>
+  `).join('');
+}
+
+/* ---------- TREND CHARTS ---------- */
+function renderTrendCharts(c,r){
+  const labelsC = c.months.map(m=>MESES_CAP[m].slice(0,3));
+  const labelsR = r.months.map(m=>MESES_CAP[m].slice(0,3));
+
+  destroyChart('trendCredits');
+  CHARTS.trendCredits = new Chart(document.getElementById('chartTrendCredits'), {
+    data:{
+      labels:labelsC,
+      datasets:[
+        {type:'bar', label:'Unidades (sin transfers)', data:c.months.map(m=>c.monthly[m].unidadesNoTransfer), backgroundColor:'#8fb0f7', order:2, yAxisID:'y'},
+        {type:'line', label:'Monto ($, sin transfers)', data:c.months.map(m=>c.monthly[m].montoNoTransfer), borderColor:'#c2560c', backgroundColor:'#c2560c', tension:.3, order:1, yAxisID:'y1', pointRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom', labels:{boxWidth:12,font:{size:11}}}, tooltip:{callbacks:{label:ctx=> ctx.dataset.yAxisID==='y1' ? ' '+ctx.dataset.label+': '+fmtMoney(ctx.raw) : ' '+ctx.dataset.label+': '+fmtInt(ctx.raw) }}},
+      scales:{
+        y:{position:'left', title:{display:true,text:'Unidades'}, grid:{color:'#eef1f8'}},
+        y1:{position:'right', title:{display:true,text:'Monto $'}, grid:{drawOnChartArea:false}, ticks:{callback:v=>fmtMoneyShort(v)}}
+      }
+    }
+  });
+
+  destroyChart('trendRetiros');
+  CHARTS.trendRetiros = new Chart(document.getElementById('chartTrendRetiros'), {
+    data:{
+      labels:labelsR,
+      datasets:[
+        {type:'bar', label:'Unidades retiradas', data:r.months.map(m=>r.monthly[m].unidades), backgroundColor:'#f7be91', order:2, yAxisID:'y'},
+        {type:'line', label:'Monto ($)', data:r.months.map(m=>r.monthly[m].monto), borderColor:'#2151d3', backgroundColor:'#2151d3', tension:.3, order:1, yAxisID:'y1', pointRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom', labels:{boxWidth:12,font:{size:11}}}, tooltip:{callbacks:{label:ctx=> ctx.dataset.yAxisID==='y1' ? ' '+ctx.dataset.label+': '+fmtMoney(ctx.raw) : ' '+ctx.dataset.label+': '+fmtInt(ctx.raw) }}},
+      scales:{
+        y:{position:'left', title:{display:true,text:'Unidades'}, grid:{color:'#eef1f8'}},
+        y1:{position:'right', title:{display:true,text:'Monto $'}, grid:{drawOnChartArea:false}, ticks:{callback:v=>fmtMoneyShort(v)}}
+      }
+    }
+  });
+}
+
+/* ---------- MOTIVO TABLES + charts ---------- */
+function motivoRowsHtml(list, unidField, montoField, labelField, maxRows){
+  const top = list.slice(0, maxRows);
+  const maxU = Math.max(...top.map(x=>x[unidField]),1);
+  return top.map((x,i)=>`
+    <tr>
+      <td>${x[labelField]}</td>
+      <td class="num">${fmtInt(x[unidField])}</td>
+      <td class="num">${fmtMoney(x[montoField])}</td>
+      <td style="width:120px;">
+        <div class="bar-mini"><span style="width:${Math.max((x[unidField]/maxU*100),3)}%; background:${COLORS[i%COLORS.length]}"></span></div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderMotivoTables(c,r){
+  document.getElementById('motivoCreditosBody').innerHTML = motivoRowsHtml(c.current.byMotivo,'unidades','monto','Motivo',12);
+  document.getElementById('motivoRetirosBody').innerHTML = motivoRowsHtml(r.current.byMotivo,'unidades','monto','MOTIVO',12);
+
+  destroyChart('motivoCreditosChart');
+  const mc = c.current.byMotivo.slice(0,8);
+  CHARTS.motivoCreditosChart = new Chart(document.getElementById('chartMotivoCreditos'), {
+    type:'bar',
+    data:{ labels:mc.map(x=>x.Motivo), datasets:[{label:'Unidades', data:mc.map(x=>x.unidades), backgroundColor:mc.map((_,i)=>COLORS[i%COLORS.length])}] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#eef1f8'}}} }
+  });
+
+  destroyChart('motivoRetirosChart');
+  const mr = r.current.byMotivo.slice(0,8);
+  CHARTS.motivoRetirosChart = new Chart(document.getElementById('chartMotivoRetiros'), {
+    type:'bar',
+    data:{ labels:mr.map(x=>x.MOTIVO), datasets:[{label:'Unidades', data:mr.map(x=>x.unidades), backgroundColor:mr.map((_,i)=>COLORS[i%COLORS.length])}] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#eef1f8'}}} }
+  });
+}
+
+/* ---------- SUCURSAL SECTION (retiros) ---------- */
+function renderSucursalSection(r){
+  const cur = r.current.bySucursal.filter(s=>s.sucursal && s.unidades>0);
+  const totalMonto = cur.reduce((a,x)=>a+x.monto,0);
+  document.getElementById('sucursalBody').innerHTML = cur.map((s,i)=>`
+    <tr>
+      <td><span class="tag ${['blue','orange','teal','purple'][i%4]}">${s.sucursal}</span></td>
+      <td class="num">${fmtInt(s.unidades)}</td>
+      <td class="num">${fmtMoney(s.monto)}</td>
+      <td class="num">${fmtPct(s.monto/Math.max(totalMonto,1))}</td>
+    </tr>
+  `).join('');
+
+  destroyChart('sucursalChart');
+  CHARTS.sucursalChart = new Chart(document.getElementById('chartSucursal'), {
+    type:'doughnut',
+    data:{ labels:cur.map(s=>s.sucursal), datasets:[{data:cur.map(s=>s.monto), backgroundColor:['#2151d3','#c2560c','#0f8a3f','#6a3fc2']}] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}, tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+fmtMoney(ctx.raw)+' ('+fmtPct(ctx.raw/totalMonto)+')'}}} }
+  });
+
+  // sucursal monthly trend (stacked bar, units)
+  const sucursales = Object.keys(r.bySucursalMonthlyUnidades).filter(s=>s && s!=='null');
+  const labels = r.months.map(m=>MESES_CAP[m].slice(0,3));
+  const palette = {'CORDOBA':'#2151d3','RIO CUARTO':'#c2560c','VILLA MERCEDES':'#0f8a3f'};
+  destroyChart('sucursalTrend');
+  CHARTS.sucursalTrend = new Chart(document.getElementById('chartSucursalTrend'), {
+    type:'bar',
+    data:{ labels, datasets: sucursales.map((s,i)=>({ label:s, data:r.months.map(m=>r.bySucursalMonthlyUnidades[s][m]||0), backgroundColor: palette[s]||COLORS[i%COLORS.length] })) },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}, scales:{ x:{stacked:true}, y:{stacked:true, title:{display:true,text:'Unidades retiradas'}} } }
+  });
+}
+
+/* ---------- RANKINGS (usuarios / clientes / proveedores) ---------- */
+function rankRows(list, keyField, valField, isMoney){
+  const max = Math.max(...list.map(x=>x[valField]),1);
+  return list.map((x,i)=>`
+    <tr>
+      <td>${i+1}. ${x[keyField]}</td>
+      <td class="num">${isMoney?fmtMoney(x[valField]):fmtInt(x[valField])}</td>
+      <td style="width:110px;"><div class="bar-mini"><span style="width:${Math.max(x[valField]/max*100,3)}%; background:${COLORS[i%COLORS.length]}"></span></div></td>
+    </tr>
+  `).join('');
+}
+function renderRankings(c,r){
+  document.getElementById('topUsuariosBody').innerHTML = rankRows(c.current.topUsuarios,'Usuario','unidades',false);
+  document.getElementById('topClientesBody').innerHTML = rankRows(c.current.topClientes,'Cliente','monto',true);
+  document.getElementById('topProvVencBody').innerHTML = rankRows(r.current.topProveedorVencimiento,'PROVEEDOR','monto',true);
+  document.getElementById('topProvFallaBody').innerHTML = rankRows(r.current.topProveedorFallaLaboratorio,'PROVEEDOR','unidades',false);
+}
+
+/* ---------- CATEGORY CHARTS (Cat.Prod / Rubro) ---------- */
+function renderCategoryCharts(c,r){
+  destroyChart('catCredChart');
+  const cat = c.current.byCategoria;
+  CHARTS.catCredChart = new Chart(document.getElementById('chartCatCreditos'), {
+    type:'doughnut',
+    data:{ labels:cat.map(x=>'Categoría '+x.categoria), datasets:[{data:cat.map(x=>x.unidades), backgroundColor:COLORS}] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}} }
+  });
+
+  destroyChart('rubroRetChart');
+  const rub = r.current.byRubro.slice(0,7);
+  CHARTS.rubroRetChart = new Chart(document.getElementById('chartRubroRetiros'), {
+    type:'bar',
+    data:{ labels:rub.map(x=>x.RUBRO), datasets:[{label:'Monto', data:rub.map(x=>x.monto), backgroundColor:'#0a7c86'}] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+fmtMoney(ctx.raw)}}}, scales:{x:{ticks:{callback:v=>fmtMoneyShort(v)}, grid:{color:'#eef1f8'}}} }
+  });
+}
+
+/* ---------- RECOMMENDATIONS ---------- */
+function renderRecommendations(c,r,alerts){
+  const recs = [];
+  const criticas = alerts.filter(a=>a.sev==='critica');
+  const siniestro = r.current.incidents.find(i=>/siniestro/i.test(i.motivo));
+  if(siniestro){
+    recs.push(`Abrir un reclamo formal ante el transportista y la aseguradora por el evento del ${siniestro.fechaPico} (${fmtInt(siniestro.unidadesFechaPico)} unidades, ${fmtMoney(siniestro.montoTotal)}, ${siniestro.productosAfectados} productos). Documentar fotográficamente y verificar si se trató de un único envío o de una ruta con antecedentes.`);
+  }
+  const bigMotivo = c.current.byMotivo[0];
+  if(bigMotivo){
+    recs.push(`El motivo "${bigMotivo.Motivo}" concentra la mayor cantidad de unidades en créditos no logísticos (${fmtInt(bigMotivo.unidades)} u., ${fmtMoney(bigMotivo.monto)}). Revisar junto a los DT de cada sucursal si responde a un problema puntual de un usuario/cliente o a una falla de proceso repetitiva.`);
+  }
+  const vto = r.current.byMotivo.find(m=>m.MOTIVO==='Vencimiento');
+  if(vto){
+    recs.push(`"Vencimiento" es el principal motivo de retiro del mes (${fmtMoney(vto.monto)}). Cruzar contra el reporte de compras/stock para identificar si hay sobre-stock sistemático de determinados proveedores o categorías y ajustar las políticas de reposición.`);
+  }
+  if(c.current.topUsuarios.length){
+    const tu = c.current.topUsuarios[0];
+    recs.push(`El usuario "${tu.Usuario}" concentra ${fmtInt(tu.unidades)} unidades en créditos no logísticos del mes. Si esto es esperable por su función (ej. call center/facturación), documentarlo como línea base; si no, revisar el proceso de carga de pedidos a su cargo.`);
+  }
+  recs.push(`Mantener este tablero como control mensual: cargar los próximos archivos "Base" (créditos) y "Base Retiros" apenas estén disponibles para comparar automáticamente contra los meses previos y detectar desvíos de forma temprana.`);
+
+  document.getElementById('recList').innerHTML = recs.map((r,i)=>`<li><span class="n">${i+1}</span><div>${r}</div></li>`).join('');
+}
+
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  setupUploads();
+  renderAll();
+});
+
+</script>
+</body>
+</html>
