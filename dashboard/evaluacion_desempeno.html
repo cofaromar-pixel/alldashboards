@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVALUACIÓN DE DESEMPEÑO · COFARSUR</title>
+<style>
+  /* ---- LIGHT THEME (default) ---- */
+  :root, [data-theme="light"]{
+    --bg:#f2f1ea;
+    --panel:#ffffff;
+    --border:#c6cdc3;
+    --magenta:#a01a63;
+    --green:#0d7a44;
+    --red:#b3261e;
+    --cyan:#0a6e94;
+    --amber:#95430f;
+    --text:#1c211c;
+    --text-dim:#5c6459;
+    --glow:0;
+    --input-bg:#fbfbf8;
+    --track-bg:#e7e5db;
+    --factor-head-bg:#eceae1;
+    --hairline:rgba(0,0,0,0.10);
+    --placeholder:#9aa39a;
+  }
+  /* ---- DARK THEME (retro terminal neon) ---- */
+  [data-theme="dark"]{
+    --bg:#0a0a0a;
+    --panel:#0f1410;
+    --border:#1a3a2a;
+    --magenta:#ff2d9b;
+    --green:#00ff88;
+    --red:#ff3333;
+    --cyan:#00cfff;
+    --amber:#e8632a;
+    --text:#d8ded8;
+    --text-dim:#7a8a7e;
+    --glow:1;
+    --input-bg:#050805;
+    --track-bg:#0a1810;
+    --factor-head-bg:#0c130e;
+    --hairline:#10201580;
+    --placeholder:#3a4a3e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Share Tech Mono','Courier New',monospace;
+    margin:0;
+    padding:0;
+    line-height:1.5;
+  }
+  @font-face{
+    font-family:'Share Tech Mono';
+    src:local('Share Tech Mono');
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 18px 80px;}
+
+  /* HEADER */
+  header{
+    border-bottom:2px solid var(--border);
+    padding-bottom:18px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header h1{
+    color:var(--magenta);
+    font-size:22px;
+    letter-spacing:2px;
+    margin:0;
+    text-shadow:0 0 10px rgba(255,45,155,0.5);
+    text-transform:uppercase;
+  }
+  [data-theme="light"] header h1{text-shadow:none;}
+  .title-row{display:flex;align-items:center;gap:14px;}
+  .logo{width:38px;height:38px;flex-shrink:0;color:var(--magenta);filter:drop-shadow(0 0 6px rgba(255,45,155,calc(var(--glow) * 0.5)));}
+  header .sub{color:var(--text-dim);font-size:12px;letter-spacing:1px;margin-top:4px;}
+  header .brand{text-align:right;font-size:11px;color:var(--amber);letter-spacing:1px;}
+  .theme-toggle{
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+    padding:8px 14px;
+    font-family:inherit;
+    font-size:11px;
+    letter-spacing:1px;
+    cursor:pointer;
+    text-transform:uppercase;
+  }
+  .theme-toggle:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  /* NAV BAR */
+  .toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:24px;
+  }
+  button, .btn{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:9px 16px;
+    font-family:inherit;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:0;
+    transition:all .15s ease;
+  }
+  button:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 8px rgba(0,255,136,0.25);}
+  button.primary{border-color:var(--magenta);color:var(--magenta);}
+  button.primary:hover{box-shadow:0 0 8px rgba(255,45,155,0.35);}
+  button.danger{border-color:var(--red);color:var(--red);}
+  button.danger:hover{box-shadow:0 0 8px rgba(255,51,51,0.35);}
+  button:disabled{opacity:.35;cursor:not-allowed;}
+  button:disabled:hover{box-shadow:none;color:var(--text);border-color:var(--border);}
+
+  /* SECTION TITLES */
+  .section-title{
+    color:var(--amber);
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin:32px 0 12px;
+    border-left:3px solid var(--amber);
+    padding-left:10px;
+  }
+
+  /* CARD */
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:18px;
+    margin-bottom:16px;
+  }
+
+  /* EMPLOYEE FORM */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+  label{display:block;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+  input[type=text], input[type=date], select, textarea{
+    width:100%;
+    background:var(--input-bg);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:9px 10px;
+    font-family:inherit;
+    font-size:13px;
+    border-radius:0;
+  }
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--cyan);}
+  textarea{resize:vertical;min-height:60px;}
+
+  /* GUIDE BOX */
+  .guide{
+    border:1px dashed var(--border);
+    padding:14px 16px;
+    font-size:12px;
+    color:var(--text-dim);
+    margin-bottom:20px;
+    cursor:pointer;
+  }
+  .guide summary{color:var(--cyan);letter-spacing:1px;text-transform:uppercase;font-size:11px;cursor:pointer;}
+  .anchor-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px;}
+  .anchor-chip{border:1px solid var(--border);padding:8px;font-size:11px;}
+  .anchor-chip b{display:block;font-size:14px;margin-bottom:3px;}
+  .a1 b{color:var(--red);} .a2 b{color:var(--amber);} .a3 b{color:var(--cyan);}
+  .a4 b{color:var(--green);} .a5 b{color:var(--green);text-shadow:0 0 6px rgba(0,255,136,.6);}
+  [data-theme="light"] .a5 b{text-shadow:none;}
+
+  /* FACTOR BLOCK */
+  .factor{
+    border:1px solid var(--border);
+    margin-bottom:14px;
+  }
+  .factor-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 16px;
+    background:var(--factor-head-bg);
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .factor-head .fname{color:var(--magenta);font-size:13px;letter-spacing:1px;text-transform:uppercase;}
+  .factor-head .fweight{color:var(--text-dim);font-size:11px;}
+  .factor-head .fscore{color:var(--cyan);font-size:15px;font-weight:bold;}
+  .behavior{padding:14px 16px;border-bottom:1px solid var(--hairline);}
+  .behavior:last-child{border-bottom:none;}
+  .behavior .btext{font-size:13px;margin-bottom:10px;}
+  .behavior .bweight{color:var(--text-dim);font-size:10px;letter-spacing:1px;margin-bottom:8px;}
+  .rating-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .rate-btn{
+    flex:1;
+    min-width:78px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-dim);
+    padding:10px 4px;
+    text-align:center;
+    font-size:11px;
+    letter-spacing:.5px;
+    cursor:pointer;
+  }
+  .rate-btn b{display:block;font-size:16px;}
+  .rate-btn[data-lvl="1"]:hover, .rate-btn[data-lvl="1"].active{border-color:var(--red);color:var(--red);box-shadow:0 0 6px rgba(255,51,51,.3);}
+  .rate-btn[data-lvl="2"]:hover, .rate-btn[data-lvl="2"].active{border-color:var(--amber);color:var(--amber);box-shadow:0 0 6px rgba(232,99,42,.3);}
+  .rate-btn[data-lvl="3"]:hover, .rate-btn[data-lvl="3"].active{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 6px rgba(0,207,255,.3);}
+  .rate-btn[data-lvl="4"]:hover, .rate-btn[data-lvl="4"].active{border-color:var(--green);color:var(--green);box-shadow:0 0 6px rgba(0,255,136,.3);}
+  .rate-btn[data-lvl="5"]:hover, .rate-btn[data-lvl="5"].active{border-color:var(--green);color:var(--green);box-shadow:0 0 10px rgba(0,255,136,.55);}
+  .evid{width:100%;background:var(--input-bg);border:1px solid var(--hairline);color:var(--text-dim);padding:7px 9px;font-family:inherit;font-size:11px;min-height:36px;}
+  .evid:focus{border-color:var(--cyan);color:var(--text);}
+
+  /* SUMMARY SIDEBAR (sticky on desktop) */
+  .layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+  .summary{
+    position:sticky;
+    top:16px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:18px;
+  }
+  .final-pct{
+    text-align:center;
+    padding:14px 0 8px;
+  }
+  .final-pct .num{
+    font-size:52px;
+    font-weight:bold;
+    text-shadow:0 0 14px currentColor;
+  }
+  [data-theme="light"] .final-pct .num{text-shadow:none;}
+  .final-pct .lbl{font-size:11px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-top:4px;}
+  .band-tag{
+    text-align:center;
+    padding:6px 10px;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    border:1px solid currentColor;
+  }
+  .mini-bar-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;color:var(--text-dim);}
+  .mini-bar-track{background:var(--track-bg);border:1px solid var(--border);height:8px;margin-bottom:12px;}
+  .mini-bar-fill{height:100%;background:var(--green);}
+  .progress-note{font-size:10px;color:var(--text-dim);text-align:center;margin-top:6px;}
+
+  /* SAVED LIST */
+  .saved-item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;border:1px solid var(--border);margin-bottom:8px;font-size:12px;
+  }
+  .saved-item .meta{color:var(--text-dim);font-size:10px;}
+  .saved-item .actions{display:flex;gap:6px;}
+  .saved-item button{padding:5px 10px;font-size:10px;}
+
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+  th,td{padding:8px 6px;text-align:left;border:none;border-bottom:1px solid var(--hairline);}
+  th{color:var(--amber);text-transform:uppercase;font-size:10px;letter-spacing:1px;}
+  td.num{color:var(--cyan);text-align:right;}
+
+  .toast{
+    position:fixed;bottom:20px;right:20px;
+    background:var(--panel);border:1px solid var(--green);color:var(--green);
+    padding:12px 18px;font-size:12px;letter-spacing:1px;
+    box-shadow:0 0 14px rgba(0,255,136,.3);
+    z-index:999;
+  }
+  .toast.err{border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(255,51,51,.3);}
+
+  ::placeholder{color:var(--placeholder);}
+
+  /* LOGIN */
+  .login-overlay{
+    position:fixed;inset:0;
+    background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;
+  }
+  .login-box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:32px 28px;
+    width:100%;
+    max-width:320px;
+  }
+  .login-title{color:var(--magenta);font-size:16px;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;text-align:center;}
+  .login-sub{color:var(--text-dim);font-size:11px;text-align:center;margin-bottom:20px;}
+  .login-box label{margin-top:12px;}
+  .login-error{color:var(--red);font-size:11px;margin-top:12px;text-align:center;min-height:14px;}
+  .print-only{display:none;}
+  @media print{
+    @page{ margin:14mm; }
+    body *{visibility:hidden;}
+    #printView, #printView *{visibility:visible;}
+    #loginOverlay{display:none !important;}
+    #printView{
+      display:block;
+      position:absolute;top:0;left:0;width:100%;
+      background:#fff;color:#000;
+      font-family:'Courier New',monospace;
+      font-size:11px;
+    }
+    .pv-header{text-align:center;margin-bottom:10px;border-bottom:2px solid #000;padding-bottom:8px;}
+    .pv-h1{font-size:16px;font-weight:bold;letter-spacing:1px;}
+    .pv-h2{font-size:11px;margin-top:2px;}
+    .pv-emp{width:100%;border-collapse:collapse;margin-bottom:12px;}
+    .pv-emp td{border:1px solid #000;padding:5px 8px;font-size:11px;}
+    .pv-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+    .pv-table th, .pv-table td{border:1px solid #000;padding:4px 6px;font-size:10px;vertical-align:top;}
+    .pv-table th{background:#eee;text-transform:uppercase;font-size:9px;}
+    .pv-factor-row td{background:#e8e8e8;font-weight:bold;}
+    .pv-note-row td{font-style:italic;font-size:9px;color:#333;}
+    .pv-final{width:100%;border-collapse:collapse;margin-bottom:16px;}
+    .pv-final td{border:2px solid #000;padding:8px;font-size:13px;text-align:center;}
+    .pv-comments{margin-bottom:24px;}
+    .pv-comments div{margin-bottom:10px;}
+    .pv-comments b{font-size:11px;text-transform:uppercase;}
+    .pv-comments p{margin:4px 0 0;font-size:11px;min-height:14px;border-bottom:1px solid #999;padding-bottom:4px;}
+    .pv-sign{display:flex;justify-content:space-between;margin-top:50px;}
+    .pv-sign-line{width:45%;border-top:1px solid #000;text-align:center;padding-top:4px;font-size:10px;}
+    table{page-break-inside:auto;}
+    tr{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div id="loginOverlay" class="login-overlay">
+  <form id="loginForm" class="login-box" autocomplete="off">
+    <svg class="logo" style="display:block;margin:0 auto 10px;" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="20" cy="20" r="13" fill="none" stroke="currentColor" stroke-width="3.5"/>
+      <line x1="29.5" y1="29.5" x2="42" y2="42" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      <path d="M14 20 L18 24 L27 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="login-title">EVALUACIÓN DE DESEMPEÑO</div>
+    <div class="login-sub">COFARSUR S.A. · Acceso restringido</div>
+    <label>Usuario</label>
+    <input type="text" id="loginUser" autocomplete="off" placeholder="usuario">
+    <label>Clave</label>
+    <input type="password" id="loginPass" autocomplete="off" placeholder="clave">
+    <button type="submit" class="primary" style="width:100%;margin-top:14px;">Ingresar</button>
+    <div class="login-error" id="loginError"></div>
+  </form>
+</div>
+
+<div class="wrap" id="appRoot" style="display:none;">
+
+  <header>
+    <div class="title-row">
+      <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="13" fill="none" stroke="currentColor" stroke-width="3.5"/>
+        <line x1="29.5" y1="29.5" x2="42" y2="42" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M14 20 L18 24 L27 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h1>Evaluación de Desempeño</h1>
+        <div class="sub">Método de escala anclada 1–5 → conversión automática a porcentaje · COFARSUR S.A.</div>
+      </div>
+    </div>
+    <div class="brand">COORDINACIÓN DE CALIDAD<br>Omar Pereyra</div>
+    <button class="theme-toggle" id="btnTheme">🌙 Modo oscuro</button>
+  </header>
+
+  <div class="toolbar">
+    <button class="primary" id="btnNew">+ Nueva evaluación</button>
+    <button id="btnSave">Guardar</button>
+    <button id="btnList">Evaluaciones guardadas</button>
+    <button id="btnExportCsv">Exportar % (CSV)</button>
+    <button id="btnExportJson">Exportar backup (JSON)</button>
+    <button id="btnImportJson">Importar (.json)</button>
+    <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;">
+    <button id="btnPrint">Imprimir / PDF</button>
+  </div>
+
+
+  <details class="guide">
+    <summary>¿Cómo funciona el método? (leer antes de calificar)</summary>
+    <p style="margin-top:10px;">
+      En vez de asignar directamente un porcentaje (0–100%) a cada comportamiento, algo difícil de hacer con objetividad
+      porque la diferencia entre "80%" y "82%" no es perceptible ni defendible, calificás cada comportamiento con
+      <b style="color:var(--cyan)">un nivel de 1 a 5</b>, cada uno con una definición concreta. El sistema convierte
+      automáticamente ese nivel en porcentaje (nivel ÷ 5) y lo pondera según el peso de cada comportamiento y de cada
+      factor, exactamente igual que la fórmula ya construida en tu planilla oficial. El resultado final es el mismo
+      porcentaje que exige la empresa, pero llegás a él con decisiones simples y consistentes.
+    </p>
+    <div class="anchor-row">
+      <div class="anchor-chip a1"><b>1 · BAJO</b>No cumple. Fallas recurrentes, corrección urgente.</div>
+      <div class="anchor-chip a2"><b>2 · REGULAR</b>Cumple parcial o inconsistentemente.</div>
+      <div class="anchor-chip a3"><b>3 · BUENO</b>Cumple de forma consistente, lo esperado.</div>
+      <div class="anchor-chip a4"><b>4 · MUY BUENO</b>Consistente, a veces supera lo esperado.</div>
+      <div class="anchor-chip a5"><b>5 · EXCELENTE</b>Ejemplar, referente para el equipo.</div>
+    </div>
+  </details>
+
+  <div class="section-title">Datos del evaluado</div>
+  <div class="card grid">
+    <div><label>Apellido y Nombre</label><input type="text" id="fNombre" placeholder="Apellido, Nombre"></div>
+    <div><label>DNI</label><input type="text" id="fDni" placeholder="00000000"></div>
+    <div><label>Sucursal</label>
+      <select id="fSucursal">
+        <option value="">Seleccionar...</option>
+        <option value="CBA">Córdoba (CBA)</option>
+        <option value="RIO4">Río Cuarto (RIO4)</option>
+        <option value="VME">Villa Mercedes (VME)</option>
+        <option value="CASA CENTRAL">Casa Central</option>
+      </select>
+    </div>
+    <div><label>Área / Sector</label><input type="text" id="fArea" placeholder="Ej: Calidad, Compras, Logística"></div>
+    <div><label>Puesto</label><input type="text" id="fPuesto" placeholder="Ej: Auxiliar de depósito"></div>
+    <div><label>Evaluador</label><input type="text" id="fEvaluador" value="Omar Pereyra"></div>
+    <div><label>Fecha de ingreso</label><input type="date" id="fIngreso"></div>
+    <div><label>Fecha de evaluación</label><input type="date" id="fFecha"></div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="section-title">Factores y comportamientos</div>
+      <div id="factorsContainer"></div>
+
+      <div class="section-title">Comentario final</div>
+      <div class="card">
+        <label>Fortalezas identificadas</label>
+        <textarea id="cFortalezas" placeholder="• ..."></textarea>
+        <div style="height:12px"></div>
+        <label>Áreas de mejora</label>
+        <textarea id="cMejora" placeholder="• ..."></textarea>
+        <div style="height:12px"></div>
+        <label>Plan de acción — próximo semestre</label>
+        <textarea id="cPlan" placeholder="1. ..."></textarea>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="final-pct">
+        <div class="num" id="finalNum" style="color:var(--text-dim)">—</div>
+        <div class="lbl">Puntaje final</div>
+      </div>
+      <div class="band-tag" id="bandTag" style="color:var(--text-dim);border-color:var(--border)">Sin calificar</div>
+
+      <div id="factorBars"></div>
+
+      <div class="progress-note" id="progressNote">0 / 17 comportamientos calificados</div>
+
+      <table>
+        <tr><th>Nivel</th><th>Banda</th></tr>
+        <tr><td class="num" style="color:var(--red)">0–39%</td><td>Bajo desempeño</td></tr>
+        <tr><td class="num" style="color:var(--amber)">40–59%</td><td>Regular</td></tr>
+        <tr><td class="num" style="color:var(--cyan)">60–75%</td><td>Buen desempeño</td></tr>
+        <tr><td class="num" style="color:var(--green)">76–90%</td><td>Muy bueno</td></tr>
+        <tr><td class="num" style="color:var(--green)">91–100%</td><td>Excelente</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title" id="listTitle" style="display:none;">Evaluaciones guardadas</div>
+  <div class="card" id="listContainer" style="display:none;"></div>
+
+  <div id="printView" class="print-only"></div>
+
+</div>
+
+<script>
+// ---------- DATA MODEL ----------
+const FACTORS = [
+  {id:1, name:'Orientación al negocio y clientes', weight:0.15, behaviors:[
+    {id:'1.1', w:0.6, text:'Tiene una mirada centrada en el cliente, cumpliendo con sus expectativas, necesidades, generando valor para ellos con cada acción y buscando la mayor rentabilidad del negocio.'},
+    {id:'1.2', w:0.4, text:'Genera y facilita relaciones de confianza, respetuosas y de largo plazo con clientes y proveedores.'},
+  ]},
+  {id:2, name:'Habilidades técnicas y calidad del trabajo', weight:0.15, behaviors:[
+    {id:'2.1', w:0.6, text:'Planifica y organiza su trabajo de manera efectiva, en función del plan de trabajo establecido para el cumplimiento de los objetivos (definición de prioridades, delegación, supervisión, distribución de tareas, asignación de recursos).'},
+    {id:'2.2', w:0.4, text:'Cumple en término y de buena manera las tareas asignadas, favoreciendo los procesos generales.'},
+  ]},
+  {id:3, name:'Comunicación', weight:0.15, behaviors:[
+    {id:'3.1', w:0.7, text:'Se comunica de manera efectiva: expresa sus ideas y hace pedidos con claridad. Aplica una escucha activa en sus interacciones. Da y recibe feedback de las acciones/decisiones implementadas para conseguir una visión autocrítica. Utiliza los canales de comunicación definidos por la empresa.'},
+    {id:'3.2', w:0.3, text:'Demuestra empatía y respeto al vincularse con cualquier integrante de la empresa.'},
+  ]},
+  {id:4, name:'Trabajo en equipo', weight:0.15, behaviors:[
+    {id:'4.1', w:0.3333, text:'Aporta ideas, conocimientos y experiencias para la obtención de un objetivo común, dejando atrás la mirada de quintas entre las áreas y buscando la sinergia con sus colegas.'},
+    {id:'4.2', w:0.3333, text:'Contribuye a mantener relaciones laborales basadas en la sinceridad y confianza, resolviendo obstáculos y conflictos de manera constructiva.'},
+    {id:'4.3', w:0.3334, text:'Influye, guía y motiva a otros para alcanzar metas comunes. Aporta opiniones constructivas al equipo solidariamente y desinteresadamente.'},
+  ]},
+  {id:5, name:'Transformación y mejora continua', weight:0.15, behaviors:[
+    {id:'5.1', w:0.25, text:'Entiende que el cambio es permanente, es flexible y lo impulsa con actitud proactiva y positiva. Asume riesgos con conocimiento de los escenarios posibles.'},
+    {id:'5.2', w:0.25, text:'Aplica la mejora continua en sus tareas, desarrollando una cultura del aprendizaje. Propone diferentes alternativas de hacer las cosas, evitando procesos que no agregan valor.'},
+    {id:'5.3', w:0.25, text:'Busca la actualización profesional permanente, adquiriendo nuevas habilidades, capacitándose, informándose y realizando benchmarking para optimizar sus tareas.'},
+    {id:'5.4', w:0.25, text:'Resiliencia: hace frente a la presión, mantiene la calma, supera obstáculos y se recupera rápidamente de situaciones adversas.'},
+  ]},
+  {id:6, name:'Toma de decisiones', weight:0.10, behaviors:[
+    {id:'6.1', w:1.0, text:'Tiene pensamiento crítico para analizar, evaluar y tomar decisiones basadas en datos, teniendo en cuenta las opiniones del equipo y lo mejor para la empresa como un todo.'},
+  ]},
+  {id:7, name:'Cultura y convivencia', weight:0.10, behaviors:[
+    {id:'7.1', w:0.5, text:'Sus actitudes expresan los valores y la cultura de la empresa.'},
+    {id:'7.2', w:0.5, text:'Promueve un buen ambiente de trabajo y sus comportamientos se enmarcan en el Manual de Convivencia.'},
+  ]},
+  {id:8, name:'Gestión de los recursos', weight:0.05, behaviors:[
+    {id:'8.1', w:1.0, text:'Es eficiente en la utilización de recursos, aporta a la reducción de gastos improductivos y cuida el patrimonio de la empresa (materiales, equipos e instalaciones).'},
+  ]},
+];
+const TOTAL_BEHAVIORS = FACTORS.reduce((a,f)=>a+f.behaviors.length,0);
+const ANCHORS = {
+  1:{label:'BAJO', color:'var(--red)'},
+  2:{label:'REGULAR', color:'var(--amber)'},
+  3:{label:'BUENO', color:'var(--cyan)'},
+  4:{label:'MUY BUENO', color:'var(--green)'},
+  5:{label:'EXCELENTE', color:'var(--green)'},
+};
+
+// ---------- STATE ----------
+let state = freshState();
+function freshState(){
+  return {
+    id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+    employee: {nombre:'', dni:'', sucursal:'', area:'', puesto:'', evaluador:'Omar Pereyra', ingreso:'', fecha:''},
+    ratings: {},   // behaviorId -> 1..5
+    notes: {},     // behaviorId -> texto
+    comments: {fortalezas:'', mejora:'', plan:''},
+    savedAt: null,
+  };
+}
+
+// ---------- RENDER FACTORS ----------
+const factorsContainer = document.getElementById('factorsContainer');
+function renderFactors(){
+  factorsContainer.innerHTML = '';
+  FACTORS.forEach(f=>{
+    const fdiv = document.createElement('div');
+    fdiv.className = 'factor';
+    fdiv.innerHTML = `
+      <div class="factor-head">
+        <div class="fname">${f.id}. ${f.name}</div>
+        <div class="fweight">Peso del factor: ${(f.weight*100).toFixed(0)}%</div>
+        <div class="fscore" id="fscore-${f.id}">—</div>
+      </div>
+      <div class="behaviors" id="beh-${f.id}"></div>
+    `;
+    factorsContainer.appendChild(fdiv);
+    const bcontainer = fdiv.querySelector(`#beh-${f.id}`);
+    f.behaviors.forEach(b=>{
+      const bdiv = document.createElement('div');
+      bdiv.className = 'behavior';
+      bdiv.innerHTML = `
+        <div class="btext">${b.text}</div>
+        <div class="bweight">Peso dentro del factor: ${(b.w*100).toFixed(0)}%</div>
+        <div class="rating-row" data-beh="${b.id}">
+          ${[1,2,3,4,5].map(lvl=>`
+            <div class="rate-btn" data-lvl="${lvl}" data-beh="${b.id}">
+              <b>${lvl}</b>${ANCHORS[lvl].label}
+            </div>
+          `).join('')}
+        </div>
+        <textarea class="evid" data-beh="${b.id}" placeholder="Evidencia u observación (opcional, recomendado)"></textarea>
+      `;
+      bcontainer.appendChild(bdiv);
+    });
+  });
+
+  // attach listeners
+  document.querySelectorAll('.rate-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const beh = btn.dataset.beh;
+      const lvl = parseInt(btn.dataset.lvl);
+      state.ratings[beh] = lvl;
+      refreshRatingUI(beh);
+      recalc();
+    });
+  });
+  document.querySelectorAll('.evid').forEach(ta=>{
+    ta.addEventListener('input', ()=>{
+      state.notes[ta.dataset.beh] = ta.value;
+    });
+  });
+}
+
+function refreshRatingUI(behId){
+  document.querySelectorAll(`.rate-btn[data-beh="${behId}"]`).forEach(btn=>{
+    btn.classList.toggle('active', parseInt(btn.dataset.lvl) === state.ratings[behId]);
+  });
+}
+
+// ---------- CALCULATION ----------
+function recalc(){
+  let total = 0;
+  let ratedCount = 0;
+  const factorScores = {};
+  FACTORS.forEach(f=>{
+    let fInternal = 0; // 0..1 internal average of factor
+    f.behaviors.forEach(b=>{
+      const r = state.ratings[b.id];
+      if(r){
+        ratedCount++;
+        const pct = r/5;
+        fInternal += b.w * pct;
+      }
+    });
+    factorScores[f.id] = fInternal; // 0..1
+    total += fInternal * f.weight;
+  });
+
+  const finalPct = total * 100;
+  const finalNum = document.getElementById('finalNum');
+  const bandTag = document.getElementById('bandTag');
+  const progressNote = document.getElementById('progressNote');
+
+  progressNote.textContent = `${ratedCount} / ${TOTAL_BEHAVIORS} comportamientos calificados`;
+
+  if(ratedCount === 0){
+    finalNum.textContent = '—';
+    finalNum.style.color = 'var(--text-dim)';
+    bandTag.textContent = 'Sin calificar';
+    bandTag.style.color = 'var(--text-dim)';
+    bandTag.style.borderColor = 'var(--border)';
+  } else {
+    finalNum.textContent = finalPct.toFixed(1) + '%';
+    const band = getBand(finalPct);
+    finalNum.style.color = band.color;
+    bandTag.textContent = band.label;
+    bandTag.style.color = band.color;
+    bandTag.style.borderColor = band.color;
+  }
+
+  // per-factor bars
+  const barsDiv = document.getElementById('factorBars');
+  barsDiv.innerHTML = '';
+  FACTORS.forEach(f=>{
+    const pct = (factorScores[f.id]*100);
+    const el = document.createElement('div');
+    el.innerHTML = `
+      <div class="mini-bar-row"><span>F${f.id}</span><span>${pct.toFixed(0)}%</span></div>
+      <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+    `;
+    barsDiv.appendChild(el);
+    // factor head score
+    const fscoreEl = document.getElementById(`fscore-${f.id}`);
+    if(fscoreEl) fscoreEl.textContent = pct.toFixed(1) + '%';
+  });
+
+  return {finalPct, factorScores, ratedCount};
+}
+
+function getBand(pct){
+  if(pct <= 39) return {label:'Bajo desempeño — necesita mejorar urgente', color:'var(--red)'};
+  if(pct <= 59) return {label:'Regular desempeño', color:'var(--amber)'};
+  if(pct <= 75) return {label:'Buen desempeño', color:'var(--cyan)'};
+  if(pct <= 90) return {label:'Muy buen desempeño', color:'var(--green)'};
+  return {label:'Excelente desempeño', color:'var(--green)'};
+}
+
+// ---------- FORM BINDING ----------
+const formMap = {
+  fNombre:'nombre', fDni:'dni', fSucursal:'sucursal', fArea:'area',
+  fPuesto:'puesto', fEvaluador:'evaluador', fIngreso:'ingreso', fFecha:'fecha'
+};
+Object.keys(formMap).forEach(elId=>{
+  document.getElementById(elId).addEventListener('input', ()=>{
+    state.employee[formMap[elId]] = document.getElementById(elId).value;
+  });
+  document.getElementById(elId).addEventListener('change', ()=>{
+    state.employee[formMap[elId]] = document.getElementById(elId).value;
+  });
+});
+['cFortalezas','cMejora','cPlan'].forEach(id=>{
+  const key = id === 'cFortalezas' ? 'fortalezas' : id === 'cMejora' ? 'mejora' : 'plan';
+  document.getElementById(id).addEventListener('input', ()=>{
+    state.comments[key] = document.getElementById(id).value;
+  });
+});
+
+function loadFormFromState(){
+  Object.keys(formMap).forEach(elId=>{
+    document.getElementById(elId).value = state.employee[formMap[elId]] || '';
+  });
+  document.getElementById('cFortalezas').value = state.comments.fortalezas || '';
+  document.getElementById('cMejora').value = state.comments.mejora || '';
+  document.getElementById('cPlan').value = state.comments.plan || '';
+  FACTORS.forEach(f=>f.behaviors.forEach(b=>{
+    refreshRatingUI(b.id);
+    const ta = document.querySelector(`.evid[data-beh="${b.id}"]`);
+    if(ta) ta.value = state.notes[b.id] || '';
+  }));
+}
+
+// ---------- TOAST ----------
+function toast(msg, isErr){
+  const t = document.createElement('div');
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2600);
+}
+
+// ---------- STORAGE (con respaldo a localStorage cuando se abre como archivo local) ----------
+const HAS_WS = (typeof window !== 'undefined' && !!window.storage);
+const LS_PREFIX = 'cofarsur_eval__';
+
+async function storeGet(key){
+  if(HAS_WS){
+    try{ return await window.storage.get(key); }
+    catch(e){ return null; }
+  }
+  try{
+    const v = localStorage.getItem(LS_PREFIX + key);
+    return v !== null ? {key, value:v} : null;
+  }catch(e){ return null; }
+}
+async function storeSet(key, value){
+  if(HAS_WS){
+    return await window.storage.set(key, value);
+  }
+  localStorage.setItem(LS_PREFIX + key, value);
+  return {key, value};
+}
+async function storeDelete(key){
+  if(HAS_WS){
+    return await window.storage.delete(key);
+  }
+  localStorage.removeItem(LS_PREFIX + key);
+  return {key, deleted:true};
+}
+
+// ---------- STORAGE ----------
+async function saveEvaluation(){
+  if(!state.employee.nombre){
+    toast('Ingresá el nombre del evaluado antes de guardar.', true);
+    return;
+  }
+  state.savedAt = new Date().toISOString();
+  try{
+    await storeSet('eval:' + state.id, JSON.stringify(state));
+    await updateIndex();
+    toast('Evaluación guardada.');
+  }catch(e){
+    console.error(e);
+    toast('Error al guardar: ' + (e && e.message ? e.message : 'ver consola'), true);
+  }
+}
+
+async function updateIndex(){
+  const {finalPct} = recalc();
+  let idx = [];
+  try{
+    const r = await storeGet('eval-index');
+    if(r && r.value) idx = JSON.parse(r.value);
+  }catch(e){ idx = []; }
+  idx = idx.filter(i=>i.id !== state.id);
+  idx.push({
+    id: state.id,
+    nombre: state.employee.nombre,
+    sucursal: state.employee.sucursal,
+    fecha: state.employee.fecha,
+    finalPct: finalPct.toFixed(1),
+    savedAt: state.savedAt,
+  });
+  await storeSet('eval-index', JSON.stringify(idx));
+}
+
+async function listEvaluations(){
+  const container = document.getElementById('listContainer');
+  const title = document.getElementById('listTitle');
+  const visible = container.style.display !== 'none';
+  if(visible){
+    container.style.display = 'none';
+    title.style.display = 'none';
+    return;
+  }
+  container.style.display = 'block';
+  title.style.display = 'block';
+  container.innerHTML = 'Cargando...';
+  let idx = [];
+  try{
+    const r = await storeGet('eval-index');
+    if(r && r.value) idx = JSON.parse(r.value);
+  }catch(e){ idx = []; }
+
+  if(idx.length === 0){
+    container.innerHTML = '<div style="color:var(--text-dim);font-size:12px;">No hay evaluaciones guardadas todavía.</div>';
+    return;
+  }
+  idx.sort((a,b)=> (b.savedAt||'').localeCompare(a.savedAt||''));
+  container.innerHTML = '';
+  idx.forEach(item=>{
+    const row = document.createElement('div');
+    row.className = 'saved-item';
+    row.innerHTML = `
+      <div>
+        <div>${item.nombre} <span style="color:var(--text-dim)">(${item.sucursal||'—'})</span></div>
+        <div class="meta">Fecha: ${item.fecha||'—'} · Puntaje: ${item.finalPct}%</div>
+      </div>
+      <div class="actions">
+        <button data-act="load" data-id="${item.id}">Abrir</button>
+        <button data-act="del" data-id="${item.id}" class="danger">Borrar</button>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+  container.querySelectorAll('button[data-act="load"]').forEach(b=>{
+    b.addEventListener('click', ()=>loadEvaluation(b.dataset.id));
+  });
+  container.querySelectorAll('button[data-act="del"]').forEach(b=>{
+    b.addEventListener('click', ()=>deleteEvaluation(b.dataset.id));
+  });
+}
+
+async function loadEvaluation(id){
+  try{
+    const r = await storeGet('eval:' + id);
+    if(r && r.value){
+      state = JSON.parse(r.value);
+      loadFormFromState();
+      recalc();
+      toast('Evaluación cargada: ' + state.employee.nombre);
+      document.getElementById('listContainer').style.display = 'none';
+      document.getElementById('listTitle').style.display = 'none';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  }catch(e){
+    console.error(e);
+    toast('No se pudo cargar la evaluación.', true);
+  }
+}
+
+async function deleteEvaluation(id){
+  if(!confirm('¿Borrar esta evaluación guardada? Esta acción no se puede deshacer.')) return;
+  try{
+    await storeDelete('eval:' + id);
+    let idx = [];
+    const r = await storeGet('eval-index');
+    if(r && r.value) idx = JSON.parse(r.value);
+    idx = idx.filter(i=>i.id !== id);
+    await storeSet('eval-index', JSON.stringify(idx));
+    toast('Evaluación borrada.');
+    listEvaluations();
+    listEvaluations();
+  }catch(e){
+    console.error(e);
+    toast('Error al borrar.', true);
+  }
+}
+
+// ---------- EXPORT ----------
+function exportCsv(){
+  const {finalPct, factorScores} = recalc();
+  const rows = [['Campo','Valor']];
+  rows.push(['Apellido y Nombre', state.employee.nombre]);
+  rows.push(['DNI', state.employee.dni]);
+  rows.push(['Sucursal', state.employee.sucursal]);
+  rows.push(['Área', state.employee.area]);
+  rows.push(['Puesto', state.employee.puesto]);
+  rows.push(['Evaluador', state.employee.evaluador]);
+  rows.push(['Fecha de evaluación', state.employee.fecha]);
+  FACTORS.forEach(f=>{
+    rows.push([`Factor ${f.id} - ${f.name} (%)`, (factorScores[f.id]*100).toFixed(1)]);
+  });
+  rows.push(['PUNTAJE FINAL (%)', finalPct.toFixed(1)]);
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadBlob(csv, `evaluacion_${slug(state.employee.nombre)}.csv`, 'text/csv');
+}
+
+function exportJson(){
+  const payload = JSON.stringify(state, null, 2);
+  downloadBlob(payload, `evaluacion_${slug(state.employee.nombre||'sin_nombre')}.json`, 'application/json');
+}
+
+function isValidEvalShape(obj){
+  return obj && typeof obj === 'object'
+    && obj.employee && typeof obj.employee === 'object'
+    && obj.ratings && typeof obj.ratings === 'object';
+}
+
+async function importJson(file){
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    if(!isValidEvalShape(parsed)){
+      toast('El archivo no tiene el formato de una evaluación válida.', true);
+      return;
+    }
+    // aseguramos id, notes y comments por si viene de una versión anterior
+    if(!parsed.id) parsed.id = 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    if(!parsed.notes) parsed.notes = {};
+    if(!parsed.comments) parsed.comments = {fortalezas:'', mejora:'', plan:''};
+    state = parsed;
+    loadFormFromState();
+    recalc();
+    await saveEvaluation();
+    toast('Evaluación importada y guardada: ' + (state.employee.nombre || 'sin nombre'));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(e){
+    console.error(e);
+    toast('No se pudo leer el archivo. ¿Es un .json exportado desde esta app?', true);
+  }
+}
+
+function downloadBlob(content, filename, mime){
+  const blob = new Blob([content], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function slug(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'evaluacion'; }
+
+// ---------- BUTTONS ----------
+document.getElementById('btnNew').addEventListener('click', ()=>{
+  if(!confirm('¿Iniciar una evaluación nueva? Se perderán los cambios no guardados.')) return;
+  state = freshState();
+  loadFormFromState();
+  recalc();
+});
+document.getElementById('btnSave').addEventListener('click', saveEvaluation);
+document.getElementById('btnList').addEventListener('click', listEvaluations);
+document.getElementById('btnExportCsv').addEventListener('click', exportCsv);
+document.getElementById('btnExportJson').addEventListener('click', exportJson);
+document.getElementById('btnImportJson').addEventListener('click', ()=>{
+  document.getElementById('importFileInput').click();
+});
+document.getElementById('importFileInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  importJson(file);
+  e.target.value = ''; // permite reimportar el mismo archivo si hace falta
+});
+document.getElementById('btnPrint').addEventListener('click', ()=>{ buildPrintView(); window.print(); });
+
+// ---------- LOGIN ----------
+const VALID_USER = 'admin';
+const VALID_PASS = 'ies21';
+document.getElementById('loginForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  if(u === VALID_USER && p === VALID_PASS){
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('appRoot').style.display = 'block';
+    errEl.textContent = '';
+  } else {
+    errEl.textContent = 'Usuario o clave incorrectos.';
+    document.getElementById('loginPass').value = '';
+  }
+});
+
+// ---------- THEME ----------
+async function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('btnTheme');
+  btn.textContent = theme === 'dark' ? '☀ Modo claro' : '🌙 Modo oscuro';
+  try{ await storeSet('theme-pref', theme); }catch(e){ /* ignore */ }
+}
+document.getElementById('btnTheme').addEventListener('click', ()=>{
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+(async function initTheme(){
+  try{
+    const r = await storeGet('theme-pref');
+    if(r && r.value) applyTheme(r.value);
+  }catch(e){ /* default light stays */ }
+})();
+
+// ---------- PRINT VIEW ----------
+function buildPrintView(){
+  const {finalPct, factorScores} = recalc();
+  const band = getBand(finalPct);
+  const emp = state.employee;
+  let html = `
+    <div class="pv-header">
+      <div class="pv-h1">EVALUACIÓN DE DESEMPEÑO</div>
+      <div class="pv-h2">COFARSUR S.A. — Coordinación de Calidad</div>
+    </div>
+    <table class="pv-emp">
+      <tr><td><b>Apellido y Nombre:</b> ${escapeHtml(emp.nombre)}</td><td><b>DNI:</b> ${escapeHtml(emp.dni)}</td></tr>
+      <tr><td><b>Sucursal:</b> ${escapeHtml(emp.sucursal)}</td><td><b>Área/Sector:</b> ${escapeHtml(emp.area)}</td></tr>
+      <tr><td><b>Puesto:</b> ${escapeHtml(emp.puesto)}</td><td><b>Evaluador:</b> ${escapeHtml(emp.evaluador)}</td></tr>
+      <tr><td><b>Fecha de ingreso:</b> ${escapeHtml(emp.ingreso)}</td><td><b>Fecha de evaluación:</b> ${escapeHtml(emp.fecha)}</td></tr>
+    </table>
+    <table class="pv-table">
+      <thead><tr><th>N</th><th>Factor / Comportamiento</th><th>Peso</th><th>Nivel</th><th>%</th></tr></thead>
+      <tbody>
+  `;
+  FACTORS.forEach(f=>{
+    html += `<tr class="pv-factor-row"><td>${f.id}</td><td colspan="3"><b>${escapeHtml(f.name)}</b></td><td><b>${(factorScores[f.id]*100).toFixed(1)}%</b></td></tr>`;
+    f.behaviors.forEach(b=>{
+      const r = state.ratings[b.id];
+      const lvlTxt = r ? `${r} — ${ANCHORS[r].label}` : 'Sin calificar';
+      const pctTxt = r ? (r/5*100).toFixed(0)+'%' : '—';
+      html += `<tr><td>${b.id}</td><td>${escapeHtml(b.text)}</td><td>${(b.w*100).toFixed(0)}%</td><td>${lvlTxt}</td><td>${pctTxt}</td></tr>`;
+      const note = state.notes[b.id];
+      if(note) html += `<tr class="pv-note-row"><td></td><td colspan="4"><i>Observación: ${escapeHtml(note)}</i></td></tr>`;
+    });
+  });
+  html += `
+      </tbody>
+    </table>
+    <table class="pv-final">
+      <tr><td><b>PUNTAJE FINAL DE EVALUACIÓN</b></td><td><b>${finalPct.toFixed(1)}%</b></td><td><b>${band.label}</b></td></tr>
+    </table>
+    <div class="pv-comments">
+      <div><b>Fortalezas identificadas</b><p>${escapeHtml(state.comments.fortalezas) || '—'}</p></div>
+      <div><b>Áreas de mejora</b><p>${escapeHtml(state.comments.mejora) || '—'}</p></div>
+      <div><b>Plan de acción — próximo semestre</b><p>${escapeHtml(state.comments.plan) || '—'}</p></div>
+    </div>
+    <div class="pv-sign">
+      <div class="pv-sign-line">Firma del Evaluador</div>
+      <div class="pv-sign-line">Firma del Evaluado</div>
+    </div>
+  `;
+  document.getElementById('printView').innerHTML = html;
+}
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+window.addEventListener('beforeprint', buildPrintView);
+
+// ---------- INIT ----------
+renderFactors();
+loadFormFromState();
+recalc();
+</script>
+</body>
+</html>
