@@ -3,745 +3,932 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GESTIÓN DE SEGURIDAD</title>
+<title>GUARDIA DE SEGURIDAD</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#080c0a;color:#c8e6c9;font-family:'Courier New',monospace;min-height:100vh}
+:root{
+  --amarillo:#ffcc00;
+  --amarillo-fuerte:#ffb300;
+  --rojo:#e10600;
+  --rojo-oscuro:#9c0000;
+  --negro:#0d0d0d;
+  --negro-suave:#171717;
+  --blanco:#ffffff;
+  --gris:#c9c9c9;
+  --bg:#0d0d0d;
+  --bg-panel:#171717;
+  --bg-panel2:#1f1f1f;
+  --texto:#f2f2f2;
+  --texto-sec:#c9c9c9;
+  --borde:#ffcc00;
+  --sombra: 0 0 0 3px var(--rojo);
+}
+[data-theme="claro"]{
+  --bg:#ffffff;
+  --bg-panel:#f5f5f2;
+  --bg-panel2:#ececec;
+  --texto:#141414;
+  --texto-sec:#3a3a3a;
+  --borde:#141414;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--texto);
+  font-family:'Segoe UI', Arial, sans-serif;
+  transition:background .25s ease, color .25s ease;
+  min-height:100vh;
+}
+.stripe{
+  height:10px;
+  width:100%;
+  background:repeating-linear-gradient(45deg, var(--amarillo) 0 20px, var(--negro) 20px 40px);
+}
+header{
+  background:var(--negro);
+  border-bottom:4px solid var(--amarillo);
+  padding:18px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+[data-theme="claro"] header{ background:#141414; }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.brand .badge{
+  width:46px;height:46px;
+  background:var(--rojo);
+  border:3px solid var(--amarillo);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;
+  color:var(--amarillo);
+  font-size:20px;
+}
+.brand h1{
+  margin:0;
+  color:var(--amarillo);
+  letter-spacing:2px;
+  font-size:22px;
+  text-transform:uppercase;
+}
+.brand small{
+  color:var(--gris);
+  display:block;
+  font-size:11px;
+  letter-spacing:1px;
+}
+.header-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.theme-toggle{
+  background:var(--amarillo);
+  color:var(--negro);
+  border:2px solid var(--negro);
+  border-radius:6px;
+  padding:8px 14px;
+  font-weight:700;
+  cursor:pointer;
+  font-size:13px;
+}
+[data-theme="claro"] .theme-toggle{ background:var(--negro); color:var(--amarillo); border-color:var(--amarillo); }
 
-/* LOGIN */
-#login-screen{position:fixed;inset:0;background:#080c0a;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10}
-.login-box{border:2px solid #e8a020;background:#0d1410;padding:2.5rem 3rem;width:420px;max-width:96vw}
-.shield-big{font-size:3rem;text-align:center;display:block;margin-bottom:.5rem}
-.login-title{font-size:1.1rem;color:#e8a020;letter-spacing:.25em;text-align:center;margin-bottom:.2rem}
-.login-sub{font-size:.65rem;color:#4a6650;text-align:center;letter-spacing:.15em;margin-bottom:1.8rem}
-.lbl{font-size:.65rem;color:#e8a020;letter-spacing:.2em;display:block;margin-bottom:.4rem;margin-top:1rem}
-.linput{width:100%;background:#050a06;border:2px solid #2a4a35;color:#00e676;font-family:'Courier New',monospace;font-size:1.1rem;padding:.7rem 1rem;outline:none;transition:border-color .2s}
-.linput:focus{border-color:#e8a020;background:#070e07}
-.login-btn{width:100%;background:#e8a020;color:#050a00;border:none;font-family:'Courier New',monospace;font-size:.95rem;font-weight:700;letter-spacing:.25em;padding:.9rem;cursor:pointer;margin-top:1.2rem}
-.login-btn:hover{background:#f5c040}
-.login-btn:active{transform:scale(.98)}
-.login-err{color:#ff3d3d;font-size:.72rem;text-align:center;margin-top:.7rem;min-height:1.1rem;letter-spacing:.1em}
-.login-foot{font-size:.6rem;color:#2a4a35;letter-spacing:.15em;margin-top:1.5rem}
+.docs-bar{
+  background:var(--rojo);
+  padding:12px 22px;
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:center;
+  border-bottom:4px solid var(--negro);
+}
+.docs-bar a{
+  background:var(--negro);
+  color:var(--amarillo);
+  text-decoration:none;
+  padding:10px 16px;
+  border-radius:6px;
+  font-weight:700;
+  border:2px solid var(--amarillo);
+  font-size:13px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:transform .15s ease;
+}
+.docs-bar a:hover{ transform:translateY(-2px); }
+.docs-bar span.tag{
+  color:var(--blanco);
+  font-weight:800;
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-right:4px;
+}
 
-/* APP */
-#app{display:none}
-.topbar{background:#0d1410;border-bottom:2px solid #e8a020;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.topbar-l{display:flex;align-items:center;gap:.8rem}
-.topbar-title{font-size:.95rem;color:#e8a020;letter-spacing:.2em}
-.topbar-sub{font-size:.55rem;color:#4a6650;letter-spacing:.12em}
-.topbar-r{display:flex;align-items:center;gap:.8rem}
-.clock{font-size:.95rem;color:#00cfff;letter-spacing:.08em}
-.ubadge{font-size:.65rem;color:#00e676;border:1px solid rgba(0,230,118,.3);padding:.25rem .7rem}
-.lout-btn{background:transparent;border:1px solid #ff3d3d;color:#ff3d3d;font-family:'Courier New',monospace;font-size:.65rem;padding:.25rem .7rem;cursor:pointer}
-.lout-btn:hover{background:rgba(255,61,61,.1)}
+.links-grid{
+  padding:18px 22px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  background:var(--bg-panel);
+  border-bottom:3px solid var(--borde);
+}
+.link-btn{
+  background:var(--bg-panel2);
+  border:2px solid var(--amarillo);
+  color:var(--texto);
+  padding:16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  align-items:center;
+  justify-content:center;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.link-btn:hover{ transform:translateY(-3px); box-shadow:var(--sombra); }
+.link-btn .icon{ font-size:26px; }
+.link-btn.locked{ border-color:var(--rojo); }
+.link-btn .lock-note{ font-size:11px; color:var(--rojo); font-weight:600; }
 
-.nav{background:#0d1410;border-bottom:1px solid #1e3325;display:flex;padding:0 1.5rem;overflow-x:auto}
-.nt{font-size:.7rem;color:#4a6650;padding:.8rem 1.2rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.1em}
-.nt:hover{color:#81c784}
-.nt.on{color:#e8a020;border-bottom-color:#e8a020}
+main{
+  display:grid;
+  grid-template-columns:290px 1fr;
+  gap:0;
+  min-height:60vh;
+}
+@media (max-width:820px){
+  main{ grid-template-columns:1fr; }
+}
+nav.toc{
+  background:var(--bg-panel);
+  border-right:3px solid var(--borde);
+  padding:16px 10px;
+  max-height:calc(100vh - 40px);
+  overflow-y:auto;
+  position:sticky;
+  top:0;
+}
+@media (max-width:820px){ nav.toc{ position:static; max-height:none; } }
+nav.toc h2{
+  color:var(--rojo);
+  font-size:13px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin:6px 8px 12px;
+}
+nav.toc button{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:transparent;
+  border:none;
+  border-left:4px solid transparent;
+  color:var(--texto-sec);
+  padding:9px 10px;
+  cursor:pointer;
+  font-size:13.5px;
+  border-radius:0 4px 4px 0;
+  margin-bottom:2px;
+}
+nav.toc button:hover{ background:var(--bg-panel2); color:var(--texto); }
+nav.toc button.active{
+  background:var(--amarillo);
+  color:var(--negro);
+  font-weight:800;
+  border-left:4px solid var(--rojo);
+}
 
-.content{padding:1.5rem;max-width:1300px;margin:0 auto;padding-bottom:3rem}
-.sec{display:none}
-.sec.on{display:block}
-.sec-title{font-size:1.1rem;color:#e8a020;letter-spacing:.2em;text-transform:uppercase}
-.sec-sub{font-size:.6rem;color:#4a6650;letter-spacing:.1em;margin-top:.2rem;margin-bottom:1.5rem}
+section.content{
+  padding:26px 30px;
+  max-width:900px;
+}
+.meta-card{
+  background:var(--bg-panel2);
+  border:2px solid var(--amarillo);
+  border-radius:8px;
+  padding:14px 18px;
+  margin-bottom:22px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:8px;
+  font-size:13px;
+}
+.meta-card b{ color:var(--rojo); }
+[data-theme="claro"] .meta-card b{ color:var(--rojo-oscuro); }
 
-.btn{font-family:'Courier New',monospace;font-size:.65rem;letter-spacing:.1em;padding:.4rem .8rem;cursor:pointer;border:1px solid;background:transparent;text-transform:uppercase}
-.btn-a{border-color:#e8a020;color:#e8a020}.btn-a:hover{background:rgba(232,160,32,.1)}
-.btn-g{border-color:#00e676;color:#00e676}.btn-g:hover{background:rgba(0,230,118,.08)}
-.btn-c{border-color:#00cfff;color:#00cfff}.btn-c:hover{background:rgba(0,207,255,.08)}
-.btn-r{border-color:#ff3d3d;color:#ff3d3d}.btn-r:hover{background:rgba(255,61,61,.08)}
+.chapter h2{
+  color:var(--rojo);
+  border-bottom:3px solid var(--amarillo);
+  padding-bottom:8px;
+  font-size:22px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+[data-theme="claro"] .chapter h2{ color:var(--rojo-oscuro); }
+.chapter h3{
+  color:var(--texto);
+  background:var(--amarillo);
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:4px;
+  font-size:14px;
+  color:var(--negro);
+  margin-top:20px;
+}
+.chapter p, .chapter li{
+  color:var(--texto);
+  line-height:1.65;
+  font-size:15px;
+}
+.chapter ul, .chapter ol{ padding-left:22px; }
+.chapter ul li::marker{ color:var(--rojo); }
+.chapter ol li::marker{ color:var(--rojo); font-weight:700; }
+.note{
+  border-left:4px solid var(--rojo);
+  background:var(--bg-panel2);
+  padding:10px 14px;
+  margin-top:14px;
+  font-size:13.5px;
+  font-style:italic;
+}
+.nav-btns{
+  display:flex;
+  justify-content:space-between;
+  margin-top:30px;
+  gap:10px;
+}
+.nav-btns button{
+  background:var(--negro);
+  color:var(--amarillo);
+  border:2px solid var(--amarillo);
+  padding:9px 16px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:700;
+}
+[data-theme="claro"] .nav-btns button{ background:var(--amarillo); color:var(--negro); border-color:var(--negro); }
+.nav-btns button:disabled{ opacity:.3; cursor:default; }
 
-.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;padding:.8rem 1rem;background:#111a14;border:1px solid #1e3325;margin-bottom:1.5rem;align-items:center}
-.toolbar-lbl{font-size:.6rem;color:#4a6650;letter-spacing:.15em}
+.custom-links{
+  background:var(--bg-panel);
+  border-top:4px solid var(--rojo);
+  padding:24px 30px 40px;
+}
+.custom-links h2{
+  color:var(--amarillo);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  font-size:18px;
+  border-bottom:2px solid var(--rojo);
+  padding-bottom:8px;
+}
+.custom-form{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:16px 0 20px;
+  background:var(--bg-panel2);
+  padding:14px;
+  border-radius:8px;
+  border:1px dashed var(--amarillo);
+}
+.custom-form input{
+  flex:1;
+  min-width:160px;
+  padding:9px 10px;
+  border-radius:5px;
+  border:2px solid var(--amarillo);
+  background:var(--bg);
+  color:var(--texto);
+  font-size:13.5px;
+}
+.custom-form button{
+  background:var(--rojo);
+  color:var(--blanco);
+  border:none;
+  padding:10px 18px;
+  border-radius:5px;
+  font-weight:800;
+  cursor:pointer;
+}
+.custom-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;
+}
+.custom-item{
+  background:var(--bg-panel2);
+  border:2px solid var(--amarillo);
+  border-radius:8px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.custom-item a{
+  color:var(--amarillo);
+  font-weight:800;
+  text-decoration:none;
+  font-size:14.5px;
+  word-break:break-word;
+}
+[data-theme="claro"] .custom-item a{ color:var(--rojo-oscuro); }
+.custom-item .desc{ font-size:12.5px; color:var(--texto-sec); }
+.custom-item .row{ display:flex; gap:8px; margin-top:4px; }
+.custom-item .row button{
+  flex:1;
+  padding:6px 8px;
+  font-size:12px;
+  border-radius:4px;
+  border:1px solid var(--amarillo);
+  background:transparent;
+  color:var(--texto);
+  cursor:pointer;
+  font-weight:700;
+}
+.custom-item .row button.del{ border-color:var(--rojo); color:var(--rojo); }
+.empty-msg{ color:var(--texto-sec); font-size:13px; font-style:italic; }
 
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;margin-bottom:1.2rem}
-.card{background:#0f1812;border:1px solid #1e3325;padding:1.3rem;position:relative}
-.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#e8a020}
-.card:hover{border-color:#2a4a35}
-.card-ico{font-size:1.8rem;margin-bottom:.6rem}
-.card-title{font-size:.8rem;color:#e8a020;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.5rem}
-.card-desc{font-size:.85rem;color:#4a6650;line-height:1.5;margin-bottom:.8rem}
-.card-link{display:block;font-size:.65rem;color:#00cfff;border:1px solid rgba(0,207,255,.2);background:rgba(0,207,255,.04);padding:.4rem .6rem;margin-bottom:.5rem;word-break:break-all;cursor:pointer}
-.card-link:hover{background:rgba(0,207,255,.1)}
-.card-nolink{font-size:.6rem;color:#2a4a35;border:1px dashed #1e3325;padding:.4rem .6rem;margin-bottom:.5rem}
-.card-acts{display:flex;gap:.4rem;flex-wrap:wrap}
-.add-card-btn{border:1px dashed #2a4a35;background:transparent;color:#4a6650;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:.12em;padding:1.2rem;cursor:pointer;width:100%;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center}
-.add-card-btn:hover{border-color:#e8a020;color:#e8a020}
+footer{
+  background:var(--negro);
+  color:var(--gris);
+  text-align:center;
+  padding:16px;
+  font-size:12px;
+  border-top:4px solid var(--amarillo);
+}
 
-.ltable{width:100%;border-collapse:collapse;font-family:'Courier New',monospace;font-size:.75rem}
-.ltable th{background:#111a14;border:1px solid #1e3325;padding:.55rem .8rem;text-align:left;color:#e8a020;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:400}
-.ltable td{border:1px solid #1e3325;padding:.55rem .8rem;color:#c8e6c9;vertical-align:middle}
-.ltable tr:hover td{background:rgba(30,51,37,.4)}
-.link-url{color:#00cfff;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.link-url:hover{text-decoration:underline}
-.tag{display:inline-block;font-size:.55rem;padding:.1rem .4rem;border:1px solid #2a4a35;color:#4a6650}
-
-.upload-zone{border:2px dashed #2a4a35;background:#0f1812;padding:2.5rem;text-align:center;cursor:pointer;margin-bottom:1.2rem}
-.upload-zone:hover{border-color:#e8a020}
-.upload-ico{font-size:2.5rem;margin-bottom:.6rem}
-.upload-txt{font-size:.75rem;color:#4a6650;letter-spacing:.1em}
-.upload-hint{font-size:.6rem;color:#2a4a35;margin-top:.3rem}
-
-.ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem;margin-bottom:1.2rem}
-.ind-card{background:#0f1812;border:1px solid #1e3325;padding:1rem;text-align:center;border-bottom:2px solid #e8a020}
-.ind-lbl{font-size:.55rem;color:#4a6650;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.4rem}
-.ind-val{font-size:1.6rem;font-weight:700;color:#e8a020}
-.ind-val.g{color:#00e676}.ind-val.c{color:#00cfff}.ind-val.m{color:#ff2d9b}
-.ind-unit{font-size:.6rem;color:#4a6650;margin-top:.2rem}
-
-.optable{width:100%;border-collapse:collapse;font-family:'Courier New',monospace;font-size:.72rem;margin-top:.8rem}
-.optable th{background:#111a14;border:1px solid #1e3325;padding:.5rem .7rem;text-align:left;color:#e8a020;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;font-weight:400}
-.optable td{border:1px solid #1e3325;padding:.5rem .7rem;color:#c8e6c9}
-.optable tr:nth-child(even) td{background:rgba(15,24,18,.5)}
-.optable tr:hover td{background:rgba(232,160,32,.04)}
-
-.hint{background:#111a14;border:1px solid #1e3325;border-left:3px solid #00cfff;padding:.8rem 1rem;margin-bottom:1.2rem}
-.hint-title{font-size:.6rem;color:#00cfff;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.4rem}
-.hint-body{font-size:.82rem;color:#81c784;line-height:1.6}
-.hint-body code{font-family:'Courier New',monospace;font-size:.72rem;color:#e8a020;background:rgba(232,160,32,.08);padding:.1rem .35rem}
-
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;display:none;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.modal{background:#0d1410;border:2px solid #e8a020;padding:1.8rem;width:460px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative}
-.modal-title{font-size:.85rem;color:#e8a020;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.2rem}
-.modal-close{position:absolute;top:.8rem;right:.8rem;background:transparent;border:none;color:#4a6650;font-size:1.1rem;cursor:pointer}
-.modal-close:hover{color:#ff3d3d}
-.fg{margin-bottom:.9rem}
-.fg label{display:block;font-size:.6rem;color:#e8a020;letter-spacing:.15em;margin-bottom:.3rem}
-.fg input,.fg textarea{width:100%;background:#050a06;border:1px solid #2a4a35;color:#c8e6c9;font-family:'Courier New',monospace;font-size:.82rem;padding:.55rem .7rem;outline:none;resize:vertical}
-.fg input:focus,.fg textarea:focus{border-color:#e8a020}
-.emoji-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:.4rem;max-height:100px;overflow-y:auto;background:#050a06;border:1px solid #1e3325;padding:.4rem}
-.emo{font-size:1.1rem;cursor:pointer;padding:.2rem;border:1px solid transparent;background:transparent}
-.emo:hover{background:rgba(232,160,32,.15);border-color:#2a4a35}
-
-.statusbar{position:fixed;bottom:0;left:0;right:0;background:#0a1f0f;border-top:1px solid #e8a020;padding:.35rem 1.5rem;display:flex;justify-content:space-between;align-items:center;z-index:50}
-.status-l{font-size:.6rem;color:#00e676;letter-spacing:.1em}
-.status-r{font-size:.55rem;color:#4a6650;letter-spacing:.08em}
-
-#toast{position:fixed;bottom:2.2rem;right:1.5rem;background:#0d1410;border:1px solid #00e676;color:#00e676;font-family:'Courier New',monospace;font-size:.7rem;padding:.6rem 1rem;z-index:9000;display:none;letter-spacing:.08em}
-.sep{border:none;border-top:1px solid #1e3325;margin:1.2rem 0}
-.empty{text-align:center;padding:3rem;font-size:.75rem;color:#4a6650;letter-spacing:.1em}
+/* Modal */
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.72);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.overlay.show{ display:flex; }
+.modal{
+  background:var(--bg-panel);
+  border:3px solid var(--rojo);
+  border-radius:10px;
+  padding:24px;
+  width:min(360px,90vw);
+  text-align:center;
+}
+.modal h3{ color:var(--amarillo); margin-top:0; text-transform:uppercase; }
+.modal input{
+  width:100%;
+  padding:10px;
+  margin:14px 0;
+  border-radius:6px;
+  border:2px solid var(--amarillo);
+  background:var(--bg);
+  color:var(--texto);
+  font-size:14px;
+  text-align:center;
+}
+.modal .row{ display:flex; gap:10px; }
+.modal button{
+  flex:1;
+  padding:10px;
+  border-radius:6px;
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+}
+.modal .ok{ background:var(--rojo); color:var(--blanco); }
+.modal .cancel{ background:var(--bg-panel2); color:var(--texto); border:1px solid var(--gris); }
+.modal .err{ color:var(--rojo); font-size:12.5px; min-height:16px; }
 </style>
 </head>
-<body>
-
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-box">
-    <span class="shield-big">🛡️</span>
-    <div class="login-title">GESTIÓN DE SEGURIDAD</div>
-    <div class="login-sub">// SISTEMA DE CONTROL OPERATIVO //</div>
-    <label class="lbl" for="lu">▸ USUARIO</label>
-    <input class="linput" type="text" id="lu" name="username" autocomplete="off" spellcheck="false" placeholder="usuario">
-    <label class="lbl" for="lp">▸ CONTRASEÑA</label>
-    <input class="linput" type="password" id="lp" name="password" autocomplete="off" placeholder="contraseña">
-    <button class="login-btn" id="login-btn">▶ INGRESAR AL SISTEMA</button>
-    <div class="login-err" id="lerr"></div>
+<body data-theme="oscuro">
+<div class="stripe"></div>
+<header>
+  <div class="brand">
+    <div class="badge">GS</div>
+    <div>
+      <h1>Guardia de Seguridad</h1>
+      <small>Centro de Distribución - Córdoba | COFARSUR</small>
+    </div>
   </div>
-  <div class="login-foot">ACCESO RESTRINGIDO · PERSONAL AUTORIZADO · v1.0</div>
+  <div class="header-actions">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">MODO CLARO</button>
+  </div>
+</header>
+
+<div class="docs-bar">
+  <span class="tag">Documentos:</span>
+  <a href="https://cofarsursacif.sharepoint.com/:b:/s/Calidad/IQCHZGO20Ir7RqqSdWb0vRucAehFhTXh6wY_ywOl5ISCM8k?e=WY354j" target="_blank" rel="noopener">📄 Manual del Guardia (PDF)</a>
+  <a href="https://cofarsursacif.sharepoint.com/:p:/s/Calidad/IQCCS1iWp8yjTI_4OKhv8ErMAZkMqzNBrhYKbdtrwItiLYA?e=Flw96j" target="_blank" rel="noopener">🎓 Capacitación (PowerPoint)</a>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="topbar">
-    <div class="topbar-l">
-      <span style="font-size:1.4rem">🛡️</span>
-      <div>
-        <div class="topbar-title">GESTIÓN DE SEGURIDAD</div>
-        <div class="topbar-sub">SISTEMA DE CONTROL OPERATIVO</div>
-      </div>
-    </div>
-    <div class="topbar-r">
-      <div class="clock" id="clock">00:00:00</div>
-      <div class="ubadge">👤 GUARDIA</div>
-      <button class="lout-btn" id="lout-btn">⏻ SALIR</button>
-    </div>
-  </div>
-
-  <div class="nav">
-    <div class="nt on" data-tab="panel">⊞ PANEL PRINCIPAL</div>
-    <div class="nt" data-tab="horas">⏱ HORAS PERSONAL</div>
-    <div class="nt" data-tab="links">🔗 LINKS</div>
-    <div class="nt" data-tab="datos">💾 DATOS</div>
-  </div>
-
-  <div class="content">
-
-    <!-- PANEL -->
-    <div class="sec on" id="sec-panel">
-      <div class="sec-title">⊞ Panel Principal</div>
-      <div class="sec-sub">// MÓDULOS DE CONTROL Y ACCESO RÁPIDO //</div>
-      <div class="toolbar">
-        <span class="toolbar-lbl">▸ DATOS:</span>
-        <button class="btn btn-g" id="btn-exp-json">⬇ EXPORTAR JSON</button>
-        <button class="btn btn-c" id="btn-exp-txt">⬇ EXPORTAR TXT</button>
-        <button class="btn btn-a" id="btn-imp1">⬆ IMPORTAR</button>
-        <input type="file" id="imp1" accept=".json,.txt" style="display:none">
-      </div>
-      <div class="cards-grid" id="cards-grid"></div>
-      <button class="add-card-btn" id="btn-add-card">＋ AGREGAR NUEVA TARJETA DE CONTROL</button>
-    </div>
-
-    <!-- HORAS -->
-    <div class="sec" id="sec-horas">
-      <div class="sec-title">⏱ Control de Horas — Personal de Seguridad</div>
-      <div class="sec-sub">// CARGA Y ANÁLISIS DE PLANILLA EXCEL //</div>
-      <div class="hint">
-        <div class="hint-title">▸ FORMATO REQUERIDO DEL EXCEL</div>
-        <div class="hint-body">Columnas requeridas: <code>OPERARIO</code>, <code>HORAS</code>, <code>TARIFA</code>. Opcionales: <code>EQUIPO</code>, <code>EXTRAS</code>, <code>DESCUENTOS</code>. Encabezados en fila 1.</div>
-      </div>
-      <div class="upload-zone" id="upload-zone">
-        <input type="file" id="xlsx-up" accept=".xlsx,.xls,.csv" style="display:none">
-        <div class="upload-ico">📊</div>
-        <div class="upload-txt">▸ CLIC PARA CARGAR PLANILLA EXCEL</div>
-        <div class="upload-hint">Formatos: .xlsx · .xls · .csv</div>
-      </div>
-      <div id="ind-sec" style="display:none">
-        <div class="sec-title" style="font-size:.85rem;margin-bottom:.8rem">▸ INDICADORES GENERALES</div>
-        <div class="ind-grid" id="ind-grid"></div>
-        <hr class="sep">
-        <div class="sec-title" style="font-size:.85rem;margin-bottom:.8rem">▸ DETALLE POR OPERARIO</div>
-        <div style="overflow-x:auto">
-          <table class="optable">
-            <thead><tr id="op-head"></tr></thead>
-            <tbody id="op-body"></tbody>
-          </table>
-        </div>
-        <div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap">
-          <button class="btn btn-g" id="btn-exp-ind-json">⬇ EXPORTAR JSON</button>
-          <button class="btn btn-c" id="btn-exp-ind-txt">⬇ EXPORTAR TXT</button>
-          <button class="btn btn-a" id="btn-reload-xlsx">🔄 RECARGAR PLANILLA</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- LINKS -->
-    <div class="sec" id="sec-links">
-      <div class="sec-title">🔗 Gestión de Links</div>
-      <div class="sec-sub">// ENLACES DE INTERÉS Y RECURSOS //</div>
-      <div class="toolbar">
-        <button class="btn btn-g" id="btn-add-link">＋ AGREGAR LINK</button>
-        <button class="btn btn-g" id="btn-links-json">⬇ JSON</button>
-        <button class="btn btn-c" id="btn-links-txt">⬇ TXT</button>
-      </div>
-      <div class="empty" id="links-empty">No hay links registrados.</div>
-      <div style="overflow-x:auto">
-        <table class="ltable" id="ltable" style="display:none">
-          <thead><tr><th>#</th><th>ICO</th><th>NOMBRE</th><th>URL</th><th>CATEGORÍA</th><th style="width:130px">ACCIONES</th></tr></thead>
-          <tbody id="ltbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- DATOS -->
-    <div class="sec" id="sec-datos">
-      <div class="sec-title">💾 Gestión de Datos</div>
-      <div class="sec-sub">// IMPORTAR / EXPORTAR CONFIGURACIÓN //</div>
-      <div class="cards-grid">
-        <div class="card"><div class="card-ico">⬇</div><div class="card-title">Exportar JSON</div><div class="card-desc">Exporta toda la configuración en formato JSON.</div><div class="card-acts"><button class="btn btn-g" id="btn-datos-json">EXPORTAR .JSON</button></div></div>
-        <div class="card"><div class="card-ico">⬇</div><div class="card-title">Exportar TXT</div><div class="card-desc">Exporta resumen legible en texto plano.</div><div class="card-acts"><button class="btn btn-c" id="btn-datos-txt">EXPORTAR .TXT</button></div></div>
-        <div class="card"><div class="card-ico">⬆</div><div class="card-title">Importar Datos</div><div class="card-desc">Importa una configuración previa exportada desde este dashboard.</div><div class="card-acts"><button class="btn btn-a" id="btn-imp2">IMPORTAR ARCHIVO</button><input type="file" id="imp2" accept=".json,.txt" style="display:none"></div></div>
-        <div class="card"><div class="card-ico">🔄</div><div class="card-title">Reiniciar Sistema</div><div class="card-desc">Limpia todos los datos. Esta acción no se puede deshacer.</div><div class="card-acts"><button class="btn btn-r" id="btn-reset">REINICIAR</button></div></div>
-      </div>
-      <div class="hint" style="margin-top:1rem"><div class="hint-title">▸ ESTADO DEL SISTEMA</div><div class="hint-body" id="sys-info"></div></div>
-    </div>
-
-  </div>
-
-  <div class="statusbar">
-    <div class="status-l" id="stl">▸ SISTEMA OPERATIVO · LISTO</div>
-    <div class="status-r" id="std"></div>
+<div class="links-grid">
+  <a class="link-btn" href="https://alldashboards.vercel.app/seguridad/seguridad_coordinador.html" target="_blank" rel="noopener">
+    <span class="icon">🛡️</span> Coordinador de Guardias
+  </a>
+  <a class="link-btn" href="https://gestionrrhh-lemon.vercel.app/" target="_blank" rel="noopener">
+    <span class="icon">🧑‍💼</span> RRHH
+  </a>
+  <a class="link-btn" href="https://flotacontrol-ten.vercel.app/" target="_blank" rel="noopener">
+    <span class="icon">🚚</span> Control de Flota Vehículos
+  </a>
+  <a class="link-btn" href="https://registro-dispositivos-o35h.vercel.app/" target="_blank" rel="noopener">
+    <span class="icon">📱</span> Gestión de dispositivos de trabajo
+  </a>
+  <a class="link-btn" href="https://cofarsursacif.sharepoint.com/:x:/s/LimpiezaySeguridad/IQAhN6FscaLDRIW_5LmSuVaYAfzIBjRGPqr0ZbVJR1cBGyc?e=V3tFJr" target="_blank" rel="noopener">
+    <span class="icon">📝</span> Parte diario del guardia
+  </a>
+  <div class="link-btn locked" onclick="openFacturacion()">
+    <span class="icon">🔒</span> Facturación de Guardias
+    <span class="lock-note">Requiere clave</span>
   </div>
 </div>
 
-<div id="toast"></div>
+<main>
+  <nav class="toc" id="toc"></nav>
+  <section class="content">
+    <div class="meta-card">
+      <div><b>Código:</b> MN-D-03-GS</div>
+      <div><b>Versión:</b> 01</div>
+      <div><b>Revisión:</b> 01</div>
+      <div><b>Vigencia:</b> 01/03/2026</div>
+    </div>
+    <div class="chapter" id="chapterView"></div>
+    <div class="nav-btns">
+      <button id="prevBtn" onclick="changeChapter(-1)">◀ Anterior</button>
+      <button id="nextBtn" onclick="changeChapter(1)">Siguiente ▶</button>
+    </div>
+  </section>
+</main>
 
-<!-- MODAL LINK -->
-<div class="overlay" id="ov-link">
+<div class="custom-links">
+  <h2>Enlaces personalizados</h2>
+  <div class="custom-form">
+    <input type="text" id="newLinkName" placeholder="Nombre del enlace">
+    <input type="url" id="newLinkUrl" placeholder="https://...">
+    <input type="text" id="newLinkDesc" placeholder="Descripción (opcional)">
+    <button onclick="addCustomLink()">+ Agregar enlace</button>
+  </div>
+  <div class="custom-list" id="customList"></div>
+</div>
+
+<footer>
+  Manual del Guardia de Seguridad · MN-D-03-GS · COFARSUR &mdash; Centro de Distribución Córdoba
+</footer>
+
+<div class="overlay" id="pwOverlay">
   <div class="modal">
-    <button class="modal-close" data-close="ov-link">✕</button>
-    <div class="modal-title" id="ml-title">AGREGAR LINK</div>
-    <div class="fg"><label>NOMBRE</label><input type="text" id="ml-nom" placeholder="ej: Manual de procedimientos"></div>
-    <div class="fg"><label>URL</label><input type="url" id="ml-url" placeholder="https://..."></div>
-    <div class="fg"><label>CATEGORÍA</label><input type="text" id="ml-cat" placeholder="ej: Documentación"></div>
-    <div class="fg"><label>EMOJI</label><input type="text" id="ml-emo" placeholder="🔗" maxlength="4" style="width:70px;display:inline-block;margin-right:.5rem"><div class="emoji-row" id="emo-link"></div></div>
-    <div style="display:flex;gap:.5rem;margin-top:.8rem">
-      <button class="btn btn-g" id="btn-save-link">GUARDAR</button>
-      <button class="btn btn-r" data-close="ov-link">CANCELAR</button>
+    <h3>🔒 Facturación de Guardias</h3>
+    <p style="font-size:13px;color:var(--texto-sec)">Ingrese la clave de acceso para continuar</p>
+    <input type="password" id="pwInput" placeholder="Clave" onkeydown="if(event.key==='Enter')checkPassword()">
+    <div class="err" id="pwError"></div>
+    <div class="row">
+      <button class="cancel" onclick="closePasswordModal()">Cancelar</button>
+      <button class="ok" onclick="checkPassword()">Ingresar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL CARD -->
-<div class="overlay" id="ov-card">
-  <div class="modal">
-    <button class="modal-close" data-close="ov-card">✕</button>
-    <div class="modal-title" id="mc-title">AGREGAR TARJETA</div>
-    <div class="fg"><label>TÍTULO</label><input type="text" id="mc-tit" placeholder="ej: CÁLCULO HORAS PERSONAL"></div>
-    <div class="fg"><label>DESCRIPCIÓN</label><textarea id="mc-desc" rows="2" placeholder="Descripción breve"></textarea></div>
-    <div class="fg"><label>ÍCONO</label><input type="text" id="mc-ico" placeholder="📋" maxlength="4" style="width:70px;display:inline-block;margin-right:.5rem"><div class="emoji-row" id="emo-card"></div></div>
-    <div class="fg"><label>URL / LINK (opcional)</label><input type="url" id="mc-url" placeholder="https://..."></div>
-    <div class="fg"><label>TEXTO DEL LINK</label><input type="text" id="mc-lnm" placeholder="ej: Abrir Excel en OneDrive"></div>
-    <div style="display:flex;gap:.5rem;margin-top:.8rem">
-      <button class="btn btn-g" id="btn-save-card">GUARDAR</button>
-      <button class="btn btn-r" data-close="ov-card">CANCELAR</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EDIT CARD LINK -->
-<div class="overlay" id="ov-ecl">
-  <div class="modal">
-    <button class="modal-close" data-close="ov-ecl">✕</button>
-    <div class="modal-title">EDITAR LINK DE TARJETA</div>
-    <input type="hidden" id="ecl-id">
-    <div class="fg"><label>URL</label><input type="url" id="ecl-url" placeholder="https://..."></div>
-    <div class="fg"><label>TEXTO DEL LINK</label><input type="text" id="ecl-nm" placeholder="ej: Abrir Excel en OneDrive"></div>
-    <div style="display:flex;gap:.5rem;margin-top:.8rem">
-      <button class="btn btn-g" id="btn-save-ecl">GUARDAR</button>
-      <button class="btn btn-r" data-close="ov-ecl">CANCELAR</button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-(function(){
+/* ============ DATOS DEL MANUAL ============ */
+const manual = [
+{n:"1", t:"Objetivo", h:[
+  {p:"Establecer directrices y procedimientos del servicio de seguridad y vigilancia en el Centro de Distribución, con foco en la prevención de riesgos, la protección de personas y activos, y el registro trazable de incidencias."}
+]},
+{n:"2", t:"Alcance", h:[
+  {p:"Aplica al personal de seguridad asignado al Centro de Distribución y a toda persona que ingrese, permanezca o egrese de las instalaciones (empleados, contratistas, proveedores, visitantes, transportistas y repartidores)."}
+]},
+{n:"3", t:"Responsables", h:[
+  {ul:[
+    "Gerente de Logística: responsable de la aprobación, recursos y decisiones excepcionales de acceso/retiro.",
+    "Coordinador de Guardias de Seguridad: responsable de la operación del servicio, asignación de turnos y supervisión.",
+    "Guardia de Seguridad: responsable del cumplimiento de consignas, controles, rondas y registros."
+  ]}
+]},
+{n:"4", t:"Referencias y definiciones", h:[
+  {h3:"4.1 Referencias internas"},
+  {ul:[
+    "Libro de Guardia (registro oficial del puesto).",
+    "Planilla de Recorrido Rutinario.",
+    "Planilla de Registro de Llaves y Guía del Gabinete de Llaves.",
+    "Planilla de Control de Celulares Laborales.",
+    "Planilla de Movimiento de Transportes y Planilla de Control Vehicular."
+  ]},
+  {h3:"4.2 Definiciones operativas"},
+  {ul:[
+    "Control de acceso: conjunto de medios, normas y acciones para permitir o restringir ingreso y egreso de personas, vehículos y bienes.",
+    "Ronda/recorrido: recorrido planificado dentro del perímetro con fines preventivos y de detección temprana.",
+    "Incidente: hecho no deseado que afecta o podría afectar la seguridad, las personas o los activos (incluye casi incidente).",
+    "Evidencia: cualquier registro, imagen o elemento que pueda respaldar una investigación interna o de autoridad competente."
+  ]}
+]},
+{n:"5", t:"Principios de actuación y límites del rol", h:[
+  {ul:[
+    "Prevención primero: anticiparse a riesgos y reducir oportunidades de ilícitos o siniestros.",
+    "Trato respetuoso y no confrontativo: cortesía, firmeza y autocontrol.",
+    "No contacto físico y no requisa manual: el guardia no realiza requisas ni contacto físico; solo utiliza medios de detección sin contacto.",
+    "Proporcionalidad y escalamiento: intervenir solo dentro de su rol y escalar a superiores o autoridad competente cuando corresponda.",
+    "Confidencialidad: la información del personal y del sistema de seguridad es reservada y se usa solo con fines laborales."
+  ]}
+]},
+{n:"6", t:"Consignas generales del servicio", h:[
+  {ul:[
+    "Presentarse 15 minutos antes del inicio del turno, uniformado, atento y con conocimiento de novedades.",
+    "Evitar distracciones: prohibido todo lo que afecte el desempeño durante el servicio.",
+    "Mantener el puesto limpio, organizado e iluminado.",
+    "Verificar en recorridos de rutina condiciones y ubicación de elementos contra incendio, sensores, alarmas, cerraduras, iluminación, aires acondicionados y barreras perimetrales, dejando asentado lo observado.",
+    "Reportar novedades de forma oportuna, clara y detallada mediante el Libro de Guardia.",
+    "Proponer mejoras al Coordinador de Guardias cuando detecte oportunidades de fortalecimiento del servicio."
+  ]}
+]},
+{n:"7", t:"Código de ética del guardia", h:[
+  {ul:[
+    "La seguridad es continua: la labor es ininterrumpida durante el turno.",
+    "Reconocer la importancia del servicio en la protección de bienes y personas.",
+    "Compromiso de conocimiento del puesto y mejora profesional.",
+    "Honestidad y veracidad en registros y comunicaciones.",
+    "Respeto a la estructura organizativa y a las instrucciones impartidas.",
+    "Imagen personal adecuada: uniforme completo, limpio y planchado."
+  ]}
+]},
+{n:"8", t:"Entrega y recepción del puesto", h:[
+  {p:"La entrega y recepción del puesto se realiza con 15 minutos de anticipación."},
+  {h3:"8.1 Pasos obligatorios"},
+  {ol:[
+    "Verificar presencia y estado de los elementos del puesto (ver sección 9).",
+    "Revisar novedades del turno anterior en el Libro de Guardia y firmar recepción.",
+    "Confirmar funcionamiento de medios de comunicación y monitoreo.",
+    "Informar inmediatamente al Coordinador de Guardias si el relevo no se presenta.",
+    "Bajo ninguna circunstancia abandonar el puesto sin relevo acreditado."
+  ]}
+]},
+{n:"9", t:"Elementos del puesto", h:[
+  {ul:[
+    "Libro de Guardia (obligatorio).",
+    "Medios de comunicación: celular (batería cargada), correo electrónico u otros definidos.",
+    "Computadora (si aplica).",
+    "Listado de teléfonos de emergencia.",
+    "Monitor de cámaras de vigilancia (si aplica).",
+    "Linterna operativa.",
+    "Botiquín de primeros auxilios.",
+    "Extintores accesibles.",
+    "Manual vigente del Guardia de Seguridad."
+  ]},
+  {note:"La información del personal es reservada y no puede compartirse con terceros."}
+]},
+{n:"10", t:"Libro de Guardia", h:[
+  {p:"El Libro de Guardia es el registro oficial del puesto y puede ser utilizado como material probatorio en instancias internas o requerimientos de autoridad competente."},
+  {h3:"10.1 Qué registrar (mínimo)"},
+  {ul:[
+    "Inicio y cierre del turno, con firma.",
+    "Novedades y órdenes recibidas antes de la toma del servicio.",
+    "Incidentes, casi incidentes y acciones tomadas.",
+    "Denegaciones de acceso y motivos.",
+    "Recepción y entrega de correspondencia/paquetería.",
+    "Observaciones de rondas y hallazgos.",
+    "Cualquier intervención de autoridad pública (policía, inspecciones, etc.)."
+  ]},
+  {h3:"10.2 Cómo registrar"},
+  {ul:[
+    "Escribir con letra legible y sin enmiendas; si hay corrección, salvar con firma.",
+    "Registrar fecha y hora exactas.",
+    "Describir hechos observables, evitando opiniones o juicios personales.",
+    "Indicar a quién se informó (nombre y medio) y la respuesta recibida."
+  ]}
+]},
+{n:"11", t:"Control de acceso de personas", h:[
+  {h3:"11.1 Reglas generales"},
+  {ul:[
+    "Mantener cerradas las puertas de ingreso.",
+    "Identificar a toda persona que pretenda ingresar.",
+    "Habilitar el ingreso solo con identificación clara y autorización correspondiente."
+  ]},
+  {h3:"11.2 Personal de COFARSUR"},
+  {ul:[
+    "Verificar identidad antes de habilitar apertura o activar control de puertas.",
+    "Registrar incidencias (p. ej., intento de ingreso sin identificación)."
+  ]},
+  {h3:"11.3 Visitantes en general"},
+  {ul:[
+    "Anunciar al visitante y obtener autorización de ingreso por medio verbal, telefónico, escrito o electrónico.",
+    "Registrar ingreso/egreso en el sistema definido (digital) y/o Libro de Guardia según corresponda.",
+    "No permitir ingreso de taxis/remises.",
+    "No permitir ingreso de vehículos de visitantes salvo autorización expresa de un directivo."
+  ]}
+]},
+{n:"12", t:"Revisión de pertenencias y efectos personales", h:[
+  {p:"La revisión se limita al uso de medios de detección sin contacto (p. ej., detector de metales), sin requisa manual y sin contacto físico."},
+  {h3:"12.1 Personal de Logística, Limpieza y Mantenimiento (egreso)"},
+  {ol:[
+    "Ordenar la fila y asegurar distancias para un control efectivo.",
+    "Aplicar detector de metales y solicitar apertura del bolso/mochila/recipiente cuando corresponda.",
+    "Solicitar que el empleado exhiba el contenido; si se requiere vaciado, usar canasta de acrílico transparente sobre mesa.",
+    "No introducir las manos en bolsos, mochilas ni prendas.",
+    "Registrar irregularidades o hallazgos en el Libro de Guardia y escalar al responsable correspondiente."
+  ]}
+]},
+{n:"13", t:"Correspondencia, paquetería y retiros de bienes", h:[
+  {h3:"13.1 Recepción de correspondencia/paquetes"},
+  {ol:[
+    "Registrar en Libro de Guardia: fecha, hora, remitente, destinatario, tipo de envío y quien entrega.",
+    "No permitir retiro directo por terceros no autorizados.",
+    "Al entregar, solicitar firma del receptor.",
+    "No abrir ni leer correspondencia o documentación."
+  ]},
+  {h3:"13.2 Retiro de elementos del Centro de Distribución"},
+  {ul:[
+    "Requiere autorización del Gerente de Logística; para casos definidos, puede requerirse autorización del Gerente General.",
+    "Registrar en Libro de Guardia: elemento, cantidad, persona responsable y autorización."
+  ]}
+]},
+{n:"14", t:"Control de acceso vehicular", h:[
+  {h3:"14.1 Regla general"},
+  {p:"El control de ingreso y egreso vehicular se aplica a la totalidad de los vehículos, todas las veces que sea necesario."},
+  {h3:"14.2 Vehículos en estacionamiento"},
+  {ul:[
+    "Verificar condiciones de permanencia (ventanas abiertas, roturas, baúl abierto, etc.).",
+    "Registrar observaciones relevantes."
+  ]},
+  {h3:"14.3 Vehículos propiedad de la empresa"},
+  {ul:[
+    "Mantener lista de personas autorizadas.",
+    "Entregar llaves solo a autorizados y registrar en planilla 'Control de Vehículo'.",
+    "Registrar incidencias o daños observados."
+  ]},
+  {h3:"14.4 Vehículos del personal"},
+  {ul:[
+    "Requiere registro previo (ficha/tarjeta/lector digital u otro sistema definido).",
+    "Registrar situaciones anómalas o intentos sin registro."
+  ]}
+]},
+{n:"15", t:"Ingreso de proveedores, transportistas y repartidores", h:[
+  {h3:"15.1 Proveedores/transportistas: requisitos documentales mínimos"},
+  {ul:[
+    "Nombre y Apellido, DNI, carnet de conducir.",
+    "Póliza de seguro.",
+    "ITV vigente.",
+    "ART con cláusula de no repetición (cuando aplique)."
+  ]},
+  {p:"Si no cumple requisitos: denegar ingreso, registrar en Libro de Guardia (datos del transporte, conductor y DNI) e informar al Gerente de Logística por correo electrónico."},
+  {h3:"15.2 Repartidores"},
+  {ul:[
+    "Ingreso al playón con tarjeta de contacto remoto.",
+    "La vigencia documental es competencia del Supervisor de Tráfico; el guardia debe reportar irregularidades observadas."
+  ]}
+]},
+{n:"16", t:"Sistema de rondas y recorridos", h:[
+  {ul:[
+    "Realizar rondas dentro del perímetro para prevenir o detectar ilícitos o siniestros.",
+    "Variar horarios para evitar rutinas previsibles.",
+    "Verificar puntos críticos y completar Planilla de Recorrido Rutinario.",
+    "Controlar cumplimiento de prohibición de fumar en áreas definidas e informar incumplimientos.",
+    "Verificar que alarmas, extintores, hidrantes y mangueras estén libres de obstáculos."
+  ]}
+]},
+{n:"17", t:"Operación de medios tecnológicos", h:[
+  {ul:[
+    "Monitorear cámaras y reportar comportamientos sospechosos con fecha, hora y descripción en el Libro de Guardia.",
+    "Preservar grabaciones cuando se detecten incidentes, evitando su pérdida o sobrescritura según capacidades del sistema.",
+    "Tratar registros audiovisuales como evidencia potencial ante requerimientos de autoridad competente."
+  ]}
+]},
+{n:"18", t:"Supervisión y puntos de control del servicio", h:[
+  {ul:[
+    "Verificar que el Libro de Guardia se complete en tiempo y forma.",
+    "Informar necesidades de seguridad no cubiertas, irregularidades o novedades durante el servicio.",
+    "Reportar fallas de infraestructura o equipos (iluminación, cerraduras, cámaras, etc.)."
+  ]}
+]},
+{n:"19", t:"Faltas disciplinarias", h:[
+  {p:"Las faltas se clasifican para orientar su tratamiento. Toda medida se aplica conforme normativa laboral y procedimientos internos."},
+  {h3:"19.1 Faltas leves (orientativo)"},
+  {ul:[
+    "Incumplimientos menores de orden y limpieza del puesto sin impacto en la seguridad.",
+    "Registros incompletos no recurrentes en el Libro de Guardia (sin ocultamiento de información).",
+    "Impuntualidad ocasional debidamente justificada."
+  ]},
+  {h3:"19.2 Faltas graves (orientativo)"},
+  {ul:[
+    "Dormir durante el servicio o descuidar la posición.",
+    "Negligencia en controles de acceso o rondas que genere exposición al riesgo.",
+    "Desobediencia a instrucciones formales.",
+    "Riñas o conductas inapropiadas durante el servicio.",
+    "Realizar actividades diferentes a vigilancia y seguridad."
+  ]},
+  {h3:"19.3 Faltas muy graves (orientativo)"},
+  {ul:[
+    "Abandono del puesto sin relevo o autorización.",
+    "Consumo de alcohol o sustancias psicotrópicas durante el servicio.",
+    "Divulgar información confidencial o traficar datos del personal.",
+    "Abuso de autoridad o uso desproporcionado del poder.",
+    "Conocimiento de un delito y no informarlo a la autoridad competente."
+  ]},
+  {note:"Las consecuencias pueden incluir advertencias, entrenamiento adicional y, en casos graves, suspensiones o desvinculación."}
+]},
+{n:"20", t:"Respuesta ante eventos", h:[
+  {h3:"20.1 Hurtos"},
+  {ol:[
+    "Dar aviso inmediato a la autoridad competente y al Coordinador de Guardias.",
+    "Evitar destrucción o contaminación de evidencia cuando sea posible.",
+    "Observar y registrar descripciones de personas y hechos (sin confrontar ni exponerse).",
+    "Registrar en Libro de Guardia: hora, lugar, descripción y a quién se informó."
+  ]},
+  {h3:"20.2 Allanamientos"},
+  {ol:[
+    "Solicitar identificación y orden de allanamiento.",
+    "Informar inmediatamente a directivos para confirmar veracidad del procedimiento.",
+    "Registrar datos completos y DNI de participantes del operativo en el Libro de Guardia.",
+    "Acompañar el procedimiento como observador dentro de su rol, sin interferir."
+  ]},
+  {h3:"20.3 Incendio"},
+  {ul:[
+    "Los guardias integran el Grupo de Apoyo de Brigadas de Incendio; deben estar capacitados para su rol.",
+    "Activar protocolo interno de emergencias, dar aviso y colaborar según instrucciones del líder de brigada.",
+    "Priorizar evacuación y seguridad de personas por sobre bienes.",
+    "Registrar hechos relevantes una vez controlada la situación."
+  ]}
+]},
+{n:"21", t:"Capacitación y mejora continua", h:[
+  {ul:[
+    "El personal de seguridad debe recibir capacitación inicial y refrescos periódicos en: control de acceso, rondas, uso de medios tecnológicos, comunicación, emergencias y rol en brigadas.",
+    "Toda sugerencia de mejora se eleva al Coordinador de Guardias y puede registrarse en el Libro de Guardia para su trazabilidad.",
+    "La revisión del manual se realiza cuando existan cambios operativos relevantes o al menos una vez al año."
+  ]}
+]},
+{n:"22", t:"Anexos", h:[
+  {ul:[
+    "Anexo A - Guía del Gabinete de Llaves.",
+    "Anexo B - Planilla de Recorrido Rutinario.",
+    "Anexo C - Planilla de Control de Celulares Laborales.",
+    "Anexo D - Planilla de Registro de Llaves.",
+    "Anexo E - Planilla de Movimiento de Transportes.",
+    "Anexo F - Planilla de Control Vehicular."
+  ]}
+]}
+];
 
-var S = {
-  cards: [
-    {id:'c1',title:'CÁLCULO HORAS PERSONAL',desc:'Acceso al Excel en la nube con el cálculo de horas trabajadas por el personal de seguridad.',ico:'📊',url:'',lnm:'Abrir Excel en OneDrive'},
-    {id:'c2',title:'MANUAL DEL GUARDIA',desc:'Acceso al manual de procedimientos y reglamento del personal de guardia.',ico:'📖',url:'',lnm:'Abrir Manual'},
-    {id:'c3',title:'PARTE DIARIO',desc:'Registro y acceso al parte diario de novedades del personal de seguridad.',ico:'📋',url:'',lnm:'Ver Parte Diario'},
-    {id:'c4',title:'LEGAJOS PERSONAL',desc:'Acceso al repositorio de legajos y documentación del personal de guardia.',ico:'👤',url:'',lnm:'Abrir Legajos'}
-  ],
-  links: [],
-  horasData: null
-};
-var editLinkId = null;
-var editCardId = null;
-var EMOJIS = ['📄','📊','📋','📁','🗂️','🔗','🛡️','👤','📖','⏱','📝','🔒','🏢','📌','⚠️','✅','❌','🚨','🔔','📞','💼','🏷️','📅','🗓️','🔑','📷','💡','🔍','📡','⚙️','🖥️','📱','✉️','📣','🎯','📈','📉','💰','🧾','🖊️'];
-
-// LOGIN
-document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('lp').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-document.getElementById('lu').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('lp').focus(); });
-
-function doLogin() {
-  var u = document.getElementById('lu').value.trim().toLowerCase();
-  var p = document.getElementById('lp').value;
-  if (u === 'guardia' && p === 'Tetera1913') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initApp();
-  } else {
-    var e = document.getElementById('lerr');
-    e.textContent = '▸ CREDENCIALES INVÁLIDAS — ACCESO DENEGADO';
-    document.getElementById('lp').value = '';
-    document.getElementById('lu').focus();
-    setTimeout(function(){ e.textContent=''; }, 3000);
-  }
-}
-
-document.getElementById('lout-btn').addEventListener('click', function(){
-  if(!confirm('¿Confirmar cierre de sesión?')) return;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('lu').value = '';
-  document.getElementById('lp').value = '';
-  setTimeout(function(){ document.getElementById('lu').focus(); }, 100);
-});
-
-// INIT
-function initApp() {
-  startClock();
-  loadStorage();
-  renderCards();
-  renderLinks();
-  buildEmojiPickers();
-  updateSysInfo();
-  setTimeout(function(){ document.getElementById('lu').focus(); }, 50);
-}
-
-function startClock() {
-  function tick() {
-    var n = new Date();
-    document.getElementById('clock').textContent = n.toLocaleTimeString('es-AR');
-    document.getElementById('std').textContent = n.toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase();
-  }
-  tick(); setInterval(tick, 1000);
-}
-
-// STORAGE
-function saveStorage() {
-  try { localStorage.setItem('gs_data', JSON.stringify({cards:S.cards,links:S.links})); } catch(e){}
-}
-function loadStorage() {
-  try {
-    var r = localStorage.getItem('gs_data');
-    if(r){ var d=JSON.parse(r); if(d.cards) S.cards=d.cards; if(d.links) S.links=d.links; }
-  } catch(e){}
-}
-
-// TABS
-document.querySelectorAll('.nt').forEach(function(nt){
-  nt.addEventListener('click', function(){
-    document.querySelectorAll('.nt').forEach(function(t){ t.classList.remove('on'); });
-    document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
-    nt.classList.add('on');
-    document.getElementById('sec-'+nt.dataset.tab).classList.add('on');
-    document.getElementById('stl').textContent = '▸ MÓDULO: '+nt.dataset.tab.toUpperCase();
+/* ============ RENDER TOC ============ */
+let currentChapter = 0;
+const tocEl = document.getElementById('toc');
+function buildTOC(){
+  let html = '<h2>Índice del Manual</h2>';
+  manual.forEach((c,i)=>{
+    html += `<button data-i="${i}" onclick="showChapter(${i})">${c.n}. ${c.t}</button>`;
   });
-});
-
-// CARDS
-function renderCards() {
-  var g = document.getElementById('cards-grid');
-  g.innerHTML = '';
-  S.cards.forEach(function(c){
-    var div = document.createElement('div');
-    div.className = 'card';
-    var lhtml = c.url
-      ? '<a class="card-link" href="'+escAttr(c.url)+'" target="_blank" rel="noopener">🔗 '+esc(c.lnm||c.url)+'</a>'
-      : '<div class="card-nolink">Sin link asignado</div>';
-    div.innerHTML =
-      '<div class="card-ico">'+c.ico+'</div>'+
-      '<div class="card-title">'+esc(c.title)+'</div>'+
-      '<div class="card-desc">'+esc(c.desc)+'</div>'+
-      '<div>'+lhtml+'</div>'+
-      '<div class="card-acts" style="margin-top:.5rem">'+
-        (c.url?'<button class="btn btn-c btn-open-card" data-url="'+escAttr(c.url)+'">⬡ ABRIR</button>':'')+
-        '<button class="btn btn-a btn-ecl" data-id="'+c.id+'">✎ LINK</button>'+
-        '<button class="btn btn-a btn-edit-card" data-id="'+c.id+'">✎ EDITAR</button>'+
-        '<button class="btn btn-r btn-del-card" data-id="'+c.id+'">✕</button>'+
-      '</div>';
-    g.appendChild(div);
-  });
-  g.querySelectorAll('.btn-open-card').forEach(function(b){ b.addEventListener('click', function(){ window.open(b.dataset.url,'_blank'); }); });
-  g.querySelectorAll('.btn-ecl').forEach(function(b){ b.addEventListener('click', function(){ openECL(b.dataset.id); }); });
-  g.querySelectorAll('.btn-edit-card').forEach(function(b){ b.addEventListener('click', function(){ openEditCard(b.dataset.id); }); });
-  g.querySelectorAll('.btn-del-card').forEach(function(b){ b.addEventListener('click', function(){ delCard(b.dataset.id); }); });
-  updateSysInfo();
+  tocEl.innerHTML = html;
 }
-
-document.getElementById('btn-add-card').addEventListener('click', openCardModal);
-
-function openCardModal() {
-  editCardId = null;
-  document.getElementById('mc-title').textContent = 'AGREGAR TARJETA';
-  document.getElementById('mc-tit').value='';
-  document.getElementById('mc-desc').value='';
-  document.getElementById('mc-ico').value='📋';
-  document.getElementById('mc-url').value='';
-  document.getElementById('mc-lnm').value='';
-  openOv('ov-card');
+function renderBlock(b){
+  if(b.p) return `<p>${b.p}</p>`;
+  if(b.h3) return `<h3>${b.h3}</h3>`;
+  if(b.ul) return `<ul>${b.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  if(b.ol) return `<ol>${b.ol.map(x=>`<li>${x}</li>`).join('')}</ol>`;
+  if(b.note) return `<div class="note">📌 ${b.note}</div>`;
+  return '';
 }
-
-function openEditCard(id) {
-  var c = S.cards.find(function(x){ return x.id===id; });
-  if(!c) return;
-  editCardId = id;
-  document.getElementById('mc-title').textContent = 'EDITAR TARJETA';
-  document.getElementById('mc-tit').value=c.title;
-  document.getElementById('mc-desc').value=c.desc;
-  document.getElementById('mc-ico').value=c.ico||'📋';
-  document.getElementById('mc-url').value=c.url||'';
-  document.getElementById('mc-lnm').value=c.lnm||'';
-  openOv('ov-card');
+function showChapter(i){
+  currentChapter = i;
+  const c = manual[i];
+  document.getElementById('chapterView').innerHTML =
+    `<h2>${c.n}. ${c.t}</h2>` + c.h.map(renderBlock).join('');
+  document.querySelectorAll('nav.toc button').forEach(b=>b.classList.remove('active'));
+  const active = document.querySelector(`nav.toc button[data-i="${i}"]`);
+  if(active){ active.classList.add('active'); active.scrollIntoView({block:'nearest'}); }
+  document.getElementById('prevBtn').disabled = i===0;
+  document.getElementById('nextBtn').disabled = i===manual.length-1;
+  window.scrollTo({top:document.querySelector('main').offsetTop-20, behavior:'smooth'});
 }
-
-document.getElementById('btn-save-card').addEventListener('click', function(){
-  var tit = document.getElementById('mc-tit').value.trim();
-  if(!tit){ toast('⚠ Ingrese un título'); return; }
-  var data = {
-    title:tit.toUpperCase(),
-    desc:document.getElementById('mc-desc').value.trim(),
-    ico:document.getElementById('mc-ico').value.trim()||'📋',
-    url:document.getElementById('mc-url').value.trim(),
-    lnm:document.getElementById('mc-lnm').value.trim()||'Abrir enlace'
-  };
-  if(editCardId){
-    var i=S.cards.findIndex(function(x){ return x.id===editCardId; });
-    if(i>=0) S.cards[i]=Object.assign(S.cards[i],data);
-    toast('✓ TARJETA ACTUALIZADA');
-  } else {
-    data.id='c'+Date.now(); S.cards.push(data);
-    toast('✓ TARJETA AGREGADA');
-  }
-  saveStorage(); renderCards(); closeOv('ov-card');
-});
-
-function delCard(id) {
-  if(!confirm('¿Eliminar esta tarjeta?')) return;
-  S.cards=S.cards.filter(function(c){ return c.id!==id; });
-  saveStorage(); renderCards(); toast('✓ ELIMINADA');
+function changeChapter(delta){
+  const ni = currentChapter+delta;
+  if(ni>=0 && ni<manual.length) showChapter(ni);
 }
+buildTOC();
+showChapter(0);
 
-function openECL(id) {
-  var c=S.cards.find(function(x){ return x.id===id; });
-  if(!c) return;
-  document.getElementById('ecl-id').value=id;
-  document.getElementById('ecl-url').value=c.url||'';
-  document.getElementById('ecl-nm').value=c.lnm||'';
-  openOv('ov-ecl');
+/* ============ TEMA CLARO/OSCURO ============ */
+function applyTheme(t){
+  document.body.setAttribute('data-theme', t);
+  document.getElementById('themeToggle').textContent = t==='oscuro' ? 'MODO CLARO' : 'MODO OSCURO';
+  localStorage.setItem('gs_theme', t);
 }
-
-document.getElementById('btn-save-ecl').addEventListener('click', function(){
-  var id=document.getElementById('ecl-id').value;
-  var i=S.cards.findIndex(function(x){ return x.id===id; });
-  if(i<0) return;
-  S.cards[i].url=document.getElementById('ecl-url').value.trim();
-  S.cards[i].lnm=document.getElementById('ecl-nm').value.trim()||'Abrir enlace';
-  closeOv('ov-ecl'); saveStorage(); renderCards(); toast('✓ LINK ACTUALIZADO');
-});
-
-// LINKS
-function renderLinks() {
-  var tbody=document.getElementById('ltbody');
-  var empty=document.getElementById('links-empty');
-  var table=document.getElementById('ltable');
-  tbody.innerHTML='';
-  if(!S.links.length){ empty.style.display='block'; table.style.display='none'; return; }
-  empty.style.display='none'; table.style.display='table';
-  S.links.forEach(function(lk,i){
-    var tr=document.createElement('tr');
-    tr.innerHTML=
-      '<td>'+(i+1)+'</td>'+
-      '<td style="font-size:1.1rem">'+(lk.ico||'🔗')+'</td>'+
-      '<td>'+esc(lk.nom)+'</td>'+
-      '<td class="link-url" title="'+escAttr(lk.url)+'">'+esc(lk.url)+'</td>'+
-      '<td><span class="tag">'+esc(lk.cat||'—')+'</span></td>'+
-      '<td style="white-space:nowrap">'+
-        '<button class="btn btn-c btn-open-link" data-url="'+escAttr(lk.url)+'" style="font-size:.58rem;padding:.25rem .5rem">⬡</button> '+
-        '<button class="btn btn-a btn-edit-link" data-id="'+lk.id+'" style="font-size:.58rem;padding:.25rem .5rem">✎</button> '+
-        '<button class="btn btn-r btn-del-link" data-id="'+lk.id+'" style="font-size:.58rem;padding:.25rem .5rem">✕</button>'+
-      '</td>';
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('.btn-open-link').forEach(function(b){ b.addEventListener('click', function(){ window.open(b.dataset.url,'_blank'); }); });
-  tbody.querySelectorAll('.link-url').forEach(function(td){ td.addEventListener('click', function(){ window.open(td.title,'_blank'); }); });
-  tbody.querySelectorAll('.btn-edit-link').forEach(function(b){ b.addEventListener('click', function(){ openEditLink(parseInt(b.dataset.id)); }); });
-  tbody.querySelectorAll('.btn-del-link').forEach(function(b){ b.addEventListener('click', function(){ delLink(parseInt(b.dataset.id)); }); });
-  updateSysInfo();
+function toggleTheme(){
+  const cur = document.body.getAttribute('data-theme');
+  applyTheme(cur==='oscuro' ? 'claro' : 'oscuro');
 }
-
-document.getElementById('btn-add-link').addEventListener('click', openLinkModal);
-document.getElementById('btn-links-json').addEventListener('click', expJSON);
-document.getElementById('btn-links-txt').addEventListener('click', expTXT);
-
-function openLinkModal() {
-  editLinkId=null;
-  document.getElementById('ml-title').textContent='AGREGAR LINK';
-  document.getElementById('ml-nom').value='';
-  document.getElementById('ml-url').value='';
-  document.getElementById('ml-cat').value='';
-  document.getElementById('ml-emo').value='';
-  openOv('ov-link');
-}
-
-function openEditLink(id) {
-  var lk=S.links.find(function(x){ return x.id===id; });
-  if(!lk) return;
-  editLinkId=id;
-  document.getElementById('ml-title').textContent='EDITAR LINK';
-  document.getElementById('ml-nom').value=lk.nom;
-  document.getElementById('ml-url').value=lk.url;
-  document.getElementById('ml-cat').value=lk.cat||'';
-  document.getElementById('ml-emo').value=lk.ico||'';
-  openOv('ov-link');
-}
-
-document.getElementById('btn-save-link').addEventListener('click', function(){
-  var nom=document.getElementById('ml-nom').value.trim();
-  var url=document.getElementById('ml-url').value.trim();
-  if(!nom||!url){ toast('⚠ Nombre y URL requeridos'); return; }
-  var data={nom:nom,url:url,cat:document.getElementById('ml-cat').value.trim(),ico:document.getElementById('ml-emo').value.trim()||'🔗'};
-  if(editLinkId){
-    var i=S.links.findIndex(function(x){ return x.id===editLinkId; });
-    if(i>=0) S.links[i]=Object.assign(S.links[i],data);
-    toast('✓ LINK ACTUALIZADO');
-  } else {
-    data.id=Date.now(); S.links.push(data);
-    toast('✓ LINK AGREGADO');
-  }
-  saveStorage(); renderLinks(); closeOv('ov-link');
-});
-
-function delLink(id) {
-  if(!confirm('¿Eliminar?')) return;
-  S.links=S.links.filter(function(x){ return x.id!==id; });
-  saveStorage(); renderLinks(); toast('✓ ELIMINADO');
-}
-
-// EMOJI PICKERS
-function buildEmojiPickers() {
-  buildPicker('emo-link', function(e){ document.getElementById('ml-emo').value=e; });
-  buildPicker('emo-card', function(e){ document.getElementById('mc-ico').value=e; });
-}
-function buildPicker(cid, cb) {
-  var c=document.getElementById(cid); if(!c) return; c.innerHTML='';
-  EMOJIS.forEach(function(e){
-    var b=document.createElement('button');
-    b.className='emo'; b.textContent=e; b.type='button';
-    b.addEventListener('click', function(){ cb(e); });
-    c.appendChild(b);
-  });
-}
-
-// EXCEL
-document.getElementById('upload-zone').addEventListener('click', function(){ document.getElementById('xlsx-up').click(); });
-document.getElementById('xlsx-up').addEventListener('change', procExcel);
-document.getElementById('btn-reload-xlsx').addEventListener('click', function(){ document.getElementById('xlsx-up').click(); });
-
-function procExcel(ev) {
-  var file=ev.target.files[0]; if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try {
-      var data=new Uint8Array(e.target.result);
-      var wb=XLSX.read(data,{type:'array'});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(!rows.length){ toast('⚠ Planilla vacía'); return; }
-      S.horasData=rows; calcInd(rows);
-      toast('✓ '+rows.length+' REGISTROS CARGADOS');
-      document.getElementById('stl').textContent='▸ PLANILLA CARGADA · '+rows.length+' REGISTROS';
-    } catch(err){ toast('⚠ Error: '+err.message); }
-  };
-  reader.readAsArrayBuffer(file); ev.target.value='';
-}
-
-function fk(row,opts){
-  for(var i=0;i<opts.length;i++){
-    var k=Object.keys(row).find(function(x){ return x.trim().toUpperCase()===opts[i].toUpperCase(); });
-    if(k) return k;
-  }
-  return null;
-}
-
-function calcInd(rows) {
-  var kO=fk(rows[0],['OPERARIO','NOMBRE','PERSONAL','EMPLEADO','GUARDIA']);
-  var kH=fk(rows[0],['HORAS','HS','HRS','TOTAL_HORAS']);
-  var kT=fk(rows[0],['TARIFA','TARIFA_HORA','VALOR','PRECIO']);
-  var kE2=fk(rows[0],['EQUIPO','TURNO','GRUPO','SECTOR']);
-  var kX=fk(rows[0],['EXTRAS','HORAS_EXTRAS','EXTRA']);
-  var kD=fk(rows[0],['DESCUENTOS','DESCUENTO','DESC']);
-  var ops={};
-  rows.forEach(function(row){
-    var nom=kO?String(row[kO]||'SIN NOMBRE').trim():'SIN NOMBRE';
-    var hs=parseFloat(kH?row[kH]:0)||0;
-    var tar=parseFloat(kT?row[kT]:0)||0;
-    var eq=kE2?String(row[kE2]||'GENERAL').trim():'GENERAL';
-    var ext=parseFloat(kX?row[kX]:0)||0;
-    var des=parseFloat(kD?row[kD]:0)||0;
-    if(!ops[nom]) ops[nom]={nom:nom,hs:0,tar:tar,eq:eq,ext:0,des:0};
-    ops[nom].hs+=hs; ops[nom].ext+=ext; ops[nom].des+=des;
-    if(tar>0) ops[nom].tar=tar;
-  });
-  var lista=Object.values(ops);
-  lista.forEach(function(o){ o.monto=(o.hs+o.ext)*o.tar-o.des; });
-  var totH=lista.reduce(function(s,o){return s+o.hs;},0);
-  var totX=lista.reduce(function(s,o){return s+o.ext;},0);
-  var totM=lista.reduce(function(s,o){return s+o.monto;},0);
-  var promH=lista.length?totH/lista.length:0;
-  var maxH=lista.length?Math.max.apply(null,lista.map(function(o){return o.hs;})):0;
-  var minH=lista.length?Math.min.apply(null,lista.map(function(o){return o.hs;})):0;
-  var eqs={};
-  lista.forEach(function(o){ if(!eqs[o.eq]) eqs[o.eq]={hs:0,monto:0,cnt:0}; eqs[o.eq].hs+=o.hs; eqs[o.eq].monto+=o.monto; eqs[o.eq].cnt++; });
-  var ig=document.getElementById('ind-grid'); ig.innerHTML='';
-  [{lbl:'TOTAL OPERARIOS',val:lista.length,unit:'personas',cls:''},{lbl:'TOTAL HORAS',val:totH.toFixed(1),unit:'horas trabajadas',cls:'g'},{lbl:'HORAS EXTRAS',val:totX.toFixed(1),unit:'horas extra',cls:'c'},{lbl:'MONTO TOTAL EQUIPO',val:'$'+fmt(totM),unit:'total percibido',cls:'m'},{lbl:'PROMEDIO HORAS',val:promH.toFixed(1),unit:'hs por operario',cls:'c'},{lbl:'MÁX. HORAS',val:maxH.toFixed(1),unit:'horas máx.',cls:'g'},{lbl:'MÍN. HORAS',val:minH.toFixed(1),unit:'horas mín.',cls:''},{lbl:'EQUIPOS/SECTORES',val:Object.keys(eqs).length,unit:'grupos',cls:''}].forEach(function(ind){
-    var d=document.createElement('div'); d.className='ind-card';
-    d.innerHTML='<div class="ind-lbl">'+ind.lbl+'</div><div class="ind-val '+ind.cls+'">'+ind.val+'</div><div class="ind-unit">'+ind.unit+'</div>';
-    ig.appendChild(d);
-  });
-  var oh=document.getElementById('op-head'); var ob=document.getElementById('op-body');
-  oh.innerHTML='<th>OPERARIO</th><th>EQUIPO</th><th>HORAS</th><th>EXTRAS</th><th>TARIFA</th><th>DESCUENTO</th><th>MONTO PERCIBIDO</th>';
-  ob.innerHTML='';
-  lista.sort(function(a,b){return b.monto-a.monto;}).forEach(function(o){
-    var tr=document.createElement('tr');
-    tr.innerHTML='<td>'+esc(o.nom)+'</td><td>'+esc(o.eq)+'</td><td style="color:#00e676">'+o.hs.toFixed(1)+'</td><td style="color:#00cfff">'+o.ext.toFixed(1)+'</td><td>$'+fmt(o.tar)+'</td><td style="color:#ff3d3d">-$'+fmt(o.des)+'</td><td style="color:#e8a020;font-weight:700">$'+fmt(o.monto)+'</td>';
-    ob.appendChild(tr);
-  });
-  if(Object.keys(eqs).length>1){
-    var sep=document.createElement('tr'); sep.innerHTML='<td colspan="7" style="background:#111a14;color:#e8a020;font-size:.58rem;letter-spacing:.18em;padding:.35rem .7rem">▸ RESUMEN POR EQUIPO</td>'; ob.appendChild(sep);
-    Object.keys(eqs).forEach(function(eq){ var d=eqs[eq]; var tr=document.createElement('tr'); tr.innerHTML='<td colspan="2" style="color:#e8a020">'+esc(eq)+'</td><td style="color:#00e676">'+d.hs.toFixed(1)+'</td><td>—</td><td>'+d.cnt+' pers.</td><td>—</td><td style="color:#ff2d9b;font-weight:700">$'+fmt(d.monto)+'</td>'; ob.appendChild(tr); });
-  }
-  document.getElementById('ind-sec').style.display='block';
-}
-
-// EXPORT/IMPORT
-document.getElementById('btn-exp-json').addEventListener('click', expJSON);
-document.getElementById('btn-exp-txt').addEventListener('click', expTXT);
-document.getElementById('btn-datos-json').addEventListener('click', expJSON);
-document.getElementById('btn-datos-txt').addEventListener('click', expTXT);
-document.getElementById('btn-imp1').addEventListener('click', function(){ document.getElementById('imp1').click(); });
-document.getElementById('btn-imp2').addEventListener('click', function(){ document.getElementById('imp2').click(); });
-document.getElementById('imp1').addEventListener('change', impData);
-document.getElementById('imp2').addEventListener('change', impData);
-document.getElementById('btn-reset').addEventListener('click', resetAll);
-document.getElementById('btn-exp-ind-json').addEventListener('click', expIndJSON);
-document.getElementById('btn-exp-ind-txt').addEventListener('click', expIndTXT);
-
-function expJSON(){
-  dl('gestion_seguridad_'+ds()+'.json',JSON.stringify({sistema:'GESTIÓN DE SEGURIDAD',version:'1.0',exportado:new Date().toISOString(),cards:S.cards,links:S.links},null,2),'application/json');
-  toast('✓ EXPORTADO JSON');
-}
-function expTXT(){
-  var t='═══════════════════════════════════════\n    GESTIÓN DE SEGURIDAD\n    '+new Date().toLocaleString('es-AR')+'\n═══════════════════════════════════════\n\n▸ TARJETAS ('+S.cards.length+')\n';
-  S.cards.forEach(function(c,i){ t+=(i+1)+'. '+c.ico+' '+c.title+'\n   '+c.desc+'\n   Link: '+(c.url||'Sin link')+'\n\n'; });
-  t+='\n▸ LINKS ('+S.links.length+')\n';
-  S.links.forEach(function(lk,i){ t+=(i+1)+'. '+(lk.ico||'🔗')+' '+lk.nom+'\n   '+lk.url+'\n   Cat: '+(lk.cat||'—')+'\n\n'; });
-  dl('gestion_seguridad_'+ds()+'.txt',t,'text/plain'); toast('✓ EXPORTADO TXT');
-}
-function impData(ev){
-  var file=ev.target.files[0]; if(!file) return;
-  var r=new FileReader();
-  r.onload=function(e){
-    try{
-      if(file.name.endsWith('.json')){ var d=JSON.parse(e.target.result); if(d.cards) S.cards=d.cards; if(d.links) S.links=d.links; saveStorage(); renderCards(); renderLinks(); toast('✓ DATOS IMPORTADOS'); }
-      else{ toast('⚠ Use JSON para importación completa'); }
-    }catch(err){ toast('⚠ Error: '+err.message); }
-  };
-  r.readAsText(file); ev.target.value='';
-}
-function expIndJSON(){ if(!S.horasData) return; dl('indicadores_'+ds()+'.json',JSON.stringify(S.horasData,null,2),'application/json'); toast('✓ EXPORTADO'); }
-function expIndTXT(){
-  var rows=document.querySelectorAll('#op-body tr');
-  var t='INDICADORES HORAS PERSONAL\n'+new Date().toLocaleString('es-AR')+'\n\n';
-  rows.forEach(function(r){ t+=Array.from(r.querySelectorAll('td')).map(function(td){return td.textContent.trim();}).join(' | ')+'\n'; });
-  dl('indicadores_'+ds()+'.txt',t,'text/plain'); toast('✓ EXPORTADO TXT');
-}
-function resetAll(){
-  if(!confirm('¿CONFIRMAR REINICIO COMPLETO?')) return;
-  S.cards=[]; S.links=[]; S.horasData=null;
-  try{ localStorage.removeItem('gs_data'); }catch(e){}
-  renderCards(); renderLinks(); document.getElementById('ind-sec').style.display='none'; toast('✓ REINICIADO');
-}
-
-// OVERLAYS
-function openOv(id){ document.getElementById(id).classList.add('on'); }
-function closeOv(id){ document.getElementById(id).classList.remove('on'); }
-document.querySelectorAll('.overlay').forEach(function(ov){
-  ov.addEventListener('click', function(e){ if(e.target===ov) ov.classList.remove('on'); });
-});
-document.querySelectorAll('[data-close]').forEach(function(b){
-  b.addEventListener('click', function(){ closeOv(b.dataset.close); });
-});
-
-// UTILS
-function dl(name,content,type){ var blob=new Blob([content],{type:type}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
-function ds(){ var d=new Date(); return d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2); }
-function fmt(n){ return parseFloat(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function escAttr(s){ return String(s||'').replace(/"/g,'&quot;'); }
-function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.style.borderColor=msg.indexOf('⚠')>=0?'#ff3d3d':'#00e676'; t.style.color=msg.indexOf('⚠')>=0?'#ff3d3d':'#00e676'; t.style.display='block'; setTimeout(function(){ t.style.display='none'; },3000); }
-function updateSysInfo(){ var el=document.getElementById('sys-info'); if(!el) return; el.innerHTML='Tarjetas: <code>'+S.cards.length+'</code> &nbsp;·&nbsp; Links: <code>'+S.links.length+'</code> &nbsp;·&nbsp; Planilla: <code>'+(S.horasData?S.horasData.length+' registros':'sin datos')+'</code>'; }
-
-// Foco inicial en el campo usuario
-window.addEventListener('load', function(){ document.getElementById('lu').focus(); });
-
+(function initTheme(){
+  const saved = localStorage.getItem('gs_theme') || 'oscuro';
+  applyTheme(saved);
 })();
+
+/* ============ CLAVE FACTURACIÓN ============ */
+const FACTURACION_URL = "https://cofarsursacif.sharepoint.com/:f:/s/LimpiezaySeguridad/IgAjgu7Ct8HCQIJiCrrlWZNGAcyFeK9mquOs8d9Geb3o2G8?e=JUFSMa";
+const FACTURACION_CLAVE = "Camaron2026";
+function openFacturacion(){
+  document.getElementById('pwOverlay').classList.add('show');
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwError').textContent='';
+  setTimeout(()=>document.getElementById('pwInput').focus(),50);
+}
+function closePasswordModal(){
+  document.getElementById('pwOverlay').classList.remove('show');
+}
+function checkPassword(){
+  const val = document.getElementById('pwInput').value;
+  if(val === FACTURACION_CLAVE){
+    closePasswordModal();
+    window.open(FACTURACION_URL, '_blank', 'noopener');
+  } else {
+    document.getElementById('pwError').textContent = 'Clave incorrecta. Intente nuevamente.';
+  }
+}
+
+/* ============ ENLACES PERSONALIZADOS (localStorage) ============ */
+const LS_KEY = 'gs_enlaces_personalizados';
+function getCustomLinks(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch(e){ return []; }
+}
+function saveCustomLinks(list){
+  localStorage.setItem(LS_KEY, JSON.stringify(list));
+}
+function renderCustomLinks(){
+  const list = getCustomLinks();
+  const el = document.getElementById('customList');
+  if(list.length===0){
+    el.innerHTML = '<div class="empty-msg">No hay enlaces personalizados agregados todavía.</div>';
+    return;
+  }
+  el.innerHTML = list.map((l,i)=>`
+    <div class="custom-item">
+      <a href="${escapeAttr(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.name)}</a>
+      ${l.desc ? `<div class="desc">${escapeHtml(l.desc)}</div>` : ''}
+      <div class="row">
+        <button onclick="editCustomLink(${i})">✏️ Editar</button>
+        <button class="del" onclick="deleteCustomLink(${i})">🗑 Quitar</button>
+      </div>
+    </div>
+  `).join('');
+}
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+function escapeAttr(s){
+  return String(s).replace(/"/g,'&quot;');
+}
+function addCustomLink(){
+  const nameEl = document.getElementById('newLinkName');
+  const urlEl = document.getElementById('newLinkUrl');
+  const descEl = document.getElementById('newLinkDesc');
+  const name = nameEl.value.trim();
+  let url = urlEl.value.trim();
+  const desc = descEl.value.trim();
+  if(!name || !url){
+    alert('Completá al menos el nombre y la URL del enlace.');
+    return;
+  }
+  if(!/^https?:\/\//i.test(url)){ url = 'https://' + url; }
+  const list = getCustomLinks();
+  list.push({name, url, desc});
+  saveCustomLinks(list);
+  nameEl.value=''; urlEl.value=''; descEl.value='';
+  renderCustomLinks();
+}
+function deleteCustomLink(i){
+  const list = getCustomLinks();
+  if(!confirm(`¿Quitar el enlace "${list[i].name}"?`)) return;
+  list.splice(i,1);
+  saveCustomLinks(list);
+  renderCustomLinks();
+}
+function editCustomLink(i){
+  const list = getCustomLinks();
+  const cur = list[i];
+  const name = prompt('Nombre del enlace:', cur.name);
+  if(name===null) return;
+  const url = prompt('URL del enlace:', cur.url);
+  if(url===null) return;
+  const desc = prompt('Descripción (opcional):', cur.desc || '');
+  list[i] = { name: name.trim() || cur.name, url: (/^https?:\/\//i.test(url.trim()) ? url.trim() : 'https://' + url.trim()), desc: (desc||'').trim() };
+  saveCustomLinks(list);
+  renderCustomLinks();
+}
+renderCustomLinks();
 </script>
 </body>
 </html>
