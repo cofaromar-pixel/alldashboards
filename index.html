@@ -969,7 +969,7 @@
   /* ─── DATOS DE DASHBOARDS ─── */
   const DASHBOARDS = [
     {
-      id: "calidad",
+      id: "calidad-dashboard",
       title: "Dashboard de Calidad",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -983,7 +983,7 @@
     },
 
     {
-      id: "calidad",
+      id: "calidad-sharepoint",
       title: "SharePoint de Calidad",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -997,7 +997,7 @@
     },
 
     {
-      id: "calidad",
+      id: "calidad-seguimiento-nc",
       title: "Seguimiento de Reportes de No Conformidades",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -1011,7 +1011,7 @@
     },
 
     {
-      id: "calidad",
+      id: "calidad-informes-mensuales",
       title: "SGC Informes Mensuales",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -1025,7 +1025,7 @@
     },
 
     {
-      id: "calidad",
+      id: "calidad-auditoria-interna",
       title: "Auditoría Interna Mensual de Calidad",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -1039,7 +1039,7 @@
     },
 
     {
-      id: "calidad",
+      id: "calidad-norma-2069",
       title: "Norma Anmat 2069:2018",
       dept: "Gestión de Calidad · BPD",
       icon: "📋",
@@ -1053,7 +1053,7 @@
     },
 
     {
-      id: "Stock",
+      id: "stock-riesgo-vencimiento",
       title: "Riesgo de Vencimiento",
       dept: "Gestión de Stock",
       icon: "📋",
@@ -1067,7 +1067,7 @@
     },
 
     {
-      id: "RRHH",
+      id: "rrhh-evaluacion-desempeno",
       title: "Evaluación de Desempeño",
       dept: "BPD",
       icon: "📋",
@@ -1081,7 +1081,7 @@
     },
 
     {
-      id: "SEGURIDAD",
+      id: "seguridad-gestion",
       title: "Gestión de Seguridad",
       dept: "BPD",
       icon: "📋",
@@ -1095,6 +1095,9 @@
     },
 
     // ── AGREGAR NUEVAS TARJETAS AQUÍ ──
+    // Recordá: el "id" tiene que ser ÚNICO para cada tarjeta.
+    // Si dos tarjetas comparten el mismo id, sólo se va a mostrar
+    // la última de ellas repetida en todas las posiciones.
     // {
     //   id: "ventas",
     //   title: "Dashboard de Ventas",
