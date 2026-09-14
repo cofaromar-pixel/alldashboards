@@ -135,13 +135,14 @@ header{
 
 .links-grid{
   padding:18px 22px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  display:flex;
+  flex-wrap:wrap;
   gap:14px;
   background:var(--bg-panel);
   border-bottom:3px solid var(--borde);
 }
 .link-btn{
+  flex:1 1 200px;
   background:var(--bg-panel2);
   border:2px solid var(--amarillo);
   color:var(--texto);
@@ -158,6 +159,7 @@ header{
   align-items:center;
   justify-content:center;
   transition:transform .15s ease, box-shadow .15s ease;
+  min-width:0;
 }
 .link-btn:hover{ transform:translateY(-3px); box-shadow:var(--sombra); }
 .link-btn .icon{ font-size:26px; }
@@ -456,23 +458,6 @@ footer{
     <span class="lock-note">Requiere clave</span>
   </div>
 </div>
-
-<main>
-  <nav class="toc" id="toc"></nav>
-  <section class="content">
-    <div class="meta-card">
-      <div><b>Código:</b> MN-D-03-GS</div>
-      <div><b>Versión:</b> 01</div>
-      <div><b>Revisión:</b> 01</div>
-      <div><b>Vigencia:</b> 01/03/2026</div>
-    </div>
-    <div class="chapter" id="chapterView"></div>
-    <div class="nav-btns">
-      <button id="prevBtn" onclick="changeChapter(-1)">◀ Anterior</button>
-      <button id="nextBtn" onclick="changeChapter(1)">Siguiente ▶</button>
-    </div>
-  </section>
-</main>
 
 <div class="custom-links">
   <h2>Enlaces personalizados</h2>
@@ -779,43 +764,6 @@ const manual = [
   ]}
 ]}
 ];
-
-/* ============ RENDER TOC ============ */
-let currentChapter = 0;
-const tocEl = document.getElementById('toc');
-function buildTOC(){
-  let html = '<h2>Índice del Manual</h2>';
-  manual.forEach((c,i)=>{
-    html += `<button data-i="${i}" onclick="showChapter(${i})">${c.n}. ${c.t}</button>`;
-  });
-  tocEl.innerHTML = html;
-}
-function renderBlock(b){
-  if(b.p) return `<p>${b.p}</p>`;
-  if(b.h3) return `<h3>${b.h3}</h3>`;
-  if(b.ul) return `<ul>${b.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`;
-  if(b.ol) return `<ol>${b.ol.map(x=>`<li>${x}</li>`).join('')}</ol>`;
-  if(b.note) return `<div class="note">📌 ${b.note}</div>`;
-  return '';
-}
-function showChapter(i){
-  currentChapter = i;
-  const c = manual[i];
-  document.getElementById('chapterView').innerHTML =
-    `<h2>${c.n}. ${c.t}</h2>` + c.h.map(renderBlock).join('');
-  document.querySelectorAll('nav.toc button').forEach(b=>b.classList.remove('active'));
-  const active = document.querySelector(`nav.toc button[data-i="${i}"]`);
-  if(active){ active.classList.add('active'); active.scrollIntoView({block:'nearest'}); }
-  document.getElementById('prevBtn').disabled = i===0;
-  document.getElementById('nextBtn').disabled = i===manual.length-1;
-  window.scrollTo({top:document.querySelector('main').offsetTop-20, behavior:'smooth'});
-}
-function changeChapter(delta){
-  const ni = currentChapter+delta;
-  if(ni>=0 && ni<manual.length) showChapter(ni);
-}
-buildTOC();
-showChapter(0);
 
 /* ============ TEMA CLARO/OSCURO ============ */
 function applyTheme(t){
