@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buenas Prácticas de Distribución de Medicamentos — COFARSUR S.A.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#5B2A9E;
+  --pink:#D6266F;
+  --blue:#2E6FF2;
+  --darkbg:#1B1033;
+  --textdark:#231942;
+  --muted:#6B6480;
+  --card:#F3EFFB;
+  --lightbg:#FBFAFE;
+  --white:#FFFFFF;
+  --lav:#EDE6FA;
+  --lav2:#CBB9EE;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;background:#0d0716;overflow:hidden;}
+body{font-family:'Outfit',sans-serif;color:var(--textdark);}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+#deck{position:relative;width:100vw;height:calc(100vh - 3.4rem);}
+.slide{
+  position:absolute; inset:0;
+  display:none;
+  padding:4.2vh 6vw 1.2vh 6vw;
+  overflow:hidden;
+}
+.slide.active{display:flex;flex-direction:column;}
+.slide.light{background:var(--lightbg);}
+.slide.dark{background:var(--darkbg);color:var(--white);}
+.slide.dark .grad{
+  position:absolute; inset:0;
+  background:linear-gradient(120deg,var(--pink) 0%, var(--violet) 50%, var(--blue) 100%);
+  opacity:0.34;
+}
+.slide.dark .overlay{position:absolute;inset:0;background:var(--darkbg);opacity:0.42;}
+.slide.dark .content{position:relative;z-index:2;}
+
+/* ---- Typography ---- */
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.16em;color:var(--lav2);text-transform:uppercase;margin:0 0 .6rem 0;}
+.light .eyebrow{color:var(--pink);}
+h1.title{font-size:2.6rem;font-weight:800;line-height:1.08;margin:0 0 .5rem 0;}
+h2.title{font-size:1.9rem;font-weight:800;line-height:1.15;margin:0 0 .3rem 0;color:var(--textdark);}
+.subtitle{font-size:1.05rem;color:var(--muted);font-weight:500;margin:0 0 1.4rem 0;max-width:56ch;}
+.dark .subtitle{color:var(--lav2);}
+p{line-height:1.5;}
+
+/* ---- Title slide ---- */
+.title-slide h1{font-size:3.2rem;}
+.title-slide .lead{font-size:1.2rem;font-style:italic;color:var(--lav);max-width:52ch;margin-top:.6rem;}
+.title-slide .desc{font-size:.95rem;color:var(--lav2);max-width:56ch;margin-top:1.4rem;line-height:1.5;}
+.title-slide .branches{margin-top:auto;font-weight:600;color:#B79EE0;letter-spacing:.02em;}
+
+/* ---- Badges / numbering ---- */
+.badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:2.1rem;height:2.1rem;border-radius:50%;
+  background:var(--violet);color:#fff;font-weight:700;font-size:.85rem;flex:none;
+}
+.badge.pink{background:var(--pink);}
+.badge.blue{background:var(--blue);}
+.badge-row{display:flex;align-items:center;gap:.7rem;margin-bottom:.3rem;}
+
+/* ---- Cards / grids ---- */
+.grid{display:grid;gap:.9rem;}
+.card{background:var(--card);border-radius:14px;padding:1.1rem 1.3rem;}
+.card.dark-card{background:var(--darkbg);color:#fff;}
+.card h3{margin:0 0 .5rem 0;font-size:1.05rem;font-weight:700;}
+.card ul{margin:0;padding-left:1.05rem;}
+.card p{font-size:.9rem;margin:.3rem 0 0 0;}
+ul.plain{margin:0;padding-left:1.1rem;}
+ul.plain li{margin-bottom:.55rem;font-size:.98rem;line-height:1.42;}
+ul.plain.small li{font-size:.88rem;margin-bottom:.42rem;}
+.dark ul.plain li{color:var(--lav);}
+
+/* ---- section divider ---- */
+.divider .content{margin-top:auto;margin-bottom:auto;max-width:60ch;}
+.divider h1{font-size:2.9rem;}
+
+/* ---- process / chain steps ---- */
+.chain{display:flex;align-items:stretch;gap:.6rem;}
+.chain-step{flex:1;background:var(--card);border-radius:14px;padding:1rem;position:relative;}
+.chain-arrow{display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--muted);width:1.5rem;}
+
+/* ---- 4 axes diagram ---- */
+.axes-wrap{position:relative;flex:1;display:flex;align-items:center;justify-content:center;}
+.axes-center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:9.5rem;height:9.5rem;border-radius:50%;background:var(--darkbg);color:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:.95rem;line-height:1.25;
+  z-index:2;
+}
+.axes-grid{display:grid;grid-template-columns:1fr 12rem 1fr;grid-template-rows:1fr 1fr;gap:1.4rem;width:100%;max-width:56rem;align-items:center;}
+.axis-box{border-radius:12px;padding:1rem 1.2rem;color:#fff;font-weight:700;text-align:center;font-size:1.02rem;line-height:1.3;}
+
+/* ---- findings (X cards) ---- */
+.finding{background:var(--card);border-radius:12px;padding:.85rem 1rem;display:flex;gap:.7rem;align-items:flex-start;}
+.finding .x{color:var(--pink);font-weight:800;font-size:1.2rem;line-height:1;}
+.finding p{margin:0;font-size:.88rem;line-height:1.4;}
+
+/* ---- header pill (warning) ---- */
+.pill-header{border-radius:14px;padding:1rem 1.4rem;color:#fff;font-weight:800;font-size:1.35rem;margin-bottom:.4rem;}
+.pill-header.pink{background:var(--pink);}
+.pill-header.violet{background:var(--violet);}
+
+/* ---- footer ---- */
+.footer{margin-top:auto;padding-top:1rem;display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);}
+.dark .footer{color:var(--lav2);}
+
+/* ---- nav ---- */
+#nav{
+  position:fixed; bottom:0; left:0; right:0; height:3.4rem;
+  display:flex; align-items:center; justify-content:center; gap:1rem;
+  background:rgba(13,7,22,.92); z-index:50; backdrop-filter:blur(6px);
+}
+#nav button{
+  background:var(--violet); color:#fff; border:none; border-radius:8px;
+  padding:.5rem 1rem; font-family:'Outfit',sans-serif; font-weight:600; font-size:.85rem;
+  cursor:pointer; display:flex; align-items:center; gap:.4rem;
+}
+#nav button:disabled{opacity:.35; cursor:default;}
+#nav button:hover:not(:disabled){background:var(--pink);}
+#counter{color:#EDE6FA; font-family:'JetBrains Mono',monospace; font-size:.82rem; min-width:5rem; text-align:center;}
+#progress{position:fixed; top:0; left:0; height:4px; background:linear-gradient(90deg,var(--pink),var(--violet),var(--blue)); z-index:60; transition:width .25s ease;}
+
+@media (max-width:900px){
+  h1.title{font-size:1.9rem;}
+  .title-slide h1{font-size:2.2rem;}
+  h2.title{font-size:1.4rem;}
+  .grid{grid-template-columns:1fr !important;}
+  .chain{flex-direction:column;}
+  .chain-arrow{display:none;}
+  .axes-grid{grid-template-columns:1fr;}
+  .axes-center{position:static;transform:none;margin:0 auto;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress" style="width:0%"></div>
+<div id="deck"></div>
+
+<div id="nav">
+  <button id="prevBtn">&larr; Anterior</button>
+  <span id="counter">1 / 20</span>
+  <button id="nextBtn">Siguiente &rarr;</button>
+</div>
+
+<script>
+const SLIDES = [];
+
+function S(html, cls){ SLIDES.push({html, cls: cls||'light'}); }
+
+/* ============ 1. TITLE ============ */
+S(`
+<div class="grad"></div><div class="overlay"></div>
+<div class="content title-slide" style="display:flex;flex-direction:column;height:100%;">
+  <div class="eyebrow" style="margin-top:1rem;">DISPOSICIÓN ANMAT N° 2069/2018</div>
+  <h1 class="title">Buenas Prácticas de<br>Distribución de Medicamentos</h1>
+  <p class="lead">Marco regulatorio, hallazgos de inspección y plan de aplicación en COFARSUR S.A.</p>
+  <p class="desc">Presentación elaborada por la Coordinación de Calidad, en base a la Disposición ANMAT 2069/2018 y a la capacitación dictada por el Departamento de Control de Mercado de ANMAT (Farm. Elina Ise).</p>
+  <div class="branches">Sucursales Córdoba · Río Cuarto · Villa Mercedes</div>
+</div>`, 'dark divider');
+
+/* ============ 2. POR QUÉ IMPORTA ============ */
+S(`
+<div class="eyebrow">Introducción</div>
+<h2 class="title">¿Por qué las BPD son críticas?</h2>
+<p class="subtitle">La distribución tiene impacto directo sobre la calidad, seguridad y eficacia del medicamento</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <div class="card">
+    <div class="badge-row"><span class="badge pink">1</span><h3 style="margin:0;">Daño al producto</h3></div>
+    <p style="font-size:.92rem;">Manipulación y conservación inadecuadas comprometen la calidad e integridad de los medicamentos en cualquier eslabón de la cadena.</p>
+  </div>
+  <div class="card">
+    <div class="badge-row"><span class="badge">2</span><h3 style="margin:0;">Medicamentos ilegítimos</h3></div>
+    <p style="font-size:.92rem;">Ingreso de productos de contrabando, robados, adulterados o falsificados a la cadena legal de abastecimiento.</p>
+  </div>
+</div>
+<div class="card dark-card" style="margin-top:1rem;">
+  <p style="margin:0;font-size:.98rem;"><strong>Objetivo de las BPD:</strong> mantener la calidad e integridad del medicamento desde el establecimiento elaborador/importador hasta el paciente.</p>
+</div>
+<p style="font-size:.85rem;color:var(--muted);font-style:italic;margin-top:1rem;">Contexto internacional: PIC/S (52 países, Guía GDP PE 011-1) y los informes técnicos de la OMS (Anexo 7) son la base de la que ANMAT adapta esta disposición.</p>
+`);
+
+/* ============ 3. CADENA LEGAL ============ */
+S(`
+<div class="eyebrow">Contexto</div>
+<h2 class="title">La cadena legal de abastecimiento</h2>
+<p class="subtitle">Dónde se ubica COFARSUR en el circuito habilitado por la Autoridad Sanitaria</p>
+<div class="chain" style="margin-bottom:1rem;">
+  <div class="chain-step"><span class="badge blue">1</span>
+    <h3 style="margin:.5rem 0 .3rem;">Fabricación</h3>
+    <p style="font-size:.85rem;margin:0;">Titulares de producto: elaboración propia/terceros, importadores</p></div>
+  <div class="chain-arrow">➜</div>
+  <div class="chain-step"><span class="badge">2</span>
+    <h3 style="margin:.5rem 0 .3rem;">Distribución primaria</h3>
+    <p style="font-size:.85rem;margin:0;">Distribuidores · Operadores Logísticos · Droguerías</p></div>
+  <div class="chain-arrow">➜</div>
+  <div class="chain-step"><span class="badge pink">3</span>
+    <h3 style="margin:.5rem 0 .3rem;">Dispensación</h3>
+    <p style="font-size:.85rem;margin:0;">Farmacias: únicas autorizadas a vender al público</p></div>
+</div>
+<div class="card dark-card">
+  <h3>COFARSUR S.A. — posición en la cadena</h3>
+  <ul class="plain small">
+    <li>Opera como droguería / distribuidora en tres sucursales habilitadas: Córdoba (CBA), Río Cuarto (RIO4) y Villa Mercedes (VME).</li>
+    <li>Habilitación ante ANMAT + Certificado de BPD (droguerías: vigencia de 5 años, parte integral de la habilitación).</li>
+    <li>Distribuidoras/OL: la habilitación no incluye certificado de BPD por defecto — se solicita si un cliente o licitación lo exige (vigencia 1 año).</li>
+  </ul>
+</div>
+`);
+
+/* ============ 4. DIVIDER MARCO NORMATIVO ============ */
+S(`
+<div class="grad"></div><div class="overlay"></div>
+<div class="content divider">
+  <div class="eyebrow">MARCO NORMATIVO</div>
+  <h1 class="title">Los 10 capítulos de la<br>Disposición 2069/2018</h1>
+  <p class="subtitle" style="color:var(--lav2);">Aprobada el 5 de marzo de 2018 — deroga la Disposición 7439/99 (Anexo I) y la Disposición 105/2002</p>
+</div>
+`, 'dark divider');
+
+/* ============ 5. 10 CAPÍTULOS GRID ============ */
+S(`
+<h2 class="title">Estructura de la Disposición ANMAT 2069/2018</h2>
+<div class="grid" style="grid-template-columns:repeat(5,1fr);margin-top:1rem;">
+  ${[
+    ['01','Gestión de la Calidad','blue'],['02','Cadena Legal de Abastecimiento','violet'],['03','Documentación','pink'],
+    ['04','Personal','blue'],['05','Instalaciones y Equipos','violet'],['06','Operaciones','pink'],
+    ['07','Actividades Contratadas','blue'],['08','Reclamos, Devoluciones y Retiros','violet'],['09','Auto-inspecciones','pink'],['10','Transporte','blue']
+  ].map(([n,t,c])=>`<div class="card" style="min-height:8.5rem;"><span class="badge ${c==='blue'?'blue':c==='pink'?'pink':''}">${n}</span><h3 style="margin-top:.6rem;font-size:.92rem;">${t}</h3></div>`).join('')}
+</div>
+<p style="font-size:.85rem;color:var(--muted);font-style:italic;margin-top:1.2rem;">Esta presentación combina el texto normativo con los criterios de inspección explicados por ANMAT (Depto. Control de Mercado), priorizando los capítulos de mayor impacto operativo para COFARSUR: Gestión de la Calidad, Operaciones (temperatura), Actividades Contratadas y Transporte.</p>
+`);
+
+/* ============ 6. 4 EJES ============ */
+S(`
+<h2 class="title">Los 4 ejes principales de las BPD</h2>
+<p class="subtitle">Según la capacitación de ANMAT, toda la disposición gira en torno a estos cuatro focos operativos, sostenidos por la Gestión de la Calidad</p>
+<div class="axes-wrap">
+  <div class="axes-grid">
+    <div class="axis-box" style="background:var(--blue);">Calificación de<br>proveedores y clientes</div>
+    <div></div>
+    <div class="axis-box" style="background:var(--violet);">Gestión de stock<br>y devoluciones</div>
+    <div class="axis-box" style="background:var(--pink);">Control de<br>temperatura</div>
+    <div></div>
+    <div class="axis-box" style="background:var(--blue);">Transporte</div>
+  </div>
+  <div class="axes-center">GESTIÓN<br>DE LA<br>CALIDAD</div>
+</div>
+`);
+
+/* ============ 7. GESTIÓN DE LA CALIDAD ============ */
+S(`
+<div class="badge-row"><span class="badge">01</span><h2 class="title" style="margin:0;">Gestión de la Calidad</h2></div>
+<p class="subtitle">Capítulo 1 · el sistema de calidad debe estar documentado y liderado por la Dirección Técnica y la Dirección de la empresa</p>
+<div class="grid" style="grid-template-columns:1.3fr 1fr;">
+  <div>
+    <h3 style="font-size:1rem;">El sistema de calidad debe asegurar que:</h3>
+    <ul class="plain">
+      <li>Las responsabilidades estén claramente definidas y sean entendidas por el personal</li>
+      <li>La entrega llegue a los destinatarios indicados, en condiciones correctas de conservación</li>
+      <li>Toda desviación se documente e investigue</li>
+      <li>Se adopten acciones preventivas/correctivas (CAPA) según gestión de riesgo</li>
+      <li>Existan registros que permitan el rastreo (trazabilidad) de los productos</li>
+      <li>Se realicen auto-inspecciones al menos una vez al año</li>
+    </ul>
+  </div>
+  <div class="card dark-card">
+    <h3>Gestión de riesgo (§1.5)</h3>
+    <ul class="plain small">
+      <li>Proceso sistemático de evaluación, control, comunicación y revisión de riesgos para la calidad</li>
+      <li>Puede aplicarse en forma prospectiva o retrospectiva</li>
+      <li>Basado en conocimiento científico y ligado a la protección del paciente</li>
+      <li>El esfuerzo documental debe ser proporcional al riesgo evaluado</li>
+    </ul>
+  </div>
+</div>
+`);
+
+/* ============ 8. CALIFICACIÓN PROVEEDORES ============ */
+S(`
+<div class="badge-row"><span class="badge blue">02</span><h2 class="title" style="margin:0;">Calificación de proveedores y destinatarios</h2></div>
+<p class="subtitle">Capítulo 2 · un proceso constante, no un trámite de alta única</p>
+<ul class="plain" style="max-width:74ch;">
+  <li><strong>Los distribuidores son responsables de la legitimidad y procedencia</strong> de todo lo que adquieren y comercializan.</li>
+  <li>Debe verificarse y documentarse la habilitación sanitaria tanto de proveedores como de destinatarios, con reevaluación periódica.</li>
+  <li>Atención especial a: aptitud del proveedor en el cumplimiento de BPD al entregar (legitimidad, condiciones de entrega).</li>
+  <li>Atención a ofertas de productos inusuales, a precios desproporcionados o en cantidades no habituales para el mercado.</li>
+  <li>Ventas inusuales o sospecha de desvío de sustancias sujetas a control especial → informar a la autoridad competente.</li>
+  <li>Debe mantenerse in situ el listado actualizado de proveedores y destinatarios, y la documentación comercial que justifique el stock.</li>
+</ul>
+`);
+
+/* ============ 9. RECEPCIÓN ============ */
+S(`
+<div class="badge-row"><span class="badge pink">06</span><h2 class="title" style="margin:0;">Recepción de productos</h2></div>
+<p class="subtitle">Capítulo 6.2 · primer punto de control de legitimidad y trazabilidad</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <div>
+    <h3 style="font-size:1rem;">Al recibir, debe verificarse:</h3>
+    <ul class="plain">
+      <li>Que el producto sea el solicitado y provenga de un proveedor aprobado</li>
+      <li>Documentación de procedencia correspondiente</li>
+      <li>Ausencia de daños visibles por el transporte</li>
+      <li>Tratamiento prioritario a productos con condiciones especiales</li>
+      <li>Si hay daño en el embalaje: identificar, aislar y notificar por escrito al remitente</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Registro informatizado obligatorio — datos mínimos</h3>
+    <ul class="plain small">
+      <li>Fecha</li><li>Cantidad</li><li>Nombre inequívoco del producto</li><li>Presentación</li>
+      <li>Proveedor</li><li>Número de lote</li><li>Detalle de la documentación que acompaña el producto</li>
+    </ul>
+    <p style="font-style:italic;color:var(--muted);">Los registros deben permitir el rastreo del producto y su trayectoria completa.</p>
+  </div>
+</div>
+`);
+
+/* ============ 10. ALMACENAMIENTO ============ */
+S(`
+<div class="badge-row"><span class="badge">05</span><h2 class="title" style="margin:0;">Almacenamiento</h2></div>
+<p class="subtitle">Capítulos 5 y 6.3 · instalaciones, orden e identificación de productos</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <div class="card" style="border-left:5px solid var(--blue);"><h3>Instalaciones</h3><p>Superficies lisas, limpias, sin roturas ni desprendimiento de polvo. Áreas identificadas, de acceso restringido cuando corresponda.</p></div>
+  <div class="card" style="border-left:5px solid var(--violet);"><h3>Separación validada</h3><p>Cualquier sistema que reemplace la separación física (p. ej. informatizado) debe dar seguridad equivalente y estar validado.</p></div>
+  <div class="card" style="border-left:5px solid var(--pink);"><h3>No conformes y vencidos</h3><p>Se segregan e identifican en áreas específicas, con registro de nombre, lote, cantidad, fecha y destino final.</p></div>
+  <div class="card" style="border-left:5px solid var(--blue);"><h3>Rotación</h3><p>Cada lote se individualiza y se expide preferentemente en orden cronológico según su fecha de vencimiento.</p></div>
+</div>
+`);
+
+/* ============ 11. DIVIDER TEMPERATURA ============ */
+S(`
+<div class="grad"></div><div class="overlay"></div>
+<div class="content divider">
+  <div class="eyebrow">EL EJE MÁS AUDITADO</div>
+  <h1 class="title">Control de temperatura</h1>
+  <p class="subtitle" style="color:var(--lav2);font-style:italic;">Mapeo térmico, monitoreo continuo, calibración y alarmas — con los hallazgos que ANMAT detecta con más frecuencia en inspección</p>
+</div>
+`, 'dark divider');
+
+/* ============ 12. MAPEO TÉRMICO ============ */
+S(`
+<div class="badge-row"><span class="badge pink" style="width:3.2rem;border-radius:20px;font-size:.72rem;">05.4</span><h2 class="title" style="margin:0;">Mapeo térmico y monitoreo continuo</h2></div>
+<p class="subtitle">Capítulo 5.4 · antes de usar un área, hay que demostrar que es apta para almacenar</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <div class="card">
+    <h3>Mapeo térmico (objetivo)</h3>
+    <ul class="plain small">
+      <li>Establecer las áreas aptas para almacenar</li>
+      <li>Determinar zonas de mayor fluctuación de temperatura</li>
+      <li>Determinar puntos críticos (frío y caliente)</li>
+      <li>Determinación en simultáneo en todos los puntos</li>
+      <li>Repetir tras un análisis de riesgo o cambios en la instalación/climatización</li>
+    </ul>
+    <p style="font-size:.85rem;"><strong>Duración recomendada:</strong> 7–10 días en depósito; 24–72 hs en cámaras de frío</p>
+    <p style="font-size:.8rem;font-style:italic;color:var(--muted);">Entregable: protocolo, plano con ubicación de equipos, fotos, certificados de calibración, datos crudos, análisis y dictamen final.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:.9rem;">
+    <div class="card dark-card">
+      <h3>Frecuencia de registro continuo</h3>
+      <ul class="plain small">
+        <li>Depósito: cada 30 min (≈1.400 datos/mes)</li>
+        <li>Cadena de frío: cada 15 min (≈2.800 datos/mes)</li>
+        <li>Registros manuales: sólo como complemento del registro continuo</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Calibración y alarmas</h3>
+      <ul class="plain small">
+        <li>Calibración ≥ 1 vez al año, por laboratorio acreditado (OAA), trazable a patrones (SAC)</li>
+        <li>Alarma con rangos de alerta/acción, vía de aviso y responsables definidos</li>
+        <li>Testeo periódico de alarmas: fuera de rango, sin conectividad, sin energía</li>
+      </ul>
+    </div>
+  </div>
+</div>
+`);
+
+/* ============ 13. HALLAZGOS TEMPERATURA ============ */
+S(`
+<div class="pill-header pink">⚠ Hallazgos frecuentes de ANMAT en inspección</div>
+<p class="subtitle" style="font-style:italic;">Control de temperatura — según lo señalado por el Depto. de Control de Mercado en la capacitación a droguerías y farmacias</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <div class="finding"><span class="x">✕</span><p>Escasa cantidad de equipos de registro continuo de temperatura</p></div>
+  <div class="finding"><span class="x">✕</span><p>Calibraciones fuera del rango de uso del instrumento, o realizadas por empresas no acreditadas</p></div>
+  <div class="finding"><span class="x">✕</span><p>Períodos sin registro: falta de conectividad, pérdida de señal, corte de energía, batería agotada</p></div>
+  <div class="finding"><span class="x">✕</span><p>Alarmas sin configurar: no hay registro de alertas ni de que fueron recibidas</p></div>
+  <div class="finding"><span class="x">✕</span><p>Falta de acciones correctivas documentadas ante una desviación no permitida</p></div>
+  <div class="finding"><span class="x">✕</span><p>Mapeos con determinaciones NO simultáneas, o instrumentos mal ubicados según resultados</p></div>
+</div>
+`);
+
+/* ============ 14. PREPARACIÓN CADENA FRÍO ============ */
+S(`
+<div class="badge-row"><span class="badge blue" style="width:3.2rem;border-radius:20px;font-size:.72rem;">06.5</span><h2 class="title" style="margin:0;">Preparación de pedidos con cadena de frío</h2></div>
+<p class="subtitle">Capítulos 6.5–6.6 · calificar la configuración es tan importante como respetar el rango</p>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr;">
+  <div class="card"><h3>Variables a controlar</h3><ul class="plain small">
+    <li>Tiempo de tránsito</li><li>Temperatura externa</li><li>Materiales (activos y pasivos)</li><li>Método de preparación</li>
+  </ul></div>
+  <div class="card dark-card"><h3>Calificación de la configuración</h3><ul class="plain small">
+    <li>Ensayo con materiales y métodos definidos</li><li>Registro interno de temperatura</li>
+    <li>Registro de condiciones externas</li><li>Repeticiones con carga máxima/mínima</li><li>Resultados y conclusiones documentados</li>
+  </ul></div>
+  <div class="card"><h3>Selección de embalaje según:</h3><ul class="plain small">
+    <li>Requisitos de almacenamiento y transporte</li><li>Espacio necesario según cantidad</li>
+    <li>Temperaturas extremas exteriores previstas</li><li>Tiempo máximo de transporte estimado</li><li>Calificación del embalaje y/o contenedores</li>
+  </ul></div>
+</div>
+`);
+
+/* ============ 15. ERRORES FRECUENTES CADENA FRÍO ============ */
+S(`
+<div class="pill-header violet">⚠ Errores frecuentes en envíos con cadena de frío</div>
+<div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:.6rem;">
+  <div class="card"><h3 style="color:var(--pink);">Temperatura fuera de rango</h3><p style="font-size:.88rem;">No lograr sostener 2–8°C durante todo el tiempo necesario del envío.</p></div>
+  <div class="card"><h3 style="color:var(--pink);">"Shock térmico"</h3><p style="font-size:.88rem;">Temperaturas por debajo de los 2°C en el primer período de tiempo del envío.</p></div>
+  <div class="card"><h3 style="color:var(--pink);">Configuración no calificada</h3><p style="font-size:.88rem;">No calificar las configuraciones de los envíos con cadena de frío antes de usarlas.</p></div>
+  <div class="card"><h3 style="color:var(--pink);">Procedimiento deficiente</h3><p style="font-size:.88rem;">No proceder según el procedimiento, por falta de capacitación o capacitación ineficiente.</p></div>
+  <div class="card"><h3 style="color:var(--pink);">Indicaciones ambiguas</h3><p style="font-size:.88rem;">El procedimiento no tiene suficiente detalle y da lugar a interpretaciones personales.</p></div>
+</div>
+`);
+
+/* ============ 16. TRANSPORTE ============ */
+S(`
+<div class="badge-row"><span class="badge blue">10</span><h2 class="title" style="margin:0;">Transporte de medicamentos</h2></div>
+<p class="subtitle" style="font-weight:700;color:var(--pink);">"Depósito en tránsito" — las empresas de transporte NO están habilitadas por ANMAT</p>
+<div class="card dark-card" style="margin-bottom:1rem;">
+  <p style="margin:0;">La responsabilidad de proteger el medicamento (roturas, adulteración, robo, condiciones de conservación) es siempre del distribuidor, contrate o no el transporte a terceros.</p>
+</div>
+<div class="grid" style="grid-template-columns:1.3fr 1fr;">
+  <div>
+    <h3 style="font-size:1rem;">Enfoque basado en riesgo — a considerar antes de planificar:</h3>
+    <ul class="plain">
+      <li>Análisis del tipo de carga: sensibilidad/criticidad, necesidad de temperatura controlada</li>
+      <li>Análisis de rutas: riesgo ambiental, identificación de tramos que requieren trasbordo</li>
+      <li>Contingencias: averías, cierre de rutas, destinatarios no disponibles, pérdida de cadena de frío</li>
+      <li>Configuraciones de embalaje calificadas y personal capacitado</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Trasbordo de medicamentos</h3>
+    <ul class="plain small">
+      <li>Reducir al mínimo el tiempo en almacenamiento transitorio</li>
+      <li>Área de acceso restringido y ambiente controlado</li>
+      <li>Monitoreo y registro constante de temperatura, con equipos calibrados</li>
+      <li>Equipo frigorífico de uso exclusivo para cadena de frío</li>
+      <li>Auditorías al depósito de trasbordo, documentadas</li>
+    </ul>
+  </div>
+</div>
+`);
+
+/* ============ 17. ACTIVIDADES CONTRATADAS ============ */
+S(`
+<div class="badge-row"><span class="badge">07</span><h2 class="title" style="margin:0;">Actividades contratadas: qué exigir por escrito</h2></div>
+<p class="subtitle">Capítulo 7 · el contratante conserva la responsabilidad, aunque delegue la operación</p>
+<h3 style="font-size:1rem;">El acuerdo escrito / de calidad debería contemplar:</h3>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  <ul class="plain">
+    <li>Vehículos cerrados, al resguardo de condiciones climáticas externas</li>
+    <li>Buenas condiciones de higiene y orden, con registros</li>
+    <li>Productos que no pueden transportarse junto a los medicamentos</li>
+    <li>Mantenimiento de la temperatura dentro del rango requerido</li>
+  </ul>
+  <ul class="plain">
+    <li>Autorización (o no) para realizar contingencias</li>
+    <li>Aceptación de auditorías para verificar el cumplimiento pactado</li>
+    <li>Autorización (o no) de trasbordo, y tiempo máximo permitido</li>
+    <li>Compromiso de entrega en el domicilio habilitado sanitariamente</li>
+    <li>Capacitación del personal del transportista</li>
+  </ul>
+</div>
+`);
+
+/* ============ 18. DOCUMENTACIÓN Y AUTO-INSPECCIONES ============ */
+S(`
+<h2 class="title">Documentación, registros y auto-inspecciones</h2>
+<p class="subtitle">Capítulos 3 y 9 · la base probatoria del sistema de calidad</p>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr;">
+  <div class="card" style="border-left:5px solid var(--blue);"><h3>Documentación (Cap. 3)</h3><ul class="plain small">
+    <li>Lenguaje claro, sin ambigüedades, accesible a todo el personal</li>
+    <li>POE aprobados, firmados y fechados por la Dirección Técnica</li>
+    <li>Revisión periódica; los obsoletos se retiran del área de trabajo</li>
+    <li>Alteraciones: fechadas y firmadas, sin ocultar el dato original</li>
+  </ul></div>
+  <div class="card dark-card"><h3>Registros (Cap. 3.4)</h3><ul class="plain small">
+    <li>Se generan en el momento en que se realiza la tarea</li>
+    <li>Fidedignos, inequívocos y firmados por quien los realiza</li>
+    <li>Conservación mínima: 2 años (salvo mayor exigencia normativa)</li>
+  </ul></div>
+  <div class="card" style="border-left:5px solid var(--pink);"><h3>Auto-inspecciones (Cap. 9)</h3><ul class="plain small">
+    <li>Obligatorias al menos 1 vez al año, con instrucciones escritas</li>
+    <li>Realizadas por personal competente e imparcial de la empresa</li>
+    <li>No pueden ser reemplazadas por auditorías externas</li>
+    <li>Informe con observaciones, causas, y seguimiento de CAPA</li>
+  </ul></div>
+</div>
+`);
+
+/* ============ 19. QUÉ IMPLICA PARA COFARSUR ============ */
+S(`
+<div class="grad" style="opacity:.16;"></div><div class="overlay" style="opacity:.55;"></div>
+<div class="content" style="position:relative;z-index:2;">
+<h2 class="title" style="color:#fff;">Qué implica para COFARSUR S.A.</h2>
+<p class="subtitle" style="color:var(--lav2);">Puntos de foco para las sucursales CBA · RIO4 · VME, a partir de esta lectura conjunta norma + capacitación ANMAT</p>
+<div class="grid" style="grid-template-columns:1fr 1fr;">
+  ${[
+    'Confirmar vigencia y trazabilidad (OAA/SAC) de todas las calibraciones de equipos de temperatura, y su frecuencia anual mínima',
+    'Verificar que los mapeos térmicos de depósitos y cámaras de frío sean simultáneos y estén vigentes en las 3 sucursales',
+    'Documentar la calificación de cada configuración de envío con cadena de frío antes de su uso operativo',
+    'Formalizar por escrito los acuerdos de calidad con los transportistas contratados (temperatura, higiene, auditorías, trasbordo)',
+    'Sostener el circuito de auto-inspecciones anuales y CAPA ya vigente, con seguimiento documentado por sucursal',
+    'Mantener actualizados los listados de proveedores/destinatarios y su reevaluación periódica'
+  ].map((t,i)=>`<div style="background:rgba(255,255,255,.06);border:1px solid #8A6FC2;border-radius:12px;padding:.9rem 1.1rem;display:flex;gap:.8rem;align-items:flex-start;">
+    <span class="badge ${['blue','','pink'][i%3]}">${i+1}</span><p style="margin:0;font-size:.9rem;color:#fff;">${t}</p></div>`).join('')}
+</div>
+</div>
+`, 'dark');
+
+/* ============ 20. CIERRE ============ */
+S(`
+<div class="grad"></div><div class="overlay"></div>
+<div class="content" style="position:relative;z-index:2;">
+<h1 class="title" style="font-size:2.6rem;">Gracias</h1>
+<div class="grid" style="grid-template-columns:1.6fr 1fr;margin-top:1rem;">
+  <div>
+    <h3 style="color:var(--lav);font-size:1rem;">Normativa relacionada</h3>
+    <ul class="plain small">
+      <li>Disposición ANMAT 2069/18 (BPD) — norma vigente</li>
+      <li>Disposición 7439/99 — Habilitación de Distribuidores y Operadores Logísticos</li>
+      <li>Disposición 7038/15 — Habilitación de Droguerías (tránsito interjurisdiccional)</li>
+      <li>Disposición 3475/05 — Reglamento técnico MERCOSUR de BPD</li>
+      <li>Disposición 5037/09 — Clasificación de deficiencias de BPD</li>
+      <li>Decreto 1299/97 y Resolución 538/98 — marco de origen de la figura de Distribuidor</li>
+    </ul>
+  </div>
+  <div style="background:rgba(255,255,255,.06);border:1px solid #8A6FC2;border-radius:12px;padding:1rem 1.2rem;font-size:.8rem;color:var(--lav2);">
+    <strong style="color:#fff;">Fuente</strong>
+    <p>Capacitación dictada por el Departamento de Control de Mercado de ANMAT</p>
+    <p>Farm. Elina Ise<br>Jefa, Depto. de Control de Mercado</p>
+    <p>Ana Ariata · Bruno Pereyra</p>
+    <p>Av. de Mayo 869, CABA<br>(+54-11) 4340-0800</p>
+  </div>
+</div>
+<p style="margin-top:2rem;color:#B79EE0;font-weight:600;">Coordinación de Calidad — COFARSUR S.A.</p>
+</div>
+`, 'dark divider');
+
+/* ============ RENDER ============ */
+const deck = document.getElementById('deck');
+SLIDES.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'slide ' + s.cls + (i===0 ? ' active' : '');
+  div.innerHTML = s.html + `<div class="footer"><span>COFARSUR S.A. &nbsp;|&nbsp; Coordinación de Calidad &nbsp;|&nbsp; Disposición ANMAT 2069/2018</span><span>${i+1} / ${SLIDES.length}</span></div>`;
+  deck.appendChild(div);
+});
+
+let current = 0;
+const slideEls = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const progress = document.getElementById('progress');
+
+function show(i){
+  slideEls[current].classList.remove('active');
+  current = Math.max(0, Math.min(SLIDES.length-1, i));
+  slideEls[current].classList.add('active');
+  counter.textContent = (current+1) + ' / ' + SLIDES.length;
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===SLIDES.length-1;
+  progress.style.width = ((current+1)/SLIDES.length*100) + '%';
+}
+prevBtn.addEventListener('click', ()=>show(current-1));
+nextBtn.addEventListener('click', ()=>show(current+1));
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight' || e.key===' ') show(current+1);
+  if(e.key==='ArrowLeft') show(current-1);
+});
+let touchX=null;
+document.addEventListener('touchstart', e=>touchX=e.touches[0].clientX);
+document.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(dx<-40) show(current+1);
+  if(dx>40) show(current-1);
+  touchX=null;
+});
+show(0);
+</script>
+</body>
+</html>
