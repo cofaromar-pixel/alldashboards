@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspección BPD — COFARSUR Córdoba</title>
+<style>
+:root{
+  --navy:#1f3864;
+  --navy-light:#2f5496;
+  --bg:#f3f5f8;
+  --panel:#ffffff;
+  --panel-alt:#f7f9fc;
+  --border:#dbe1ea;
+  --text:#1c2530;
+  --text-dim:#5b6675;
+  --input-bg:#fffaf0;
+  --accent:#1f3864;
+  --shadow: 0 1px 3px rgba(20,30,50,.08), 0 1px 2px rgba(20,30,50,.06);
+  --muy-grave:#c00000;
+  --grave:#e36c09;
+  --moderada:#b8860b;
+  --leve:#3f8f3f;
+  --si:#2e7d32;
+  --no:#c62828;
+  --parcial:#b8860b;
+  --na:#78828e;
+  --radius:12px;
+}
+[data-theme="dark"]{
+  --bg:#12161d;
+  --panel:#1a2029;
+  --panel-alt:#20272f;
+  --border:#2c3542;
+  --text:#e7ecf3;
+  --text-dim:#9aa5b3;
+  --input-bg:#242a1c;
+  --navy:#5b8ddb;
+  --navy-light:#7ba6e8;
+  --accent:#5b8ddb;
+  --shadow: 0 1px 4px rgba(0,0,0,.4);
+  --muy-grave:#ff6b6b;
+  --grave:#ffa552;
+  --moderada:#f0c869;
+  --leve:#7bd389;
+  --si:#66bb6a;
+  --no:#ef5350;
+  --parcial:#f0c869;
+  --na:#8a94a3;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+}
+a{color:inherit;}
+button{font-family:inherit;}
+
+/* ---------- Header ---------- */
+header{
+  position:sticky; top:0; z-index:40;
+  background:var(--navy);
+  color:#fff;
+  padding:14px 18px;
+  box-shadow:var(--shadow);
+}
+.header-row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+.brand{display:flex; flex-direction:column; gap:2px;}
+.brand h1{font-size:18px; margin:0; font-weight:700; letter-spacing:.2px;}
+.brand p{margin:0; font-size:12px; opacity:.85;}
+.header-actions{display:flex; gap:8px; flex-wrap:wrap;}
+.icon-btn{
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25);
+  color:#fff; border-radius:10px; padding:9px 12px; font-size:13px;
+  display:flex; align-items:center; gap:6px; cursor:pointer; min-height:40px;
+  transition:background .15s;
+}
+.icon-btn:hover{background:rgba(255,255,255,.25);}
+.icon-btn:active{background:rgba(255,255,255,.32);}
+input[type=file]{display:none;}
+
+/* ---------- Dashboard ---------- */
+.dashboard{
+  max-width:1400px; margin:16px auto 0; padding:0 16px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;
+}
+.stat-card{
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 14px; box-shadow:var(--shadow);
+}
+.stat-card .num{font-size:24px; font-weight:800; line-height:1;}
+.stat-card .label{font-size:12px; color:var(--text-dim); margin-top:4px;}
+.stat-card.si .num{color:var(--si);}
+.stat-card.no .num{color:var(--no);}
+.stat-card.parcial .num{color:var(--parcial);}
+.stat-card.pct .num{color:var(--accent);}
+.progress-wrap{max-width:1400px; margin:10px auto 0; padding:0 16px;}
+.progress-bar{height:10px; background:var(--border); border-radius:6px; overflow:hidden;}
+.progress-fill{height:100%; background:var(--accent); transition:width .25s;}
+
+.crit-summary{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+.crit-pill{
+  display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px;
+  font-size:12px; font-weight:700; color:#fff;
+}
+
+/* ---------- Layout ---------- */
+.layout{
+  max-width:1400px; margin:16px auto 0; padding:0 16px;
+  display:grid; grid-template-columns:280px 1fr; gap:16px; align-items:start;
+}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .filters{position:static !important;}
+}
+
+/* ---------- Filters ---------- */
+.filters{
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow); position:sticky; top:86px;
+}
+.filters h3{margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-dim);}
+.filter-group{margin-bottom:18px;}
+.search-input{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+  background:var(--panel-alt); color:var(--text); font-size:14px; min-height:42px;
+}
+.chip-row{display:flex; flex-wrap:wrap; gap:6px;}
+.chip{
+  border:1.5px solid var(--border); background:var(--panel-alt); color:var(--text);
+  padding:7px 12px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer;
+  min-height:36px; display:flex; align-items:center; gap:6px; user-select:none;
+}
+.chip .dot{width:8px; height:8px; border-radius:50%;}
+.chip.active{color:#fff; border-color:transparent;}
+.chip[data-crit="Muy Grave"].active{background:var(--muy-grave);}
+.chip[data-crit="Grave"].active{background:var(--grave);}
+.chip[data-crit="Moderada"].active{background:var(--moderada);}
+.chip[data-crit="Leve"].active{background:var(--leve);}
+.chip[data-crit="Muy Grave"] .dot{background:var(--muy-grave);}
+.chip[data-crit="Grave"] .dot{background:var(--grave);}
+.chip[data-crit="Moderada"] .dot{background:var(--moderada);}
+.chip[data-crit="Leve"] .dot{background:var(--leve);}
+.chip.active[data-crit]{color:#fff;}
+.chip[data-cumple].active{background:var(--accent); color:#fff;}
+
+select.filter-select{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+  background:var(--panel-alt); color:var(--text); font-size:14px; min-height:42px;
+}
+.clear-filters{
+  width:100%; padding:10px; border-radius:10px; border:1px dashed var(--border);
+  background:transparent; color:var(--text-dim); font-size:13px; cursor:pointer; min-height:40px;
+}
+
+/* ---------- Meta panel ---------- */
+details.meta{
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:0; box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden;
+}
+details.meta summary{
+  padding:14px 16px; cursor:pointer; font-weight:700; font-size:14px; list-style:none;
+  display:flex; align-items:center; justify-content:space-between;
+}
+details.meta summary::-webkit-details-marker{display:none;}
+.meta-grid{padding:0 16px 16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+.meta-field label{display:block; font-size:11.5px; color:var(--text-dim); margin-bottom:4px; font-weight:600;}
+.meta-field input, .meta-field textarea{
+  width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--border);
+  background:var(--input-bg); color:var(--text); font-size:13.5px;
+}
+
+/* ---------- Chapter groups ---------- */
+.chapter{
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  margin-bottom:14px; box-shadow:var(--shadow); overflow:hidden;
+}
+.chapter-head{
+  padding:14px 16px; background:var(--panel-alt); display:flex; align-items:center;
+  justify-content:space-between; cursor:pointer; gap:10px;
+}
+.chapter-head h2{margin:0; font-size:15px; font-weight:700;}
+.chapter-head .meta-count{font-size:12px; color:var(--text-dim); font-weight:600;}
+.chapter-body{padding:10px;}
+.chapter.collapsed .chapter-body{display:none;}
+.chevron{transition:transform .2s; font-size:12px; color:var(--text-dim);}
+.chapter.collapsed .chevron{transform:rotate(-90deg);}
+
+/* ---------- Item card ---------- */
+.item{
+  border:1px solid var(--border); border-radius:10px; margin:8px 0; background:var(--panel);
+}
+.item-head{
+  padding:12px; display:flex; align-items:flex-start; gap:10px; cursor:pointer;
+}
+.item-id{
+  font-weight:800; font-size:12.5px; color:var(--accent); min-width:38px; padding-top:3px;
+}
+.item-main{flex:1; min-width:0;}
+.item-req{font-size:14px; line-height:1.4;}
+.item-tags{display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; align-items:center;}
+.badge-crit{
+  font-size:11px; font-weight:700; color:#fff; padding:3px 9px; border-radius:999px;
+}
+.badge-crit[data-crit="Muy Grave"]{background:var(--muy-grave);}
+.badge-crit[data-crit="Grave"]{background:var(--grave);}
+.badge-crit[data-crit="Moderada"]{background:var(--moderada);}
+.badge-crit[data-crit="Leve"]{background:var(--leve);}
+.badge-art{font-size:11px; color:var(--text-dim); background:var(--panel-alt); padding:3px 9px; border-radius:999px; border:1px solid var(--border);}
+.status-dot{width:10px; height:10px; border-radius:50%; background:var(--border); flex:none; margin-top:5px;}
+.status-dot[data-cumple="Sí"]{background:var(--si);}
+.status-dot[data-cumple="No"]{background:var(--no);}
+.status-dot[data-cumple="Parcial"]{background:var(--parcial);}
+.status-dot[data-cumple="N-A"]{background:var(--na);}
+
+.item-body{padding:0 12px 14px 12px; display:none;}
+.item.expanded .item-body{display:block;}
+.item.expanded .item-head{border-bottom:1px solid var(--border);}
+
+.cumple-group{display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;}
+.cumple-btn{
+  flex:1; min-width:70px; padding:10px 6px; border-radius:9px; border:1.5px solid var(--border);
+  background:var(--panel-alt); color:var(--text); font-size:12.5px; font-weight:700; cursor:pointer;
+  min-height:42px;
+}
+.cumple-btn[data-val="Sí"].active{background:var(--si); border-color:var(--si); color:#fff;}
+.cumple-btn[data-val="No"].active{background:var(--no); border-color:var(--no); color:#fff;}
+.cumple-btn[data-val="Parcial"].active{background:var(--parcial); border-color:var(--parcial); color:#fff;}
+.cumple-btn[data-val="N-A"].active{background:var(--na); border-color:var(--na); color:#fff;}
+
+.proc-box{
+  background:var(--panel-alt); border:1px solid var(--border); border-radius:9px;
+  padding:10px 12px; margin:10px 0; font-size:13px; line-height:1.45;
+}
+.proc-box .proc-label{font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin-bottom:4px; display:flex; align-items:center; gap:5px;}
+
+.evid-field label{font-size:11.5px; font-weight:700; color:var(--text-dim); display:block; margin-bottom:4px;}
+.evid-field textarea{
+  width:100%; min-height:60px; padding:9px 10px; border-radius:9px; border:1px solid var(--border);
+  background:var(--input-bg); color:var(--text); font-size:13.5px; resize:vertical;
+}
+
+.empty-state{text-align:center; padding:50px 20px; color:var(--text-dim);}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--navy); color:#fff; padding:11px 18px; border-radius:10px; font-size:13.5px;
+  box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:.25s; z-index:100;
+}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* ---------- Modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(10,14,20,.55); z-index:80;
+  display:none; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:var(--panel); border-radius:var(--radius); padding:20px; max-width:420px; width:100%;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+.modal h3{margin:0 0 10px;}
+.modal p{color:var(--text-dim); font-size:14px; line-height:1.5;}
+.modal-actions{display:flex; gap:10px; margin-top:16px;}
+.modal-actions button{flex:1; padding:11px; border-radius:9px; border:1px solid var(--border); cursor:pointer; font-weight:700; min-height:44px; background:var(--panel-alt); color:var(--text);}
+.modal-actions button.danger{background:var(--no); color:#fff; border-color:var(--no);}
+
+/* tablet 10" landscape tuning */
+@media (min-width:1000px) and (max-width:1400px){
+  .layout{grid-template-columns:300px 1fr;}
+}
+@media (pointer:coarse){
+  .cumple-btn, .chip, .icon-btn, .item-head{min-height:44px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div class="brand">
+      <h1>Inspección interna BPD — COFARSUR Córdoba</h1>
+      <p>Simulacro tipo ANMAT · Disposición ANMAT N° 2069/2018</p>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" title="Cambiar tema">🌓 <span id="themeLabel">Tema</span></button>
+      <button class="icon-btn" id="exportBtn">⭳ Exportar</button>
+      <label class="icon-btn" for="importInput">⭱ Importar</label>
+      <input type="file" id="importInput" accept="application/json">
+      <button class="icon-btn" id="resetBtn">🗑 Reiniciar</button>
+    </div>
+  </div>
+</header>
+
+<div class="dashboard" id="dashboard"></div>
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+<div class="dashboard"><div class="crit-summary" id="critSummary"></div></div>
+
+<div class="layout">
+  <aside class="filters">
+    <details class="meta" id="metaPanel" open>
+      <summary>Datos de la inspección <span class="chevron">▾</span></summary>
+      <div class="meta-grid" id="metaGrid"></div>
+    </details>
+
+    <h3>Buscar</h3>
+    <div class="filter-group">
+      <input class="search-input" id="searchInput" type="text" placeholder="Buscar por texto, ítem o artículo…">
+    </div>
+
+    <h3>Criticidad</h3>
+    <div class="filter-group chip-row" id="critFilters">
+      <span class="chip active" data-crit="all">Todas</span>
+      <span class="chip" data-crit="Muy Grave"><span class="dot"></span>Muy Grave</span>
+      <span class="chip" data-crit="Grave"><span class="dot"></span>Grave</span>
+      <span class="chip" data-crit="Moderada"><span class="dot"></span>Moderada</span>
+      <span class="chip" data-crit="Leve"><span class="dot"></span>Leve</span>
+    </div>
+
+    <h3>Estado (Cumple)</h3>
+    <div class="filter-group chip-row" id="cumpleFilters">
+      <span class="chip active" data-cumple="all">Todos</span>
+      <span class="chip" data-cumple="Sí">Sí</span>
+      <span class="chip" data-cumple="No">No</span>
+      <span class="chip" data-cumple="Parcial">Parcial</span>
+      <span class="chip" data-cumple="N-A">N/A</span>
+      <span class="chip" data-cumple="__pending">Sin marcar</span>
+    </div>
+
+    <h3>Capítulo</h3>
+    <div class="filter-group">
+      <select class="filter-select" id="chapterFilter">
+        <option value="all">Todos los capítulos</option>
+      </select>
+    </div>
+
+    <button class="clear-filters" id="clearFilters">Limpiar filtros</button>
+  </aside>
+
+  <main id="chaptersContainer"></main>
+</div>
+
+<div id="toast"></div>
+
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h3>¿Reiniciar toda la carga?</h3>
+    <p>Se va a borrar todo lo marcado (Cumple, evidencias y datos de la inspección) guardado en este dispositivo. Esta acción no se puede deshacer. Te conviene exportar antes si querés conservarlo.</p>
+    <div class="modal-actions">
+      <button id="cancelReset">Cancelar</button>
+      <button class="danger" id="confirmReset">Sí, reiniciar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ITEMS = [{"id": "1.1", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿La droguería cuenta con un sistema de calidad establecido, implementado y documentado (manual de calidad o instrumento equivalente)?", "art": "Art. 1.2.1 / 1.2.4", "criticidad": "Grave", "procedimiento": "Pedí el manual de calidad o documento equivalente. Verificá que esté vigente, fechado y accesible (no un borrador sin aprobar)."}, {"id": "1.2", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿La Dirección designó formalmente una persona responsable del sistema de calidad, con autoridad y responsabilidad especificadas?", "art": "Art. 1.2.5", "criticidad": "Moderada", "procedimiento": "Pedí la designación formal (nota interna, organigrama) donde conste el nombre del responsable y el alcance de su autoridad."}, {"id": "1.3", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿La Dirección Técnica forma parte de la gerencia del sistema de calidad en todo lo referido a BPD?", "art": "Art. 1.2.5.a", "criticidad": "Moderada", "procedimiento": "Preguntá cómo participa el Director Técnico en las decisiones de calidad; buscá su firma en POE y actas de revisión."}, {"id": "1.4", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿Se cuenta con recursos suficientes (personal competente, locales, equipos, instalaciones) asignados al sistema de calidad?", "art": "Art. 1.2.6", "criticidad": "Moderada", "procedimiento": "Observá dotación de personal, equipos e instalaciones in situ y contrastalo con lo que el sistema de calidad exige."}, {"id": "1.5", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿Existe sistema de control de cambios documentado, con validación cuando corresponde?", "art": "Art. 1.2.7", "criticidad": "Leve", "procedimiento": "Pedí el registro de control de cambios y un ejemplo reciente de cambio documentado y validado."}, {"id": "1.6", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿El sistema de calidad asegura el cumplimiento conjunto de los incisos a) a j) del art. 1.2.8 (adquisición conforme BPD, responsabilidades definidas, entrega correcta, registros en tiempo real, investigación de desviaciones, CAPA, trazabilidad, aprobación de cambios, contingencias, autoinspección anual)?", "art": "Art. 1.2.8 a-j", "criticidad": "Grave", "procedimiento": "Es un ítem paraguas: verificalo cruzando la evidencia de los demás ítems (revisión de gestión, CAPA, trazabilidad, contingencias, autoinspección anual)."}, {"id": "1.7", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿Existe un proceso formal de revisión periódica del sistema de calidad por la Dirección (objetivos, indicadores de rendimiento, normativa nueva, cambios de entorno)?", "art": "Art. 1.4.1", "criticidad": "Moderada", "procedimiento": "Pedí el acta de la última revisión del sistema de calidad por la Dirección y su fecha."}, {"id": "1.8", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿El resultado de cada revisión de gestión se documenta y comunica internamente?", "art": "Art. 1.4.2", "criticidad": "Leve", "procedimiento": "Pedí el documento/acta de la revisión y evidencia de su difusión interna (mail, firma de enterados)."}, {"id": "1.9", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿Existe un proceso de gestión de riesgo para la calidad, basado en conocimiento científico y proporcional al riesgo?", "art": "Art. 1.5.1 a 1.5.3", "criticidad": "Moderada", "procedimiento": "Pedí un ejemplo concreto de análisis de riesgo aplicado (a un proveedor, un cambio o una desviación)."}, {"id": "1.10", "cap": 1, "capNombre": "GESTIÓN DE LA CALIDAD", "requisito": "¿El sistema de calidad incluye revisión y control de actividades contratadas (si aplica), incorporando gestión de riesgo?", "art": "Art. 1.3.1", "criticidad": "Moderada", "procedimiento": "Si tercerizan alguna actividad, pedí cómo la incluyen en la revisión periódica del sistema de calidad."}, {"id": "2.1", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se opera exclusivamente con establecimientos debidamente autorizados por la Autoridad Sanitaria?", "art": "Art. 2.2.1", "criticidad": "Muy Grave", "procedimiento": "Pedí el listado de clientes/proveedores actuales y cruzalo contra sus habilitaciones sanitarias vigentes."}, {"id": "2.2", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se verifica que no exista adquisición y/o entrega, a título oneroso o gratuito, a establecimientos no autorizados?", "art": "Art. 2.2.1", "criticidad": "Muy Grave", "procedimiento": "Preguntá si hubo algún caso de venta a un no habilitado y qué criterio de bloqueo tiene el sistema para evitarlo."}, {"id": "2.3", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿La procedencia de los productos es conocida y está documentada?", "art": "Art. 2.2.2", "criticidad": "Muy Grave", "procedimiento": "Elegí productos al azar en el depósito y pedí la documentación de compra que acredite su procedencia."}, {"id": "2.4", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se verifica, al dar de alta un nuevo producto, el registro/autorización de la Autoridad Sanitaria competente?", "art": "Art. 2.2.3", "criticidad": "Grave", "procedimiento": "Pedí evidencia de cómo verifican el registro/autorización ANMAT de un producto antes de darlo de alta."}, {"id": "2.5", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se realiza evaluación previa de proveedores y destinatarios antes de cualquier transacción?", "art": "Art. 2.3.1", "criticidad": "Grave", "procedimiento": "Pedí el POE de calificación de proveedores/clientes, el listado actualizado y elegí una muestra para pedir el respaldo documental de habilitación. Verificá que la calificación sea previa a la primera transacción y que se reevalúe periódicamente."}, {"id": "2.6", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se dispone de documentación verificada de habilitaciones sanitarias de proveedores y destinatarios, registrada y reevaluada periódicamente?", "art": "Art. 2.3.2", "criticidad": "Grave", "procedimiento": "Pedí registro de reevaluación periódica de habilitaciones (fechas, vencimientos, renovaciones)."}, {"id": "2.7", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se presta atención a ofertas de productos no habituales, a precios desproporcionados o en cantidades inusuales?", "art": "Art. 2.3.3.b", "criticidad": "Moderada", "procedimiento": "Preguntá si existen alertas o criterios para detectar pedidos con precios o cantidades atípicas."}, {"id": "2.8", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se presta atención a ventas inusuales que sugieran desvío o uso indebido de sustancias sujetas a control especial, informando a la autoridad si corresponde?", "art": "Art. 2.3.4", "criticidad": "Grave", "procedimiento": "Para psicotrópicos/estupefacientes, pedí ejemplos de ventas inusuales detectadas y si se informaron a la autoridad sanitaria."}, {"id": "2.9", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se cuenta in situ, en todo momento, con documentación comercial que justifique la adquisición y procedencia del stock existente?", "art": "Art. 2.3.5", "criticidad": "Muy Grave", "procedimiento": "Pedí que exhiban in situ, sin previo aviso, la documentación de compra de 2 o 3 lotes elegidos al azar del stock."}, {"id": "2.10", "cap": 2, "capNombre": "CADENA LEGAL DE ABASTECIMIENTO", "requisito": "¿Se dispone de listados actualizados de proveedores y destinatarios?", "art": "Art. 2.3.5", "criticidad": "Moderada", "procedimiento": "Pedí el listado de proveedores y destinatarios y verificá su fecha de última actualización."}, {"id": "3.1", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿La documentación (procedimientos, registros, contratos, facturación) está disponible para la Autoridad Sanitaria y es de fácil recuperación?", "art": "Art. 3.2.1", "criticidad": "Moderada", "procedimiento": "Pedí cualquier documento al azar (un POE, un registro) y cronometrá cuánto tardan en encontrarlo."}, {"id": "3.2", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los instructivos, procedimientos y registros están redactados en lenguaje claro, sin ambigüedades?", "art": "Art. 3.2.2", "criticidad": "Leve", "procedimiento": "Leé 2 o 3 POE y evaluá si están redactados en lenguaje claro, sin ambigüedades, comprensible para el personal."}, {"id": "3.3", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Cada trabajador tiene fácil acceso a la documentación necesaria para sus tareas?", "art": "Art. 3.2.3", "criticidad": "Leve", "procedimiento": "Preguntá a un operario (no solo al Director Técnico) dónde encuentra el POE de su propia tarea."}, {"id": "3.4", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Las alteraciones a documentos están fechadas, firmadas por personal autorizado y permiten leer la información original?", "art": "Art. 3.2.4", "criticidad": "Moderada", "procedimiento": "Buscá un documento con alguna corrección y verificá que esté fechada y firmada, y que se pueda leer el dato original."}, {"id": "3.5", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los POE están aprobados, firmados y fechados por el Director Técnico?", "art": "Art. 3.3.3", "criticidad": "Leve", "procedimiento": "Revisá que los POE tengan firma y fecha del Director Técnico."}, {"id": "3.6", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los POE describen propósito, alcance, pasos cronológicos, frecuencia, registros y materiales requeridos?", "art": "Art. 3.3.2", "criticidad": "Leve", "procedimiento": "Elegí un POE y verificá que tenga alcance, responsabilidades, materiales y pasos en orden cronológico."}, {"id": "3.7", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los procedimientos se revisan y actualizan periódicamente, retirándose las versiones obsoletas de las áreas de trabajo?", "art": "Art. 3.3.4", "criticidad": "Leve", "procedimiento": "Preguntá cómo retiran las versiones obsoletas de los puestos de trabajo; buscá copias impresas desactualizadas en los sectores."}, {"id": "3.8", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los registros se confeccionan en tiempo real y están firmados por quien realiza la tarea?", "art": "Art. 3.4.1", "criticidad": "Moderada", "procedimiento": "Elegí un registro reciente y verificá que la firma/fecha coincida con el momento real en que se hizo la tarea."}, {"id": "3.9", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los registros de distribución permiten la correcta identificación de los productos?", "art": "Art. 3.4.2", "criticidad": "Moderada", "procedimiento": "Tomá un registro de distribución y verificá que permite identificar el producto sin ambigüedad (lote, cantidad, destino)."}, {"id": "3.10", "cap": 3, "capNombre": "DOCUMENTACIÓN", "requisito": "¿Los registros se conservan por un período no menor a dos (2) años?", "art": "Art. 3.4.3", "criticidad": "Moderada", "procedimiento": "Pedí registros de hace más de un año y confirmá que estén conservados y disponibles."}, {"id": "4.1", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿Se cuenta con personal en cantidad adecuada, con calificaciones/experiencia y responsabilidades individuales definidas y entendidas?", "art": "Art. 4.2.1", "criticidad": "Moderada", "procedimiento": "Compará la dotación de personal presente con el volumen de operación que observás en el depósito."}, {"id": "4.2", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿Existe organigrama definido, con áreas, responsables y atribuciones especificadas por escrito?", "art": "Art. 4.2.2", "criticidad": "Leve", "procedimiento": "Pedí el organigrama vigente y verificá que coincida con quién ves trabajando y sus funciones reales."}, {"id": "4.3", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿Las funciones/responsabilidades de puestos clave están en descripciones de trabajo escritas, con planes de suplencia?", "art": "Art. 4.2.2.a", "criticidad": "Leve", "procedimiento": "Pedí las descripciones de puesto de uno o dos roles clave y el plan de suplencia ante ausencias."}, {"id": "4.4", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿La Dirección Técnica es asumida por un profesional Farmacéutico que cumple sus responsabilidades personalmente?", "art": "Art. 4.3.1", "criticidad": "Muy Grave", "procedimiento": "Pedí la matrícula del Director Técnico y la constancia de inscripción ante la autoridad sanitaria competente."}, {"id": "4.5", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿Las responsabilidades de la Dirección Técnica y de la Dirección de la empresa (art. 4.3.3 a-l) están documentadas y son conocidas?", "art": "Art. 4.3.2 / 4.3.3", "criticidad": "Moderada", "procedimiento": "Pedí que te muestren por escrito las funciones del Director Técnico (según el art. 4.3.3) y consultale si las conoce de memoria."}, {"id": "4.6", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿Existe plan de entrenamiento inicial y continuo en BPD, basado en un plan preestablecido y registrado?", "art": "Art. 4.4.1", "criticidad": "Moderada", "procedimiento": "Pedí el plan de capacitación anual en BPD y los registros de asistencia firmados."}, {"id": "4.7", "cap": 4, "capNombre": "PERSONAL", "requisito": "¿El personal que manipula productos de manejo diferencial (citostáticos, estupefacientes/psicotrópicos, termolábiles, etc.) recibe entrenamiento específico?", "art": "Art. 4.4.2", "criticidad": "Moderada", "procedimiento": "Pedí evidencia de capacitación específica para quien maneja psicotrópicos, estupefacientes o cadena de frío."}, {"id": "5.1", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los locales están diseñados/adaptados para asegurar en todo momento las condiciones de almacenamiento requeridas?", "art": "Art. 5.2.1", "criticidad": "Grave", "procedimiento": "Recorré el depósito y contrastá el diseño edilicio contra las condiciones que exige cada tipo de producto almacenado."}, {"id": "5.2", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los locales cuentan con equipamiento para atender eventuales desviaciones de temperatura?", "art": "Art. 5.2.2", "criticidad": "Moderada", "procedimiento": "Preguntá qué hacen ante un corte de aire acondicionado o una alarma de temperatura fuera de rango."}, {"id": "5.3", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existe capacidad suficiente para almacenamiento racional, ordenado y seguro, y libre circulación de materiales/personas?", "art": "Art. 5.2.3", "criticidad": "Moderada", "procedimiento": "Observá si hay pasillos obstruidos o productos amontonados fuera de la estantería."}, {"id": "5.4", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿La iluminación es adecuada, sin incidencia de luz solar directa sobre los medicamentos?", "art": "Art. 5.2.4", "criticidad": "Grave", "procedimiento": "Fijate si hay ventanas o aberturas con incidencia de luz solar directa sobre los productos."}, {"id": "5.5", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿El diseño minimiza el ingreso de insectos/roedores/otros animales y existe programa preventivo de control de plagas?", "art": "Art. 5.2.5", "criticidad": "Moderada", "procedimiento": "Pedí el programa de control de plagas y el último certificado de fumigación/desratización."}, {"id": "5.6", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿La estructura edilicia posee superficies lisas, de fácil limpieza, sin roturas ni desprendimiento de polvo?", "art": "Art. 5.2.6", "criticidad": "Grave", "procedimiento": "Inspeccioná visualmente pisos y paredes en busca de grietas, humedad o desprendimiento de material."}, {"id": "5.7", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las áreas de almacenamiento están claramente identificadas con acceso restringido al personal autorizado (y, si hay sustitución electrónica, está validada)?", "art": "Art. 5.2.7", "criticidad": "Grave", "procedimiento": "Intentá ingresar a un área restringida sin autorización explícita y verificá si te lo permiten sin control."}, {"id": "5.8", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existen sectores segregados e identificados para productos no aptos para distribución/consumo o pendientes de evaluación?", "art": "Art. 5.2.8", "criticidad": "Grave", "procedimiento": "Pedí que te muestren el sector de productos no aptos o pendientes de evaluación y verificá su identificación."}, {"id": "5.9", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los productos de habilitación local o en investigación clínica están en depósitos dedicados de acceso restringido, con documentación de respaldo?", "art": "Art. 5.2.8.a", "criticidad": "Grave", "procedimiento": "Si tienen productos de habilitación provincial o en investigación clínica, pedí el depósito dedicado y su documentación de respaldo."}, {"id": "5.10", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se controlan y mantienen las condiciones especiales (temperatura, humedad, iluminación) requeridas por productos específicos durante todo el proceso?", "art": "Art. 5.2.8.b", "criticidad": "Grave", "procedimiento": "Elegí un producto con condición especial (por ejemplo termolábil) y verificá cómo controlan esa condición."}, {"id": "5.11", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los psicotrópicos y estupefacientes se almacenan en áreas de acceso restringido?", "art": "Art. 5.2.8.c", "criticidad": "Grave", "procedimiento": "Pedí ver el sector de psicotrópicos/estupefacientes y quién tiene acceso autorizado."}, {"id": "5.12", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las áreas de carga/descarga o recepción protegen a los productos de condiciones climáticas adversas u otros riesgos?", "art": "Art. 5.2.9", "criticidad": "Moderada", "procedimiento": "Observá el área de carga/descarga y si está protegida de lluvia, sol u otros riesgos climáticos."}, {"id": "5.13", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existe separación efectiva entre las áreas de recepción y expedición?", "art": "Art. 5.2.10", "criticidad": "Moderada", "procedimiento": "Verificá físicamente que las áreas de recepción y expedición no se mezclen ni se confundan."}, {"id": "5.14", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las áreas de descanso/refrigerio están separadas de vestuarios/sanitarios y sin comunicación directa con el almacenamiento?", "art": "Art. 5.2.11", "criticidad": "Leve", "procedimiento": "Verificá que el comedor/vestuario no tenga comunicación directa con el área de almacenamiento."}, {"id": "5.15", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Todas las áreas se mantienen limpias, ordenadas, secas y libres de materiales extraños, polvo o basura?", "art": "Art. 5.3.1", "criticidad": "Moderada", "procedimiento": "Recorré todas las áreas y evaluá orden, limpieza y ausencia de residuos o elementos extraños."}, {"id": "5.16", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las actividades de limpieza se registran de acuerdo a procedimientos escritos?", "art": "Art. 5.3.2", "criticidad": "Leve", "procedimiento": "Pedí el registro de limpieza de la última semana y contrastalo con la frecuencia definida en el procedimiento."}, {"id": "5.17", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los desechos se eliminan a través de sistemas seguros e higiénicos?", "art": "Art. 5.3.3", "criticidad": "Moderada", "procedimiento": "Preguntá cómo y dónde disponen los residuos generados en el depósito."}, {"id": "5.18", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existen medidas de seguridad apropiadas para el depósito y el personal?", "art": "Art. 5.3.4", "criticidad": "Moderada", "procedimiento": "Preguntá por las medidas de seguridad existentes (cámaras, alarma, control de acceso)."}, {"id": "5.19", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existen sistemas/equipamiento para la prevención y combate de incendios (matafuegos con carga vigente, etc.)?", "art": "Art. 5.3.5", "criticidad": "Leve", "procedimiento": "Revisá la carga vigente de los matafuegos (fecha en la oblea) y su ubicación accesible."}, {"id": "5.20", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se dispone de materiales para contingencia de derrames (citostáticos, hormonales, betalactámicos, radiofármacos, anestésicos inhalatorios)?", "art": "Art. 5.3.6", "criticidad": "Moderada", "procedimiento": "Pedí que te muestren el kit de contingencia para derrames y verificá su contenido y disponibilidad."}, {"id": "5.21", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se realizó/actualizó un mapeo térmico (registro de temperatura en condiciones representativas) del área de almacenamiento?", "art": "Art. 5.4.1", "criticidad": "Grave", "procedimiento": "Pedí el estudio de mapeo térmico (registro de temperatura inicial) del depósito y su fecha de realización."}, {"id": "5.22", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los equipos de control/registro de temperatura están ubicados según los puntos críticos determinados por el mapeo?", "art": "Art. 5.4.1.a", "criticidad": "Moderada", "procedimiento": "Contrastá la ubicación de los sensores de temperatura contra los puntos críticos que indicó el mapeo."}, {"id": "5.23", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se repite el mapeo térmico tras evaluación de riesgo o modificaciones relevantes en la instalación/climatización?", "art": "Art. 5.4.1.b", "criticidad": "Moderada", "procedimiento": "Preguntá cuándo fue la última vez que repitieron el mapeo térmico y qué lo motivó."}, {"id": "5.24", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿La temperatura se monitorea en forma continua con equipos calibrados por laboratorio acreditado, trazables a patrones?", "art": "Art. 5.4.2", "criticidad": "Grave", "procedimiento": "Pedí el certificado de calibración de los sensores de temperatura y verificá que esté vigente y sea trazable a un patrón."}, {"id": "5.25", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las calibraciones se realizan con frecuencia al menos anual (o extensión justificada por análisis de riesgo)?", "art": "Art. 5.4.2.a", "criticidad": "Grave", "procedimiento": "Revisá la fecha de la última calibración; si superó el año, pedí la justificación documentada por análisis de riesgo."}, {"id": "5.26", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los registros de temperatura son verificados por personal responsable en intervalos definidos?", "art": "Art. 5.4.3", "criticidad": "Moderada", "procedimiento": "Pedí evidencia de que alguien revisa los registros de temperatura periódicamente (firma, checklist diario)."}, {"id": "5.27", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las áreas con temperatura controlada poseen sistema de alarma efectivo, testeado periódicamente?", "art": "Art. 5.4.4", "criticidad": "Grave", "procedimiento": "Preguntá si el sistema de alarma se testea periódicamente y pedí el último registro de la prueba."}, {"id": "5.28", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Ante falla del sistema de alarma se implementa verificación diaria de temperaturas máx./mín. hasta su restablecimiento?", "art": "Art. 5.4.4.a", "criticidad": "Moderada", "procedimiento": "Si el sistema de alarma falló alguna vez, pedí el registro de verificación manual realizado durante esa falla."}, {"id": "5.29", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Las desviaciones de temperatura se investigan, subsanan y registran?", "art": "Art. 5.4.5", "criticidad": "Grave", "procedimiento": "Buscá alguna desviación histórica de temperatura y pedí su investigación y acción correctiva (CAPA)."}, {"id": "5.30", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los equipos de cadena de frío mantienen la temperatura requerida y permiten libre circulación de aire frío entre productos?", "art": "Art. 5.5.1", "criticidad": "Grave", "procedimiento": "Observá si hay productos apilados bloqueando la libre circulación de aire frío dentro de las cámaras."}, {"id": "5.31", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los equipos frigoríficos están permanentemente conectados y cuentan con generador/red alternativa ante cortes de energía?", "art": "Art. 5.5.2", "criticidad": "Grave", "procedimiento": "Verificá que el generador o red alternativa esté operativo y pedí el registro de la última prueba."}, {"id": "5.32", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Cada equipo frigorífico tiene conexión eléctrica exclusiva?", "art": "Art. 5.5.3", "criticidad": "Moderada", "procedimiento": "Revisá físicamente el tablero eléctrico: cada equipo frigorífico debe tener su propia conexión exclusiva."}, {"id": "5.33", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los equipos frigoríficos son de uso exclusivo para productos farmacéuticos y se mantienen secos e higiénicos?", "art": "Art. 5.5.4", "criticidad": "Grave", "procedimiento": "Verificá que las cámaras/heladeras no contengan otros elementos ajenos a los productos farmacéuticos."}, {"id": "5.34", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existe plan de mantenimiento preventivo de equipos frigoríficos y registro de sus verificaciones?", "art": "Art. 5.5.5", "criticidad": "Moderada", "procedimiento": "Pedí el plan de mantenimiento preventivo de equipos frigoríficos y el último registro de service."}, {"id": "5.35", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se cuenta con materiales apropiados para preparación de pedidos que requieren cadena de frío?", "art": "Art. 5.5.6", "criticidad": "Moderada", "procedimiento": "Pedí ver los conservadores o geles refrigerantes disponibles para armar un envío de cadena de frío."}, {"id": "5.36", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Los sistemas informatizados fueron validados/verificados antes de su uso?", "art": "Art. 5.6.1", "criticidad": "Moderada", "procedimiento": "Pedí el informe de validación o verificación del sistema informático usado en el depósito."}, {"id": "5.37", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se dispone de descripción detallada del sistema informático y su relación con otros sistemas?", "art": "Art. 5.6.2", "criticidad": "Leve", "procedimiento": "Pedí la descripción funcional del sistema informático (manual o ficha técnica) y su relación con otros sistemas."}, {"id": "5.38", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿El ingreso/modificación de datos está restringido a personal autorizado, con seguridad física/electrónica?", "art": "Art. 5.6.3", "criticidad": "Moderada", "procedimiento": "Preguntá cómo se gestionan los usuarios y contraseñas de acceso al sistema."}, {"id": "5.39", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se realizan copias de seguridad de los datos en intervalos regulares?", "art": "Art. 5.6.4", "criticidad": "Moderada", "procedimiento": "Preguntá con qué frecuencia se hace copia de seguridad de los datos y quién la controla."}, {"id": "5.40", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Existen procedimientos ante fallas del sistema informático y para la recuperación de datos?", "art": "Art. 5.6.5", "criticidad": "Moderada", "procedimiento": "Preguntá qué hacen si el sistema informático se cae; pedí el procedimiento de contingencia y recuperación."}, {"id": "5.41", "cap": 5, "capNombre": "INSTALACIONES Y EQUIPOS", "requisito": "¿Se identificaron, en base a análisis de riesgo, las calificaciones/validaciones necesarias para las actividades clave?", "art": "Art. 5.7.1 a 5.7.3", "criticidad": "Leve", "procedimiento": "Pedí el listado de equipos/sistemas críticos y las calificaciones o validaciones asociadas a cada uno."}, {"id": "6.1", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Al recibir se verifica que los productos sean los solicitados, provengan de proveedores aprobados, con documentación de procedencia y sin daño visible?", "art": "Art. 6.2.1", "criticidad": "Grave", "procedimiento": "Presenciá o simulá una recepción: verificá que crucen contra la orden de compra y revisen el estado del embalaje."}, {"id": "6.2", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se da tratamiento prioritario a productos que requieren condiciones especiales de almacenamiento o seguridad?", "art": "Art. 6.2.2", "criticidad": "Moderada", "procedimiento": "Preguntá si hay un circuito diferenciado para productos de cadena de frío o psicotrópicos al momento de recibir."}, {"id": "6.3", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Cuando el transporte no resulta adecuado, se contacta al proveedor y se registra la medida adoptada (análisis de riesgo)?", "art": "Art. 6.2.3", "criticidad": "Moderada", "procedimiento": "Pedí un caso donde hayan rechazado un transporte inadecuado y su registro correspondiente."}, {"id": "6.4", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se examina la integridad del embalaje al recibir y no se transfieren productos a distribución sin control/liberación registrados?", "art": "Art. 6.2.4", "criticidad": "Grave", "procedimiento": "Verificá que el producto no salga a stock distribuible sin que el control de recepción esté cerrado."}, {"id": "6.5", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Ante daños en el embalaje detectados en recepción, se identifica/aísla la carga y se comunica por escrito y fehaciente al remitente?", "art": "Art. 6.2.5", "criticidad": "Moderada", "procedimiento": "Pedí un ejemplo de nota de reclamo enviada a un proveedor por daño detectado en el transporte."}, {"id": "6.6", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿El registro de recepción se realiza mediante sistema informatizado con fecha, cantidad, producto, presentación, proveedor, lote y documentación asociada?", "art": "Art. 6.2.6", "criticidad": "Grave", "procedimiento": "Abrí el sistema informático y verificá qué campos completa el operador al momento de recepcionar un producto."}, {"id": "6.7", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Los medicamentos se almacenan en áreas definidas, señalizadas y de acceso restringido cuando corresponde?", "art": "Art. 6.3.1", "criticidad": "Grave", "procedimiento": "Recorré el depósito y verificá que la señalización de áreas coincida con lo efectivamente almacenado."}, {"id": "6.8", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿El almacenamiento permite individualizar cada lote y expedir preferentemente en orden cronológico de vencimiento (FEFO)?", "art": "Art. 6.3.2", "criticidad": "Moderada", "procedimiento": "Pedí que el sistema muestre el orden de picking sugerido y confirmá que respeta el criterio FEFO (vencimiento)."}, {"id": "6.9", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿La manipulación/almacenamiento evita roturas, daño, derrames, contaminación y mezcla de productos?", "art": "Art. 6.3.3", "criticidad": "Moderada", "procedimiento": "Observá cómo manipulan y apilan los productos durante la recorrida por el depósito."}, {"id": "6.10", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se realizan inventarios periódicos y las discrepancias se investigan, justifican y registran?", "art": "Art. 6.3.4", "criticidad": "Moderada", "procedimiento": "Pedí el último inventario realizado y el registro de discrepancias detectadas e investigadas."}, {"id": "6.11", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Los productos no están en contacto con el piso/paredes y guardan distancia adecuada de los techos?", "art": "Art. 6.3.5", "criticidad": "Moderada", "procedimiento": "Verificá visualmente la distancia de los productos respecto al piso, las paredes y el techo."}, {"id": "6.12", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Los productos vencidos están identificados y segregados en áreas específicas, con registro de la operación (producto, lote, cantidad, fecha, destino)?", "art": "Art. 6.3.6", "criticidad": "Grave", "procedimiento": "Pedí ver el sector de vencidos y el registro de la última baja o devolución al proveedor."}, {"id": "6.13", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Los productos no conformes se almacenan en áreas segregadas e identificadas?", "art": "Art. 6.4.1", "criticidad": "Grave", "procedimiento": "Pedí ver el sector de productos no conformes y confirmá que esté separado del stock distribuible."}, {"id": "6.14", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿La destrucción de productos (si aplica) está registrada y se realiza conforme normativa ambiental?", "art": "Art. 6.4.2", "criticidad": "Moderada", "procedimiento": "Pedí el registro de la última destrucción de productos y el certificado de la empresa que la realizó."}, {"id": "6.15", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿La preparación de pedidos evita el despacho conjunto con productos que puedan afectar la calidad?", "art": "Art. 6.5.1", "criticidad": "Moderada", "procedimiento": "Observá la preparación de un pedido y verificá que no mezclen productos que puedan afectarse entre sí."}, {"id": "6.16", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿El acondicionamiento de los envíos mantiene las condiciones de conservación requeridas durante el transporte?", "art": "Art. 6.5.2", "criticidad": "Moderada", "procedimiento": "Revisá qué material de acondicionamiento usan para armar un envío estándar."}, {"id": "6.17", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Todos los envíos están acompañados de la documentación comercial correspondiente?", "art": "Art. 6.5.3", "criticidad": "Grave", "procedimiento": "Tomá un envío al azar y verificá que tenga su documentación comercial adjunta."}, {"id": "6.18", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿La preparación de pedidos con cadena de frío se programa para evitar desviaciones de temperatura?", "art": "Art. 6.6.1", "criticidad": "Moderada", "procedimiento": "Preguntá cómo programan la salida de pedidos de cadena de frío para minimizar el tiempo fuera de temperatura."}, {"id": "6.19", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se utilizan sistemas de acondicionamiento que aseguren el mantenimiento de la temperatura en los envíos de frío?", "art": "Art. 6.6.2", "criticidad": "Grave", "procedimiento": "Pedí ver los conservadores o cajas térmicas usadas específicamente para cadena de frío."}, {"id": "6.20", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se evaluó, en base a análisis de riesgo, la necesidad de dispositivo de control/registro de temperatura visible en envíos de frío?", "art": "Art. 6.6.3", "criticidad": "Moderada", "procedimiento": "Preguntá si usan registradores de temperatura (data loggers) en envíos de frío y pedí un registro descargado."}, {"id": "6.21", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Las entregas se realizan únicamente a destinatarios habilitados o formalmente autorizados?", "art": "Art. 6.7.1", "criticidad": "Muy Grave", "procedimiento": "Tomá dos o tres remitos y verificá que el destinatario figure como habilitado."}, {"id": "6.22", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿La documentación comercial (factura/remito) incluye fecha, identificación del producto, cantidad, lote, razón social y domicilio de entrega?", "art": "Art. 6.7.2", "criticidad": "Grave", "procedimiento": "Revisá que una factura o remito tenga todos los datos exigidos: fecha, producto, lote, cliente y domicilio."}, {"id": "6.23", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Para productos alcanzados por el SNT, se incluyen los datos GLN/CUFE y lote/GTIN seriado en todas las transacciones?", "art": "Art. 6.7.3", "criticidad": "Grave", "procedimiento": "Para productos alcanzados por el SNT, verificá que la factura incluya GLN/CUFE y lote o GTIN seriado."}, {"id": "6.24", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se implementan mecanismos/sistemas de trazabilidad conforme a la normativa del SNT?", "art": "Art. 6.8.1", "criticidad": "Grave", "procedimiento": "Pedí que te muestren el módulo de trazabilidad del sistema y cómo lo operan."}, {"id": "6.25", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Los informes al SNT se realizan en tiempo real, incluyendo series inutilizadas, robadas o deterioradas?", "art": "Art. 6.8.2", "criticidad": "Grave", "procedimiento": "Pedí el último reporte enviado al SNT y el horario en que se transmitió."}, {"id": "6.26", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Si se utiliza sistema de interfase con el SNT, se verifica que la información se envíe en tiempo real?", "art": "Art. 6.8.3", "criticidad": "Moderada", "procedimiento": "Preguntá cómo verifican que la interfase con el SNT efectivamente transmitió en tiempo real."}, {"id": "6.27", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se evita el reingreso a stock de productos informados como dispensados a paciente?", "art": "Art. 6.8.4", "criticidad": "Muy Grave", "procedimiento": "Preguntá qué pasa en el sistema si intentan reingresar a stock un producto ya informado como dispensado."}, {"id": "6.28", "cap": 6, "capNombre": "OPERACIONES", "requisito": "¿Se evita alterar, remover o anular etiquetas o soportes de código unívoco del producto?", "art": "Art. 6.8.5", "criticidad": "Muy Grave", "procedimiento": "Inspeccioná físicamente que las etiquetas o códigos de trazabilidad de los productos no estén alterados."}, {"id": "7.1", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Existe acuerdo escrito entre contratante y contratado que defina claramente las obligaciones de cada parte? (si aplica)", "art": "Art. 7.1", "criticidad": "Grave", "procedimiento": "Si tercerizan transporte o depósito, pedí el contrato o acuerdo escrito vigente."}, {"id": "7.2", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Se evalúa la competencia del contratado y se garantiza mediante acuerdo escrito y auditorías el cumplimiento de las BPD?", "art": "Art. 7.2.2", "criticidad": "Moderada", "procedimiento": "Pedí la última auditoría realizada al contratado y sus resultados."}, {"id": "7.3", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Se audita al contratado al inicio de la actividad y ante cambios, existiendo posibilidad de auditar en cualquier momento?", "art": "Art. 7.2.3", "criticidad": "Moderada", "procedimiento": "Preguntá cuándo cambiaron de contratado por última vez y si lo auditaron antes de comenzar la relación."}, {"id": "7.4", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Se provee al contratado toda la información necesaria para llevar a cabo la actividad conforme a los requisitos del producto?", "art": "Art. 7.2.4", "criticidad": "Leve", "procedimiento": "Preguntá qué información le brindan al contratado sobre los productos (ficha técnica, condiciones de conservación)."}, {"id": "7.5", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Se seleccionan agentes contratados con locales, equipo, procedimientos, conocimientos y personal competente?", "art": "Art. 7.2.5", "criticidad": "Moderada", "procedimiento": "Pedí evidencia de cómo seleccionaron al proveedor logístico contratado (locales, equipo, experiencia)."}, {"id": "7.6", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Se impide que el contratado ceda a un tercero parte de los trabajos sin evaluación/aprobación previa del contratante?", "art": "Art. 7.2.6", "criticidad": "Moderada", "procedimiento": "Preguntá si el contrato prohíbe expresamente que el contratado subcontrate sin aprobación previa."}, {"id": "7.7", "cap": 7, "capNombre": "ACTIVIDADES CONTRATADAS", "requisito": "¿Existen mecanismos de comunicación establecidos para circunstancias que puedan influir en la calidad de los medicamentos?", "art": "Art. 7.2.7", "criticidad": "Leve", "procedimiento": "Preguntá cómo se comunican con el contratado ante un evento que pueda afectar la calidad del envío."}, {"id": "8.1", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Toda queja o reclamo se investiga según procedimientos escritos y queda registrada?", "art": "Art. 8.1.1", "criticidad": "Moderada", "procedimiento": "Pedí el registro de reclamos del último trimestre y el seguimiento dado a cada uno."}, {"id": "8.2", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Se implementa un plan de acciones preventivas/correctivas cuando corresponde?", "art": "Art. 8.1.2", "criticidad": "Moderada", "procedimiento": "Elegí un reclamo cerrado y verificá si generó un plan de acciones preventivas/correctivas."}, {"id": "8.3", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Cuando el reclamo se relaciona con la calidad del producto, se notifica de inmediato al titular y, si corresponde, a la Autoridad Sanitaria?", "art": "Art. 8.1.3", "criticidad": "Grave", "procedimiento": "Pedí un caso donde hayan notificado a un titular de registro o a la autoridad sanitaria por un reclamo de calidad."}, {"id": "8.4", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Toda devolución se evalúa respecto de su destino final y se almacena en forma segregada hasta determinar su condición?", "art": "Art. 8.2.1 / 8.2.2", "criticidad": "Grave", "procedimiento": "Pedí ver el sector de devoluciones y verificá que estén separadas según su condición."}, {"id": "8.5", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Los productos de devolución se evalúan cuidadosamente en cuanto a integridad y legitimidad antes de considerarse conformes?", "art": "Art. 8.2.3", "criticidad": "Grave", "procedimiento": "Preguntá quién y cómo evalúa la integridad y legitimidad de una devolución antes de aceptarla."}, {"id": "8.6", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿El reingreso a stock distribuible solo se autoriza con verificación completa: embalaje intacto/no vencido/no retirado, proveniencia confirmada, examen y aprobación por el Director Técnico, evidencia de no desvío, motivo registrado?", "art": "Art. 8.2.4 a-e", "criticidad": "Grave", "procedimiento": "Tomá una devolución reingresada a stock y verificá que tenga las cinco verificaciones completas y la firma del Director Técnico."}, {"id": "8.7", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿En devoluciones de cadena de frío u otras condiciones críticas, se documenta que el producto se conservó dentro de los límites aceptables?", "art": "Art. 8.2.5", "criticidad": "Grave", "procedimiento": "Para devoluciones de cadena de frío, pedí la documentación que acredite la conservación de temperatura durante el regreso."}, {"id": "8.8", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿El mecanismo de retiro de mercado puede implementarse de inmediato y su eficacia se evalúa al menos una vez al año?", "art": "Art. 8.3.1", "criticidad": "Grave", "procedimiento": "Preguntá cuándo evaluaron por última vez la eficacia del mecanismo de retiro de mercado (simulacro o real)."}, {"id": "8.9", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿El registro de las operaciones de retiro se realiza al momento de la operatoria, permitiendo identificar inmediatamente a los destinatarios?", "art": "Art. 8.3.2", "criticidad": "Grave", "procedimiento": "Pedí el registro del último retiro de mercado realizado, real o simulado."}, {"id": "8.10", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Durante un retiro de mercado se segregan de inmediato los lotes involucrados y se emite un informe final al concluir?", "art": "Art. 8.3.3", "criticidad": "Grave", "procedimiento": "Pedí el informe final de un retiro de mercado ya cerrado."}, {"id": "8.11", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿Los medicamentos con sospecha de ilegitimidad (contrabando, robo, adulteración, falsificación) se separan e identifican de inmediato?", "art": "Art. 8.4.1", "criticidad": "Muy Grave", "procedimiento": "Preguntá qué hacen si detectan un producto con sospecha de falsificación; pedí el procedimiento escrito."}, {"id": "8.12", "cap": 8, "capNombre": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS", "requisito": "¿El Director Técnico notifica de inmediato a la Autoridad Sanitaria ante medicamentos ilegítimos?", "art": "Art. 8.4.2", "criticidad": "Muy Grave", "procedimiento": "Preguntá a quién y en qué plazo notifica el Director Técnico ante un caso de medicamento ilegítimo."}, {"id": "9.1", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Existe un programa de autoinspecciones que abarque todos los aspectos de las BPD?", "art": "Art. 9.2.1", "criticidad": "Moderada", "procedimiento": "Pedí el programa anual de autoinspecciones y verificá que cubra todos los capítulos de las BPD."}, {"id": "9.2", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Las autoinspecciones se realizan de manera imparcial y detallada por personal competente de la empresa?", "art": "Art. 9.2.2", "criticidad": "Leve", "procedimiento": "Pedí el nombre de quién hizo la última autoinspección y confirmá que no haya auditado su propio sector."}, {"id": "9.3", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Las autoinspecciones siguen instrucciones escritas que aseguren exigencias mínimas y uniformes?", "art": "Art. 9.2.3", "criticidad": "Leve", "procedimiento": "Pedí el procedimiento escrito que rige cómo se realizan las autoinspecciones."}, {"id": "9.4", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Se registran todas las autoinspecciones, con las observaciones realizadas?", "art": "Art. 9.2.4", "criticidad": "Moderada", "procedimiento": "Pedí el informe completo de la última autoinspección realizada."}, {"id": "9.5", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Se facilita copia del informe de autoinspección a la Dirección Técnica y a quien corresponda?", "art": "Art. 9.2.4", "criticidad": "Leve", "procedimiento": "Verificá que el informe tenga constancia de haber sido entregado al Director Técnico."}, {"id": "9.6", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Ante irregularidades, se determinan causas y se documentan/siguen las medidas correctivas y preventivas (CAPA)?", "art": "Art. 9.2.4", "criticidad": "Moderada", "procedimiento": "Elegí una no conformidad detectada en la última autoinspección y seguí su plan de acción hasta el cierre."}, {"id": "9.7", "cap": 9, "capNombre": "AUTO-INSPECCIONES", "requisito": "¿Se cumple la frecuencia mínima de al menos una autoinspección al año?", "art": "Art. 1.2.8.j / 9.1", "criticidad": "Moderada", "procedimiento": "Verificá la fecha de la última autoinspección y confirmá que no haya pasado más de un año."}, {"id": "10.1", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Se protege a los medicamentos de roturas, adulteración y robo durante el transporte?", "art": "Art. 10.1", "criticidad": "Grave", "procedimiento": "Preguntá qué medidas antirrobo o antiadulteración tiene el vehículo (precintos, GPS, cierre de caja)."}, {"id": "10.2", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Las condiciones de conservación requeridas se mantienen durante el transporte dentro de los límites del fabricante?", "art": "Art. 10.2.1", "criticidad": "Grave", "procedimiento": "Pedí el registro de temperatura de un viaje reciente y verificá que se mantuvo dentro de límites."}, {"id": "10.3", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Los productos dañados durante el transporte no se entregan y retornan para registro/disposición final?", "art": "Art. 10.2.2", "criticidad": "Grave", "procedimiento": "Pedí un caso de producto dañado en tránsito y su registro de devolución/disposición."}, {"id": "10.4", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Las entregas se efectúan en el domicilio habilitado por la Autoridad Sanitaria, coincidente con la documentación?", "art": "Art. 10.2.3", "criticidad": "Grave", "procedimiento": "Cruzá el domicilio de entrega de un remito contra la habilitación registrada del destinatario."}, {"id": "10.5", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Los vehículos y equipos utilizados son adecuados y evitan exponer los medicamentos a condiciones que afecten su calidad/embalaje?", "art": "Art. 10.2.4", "criticidad": "Grave", "procedimiento": "Si hay un vehículo disponible, inspeccionalo físicamente (caja cerrada, aire acondicionado, limpieza)."}, {"id": "10.6", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Existen procedimientos escritos para el funcionamiento y mantenimiento de vehículos y equipos, incluida limpieza y seguridad?", "art": "Art. 10.2.5", "criticidad": "Moderada", "procedimiento": "Pedí el procedimiento escrito de limpieza y mantenimiento de vehículos y equipos."}, {"id": "10.7", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Se evalúa el riesgo de las vías de distribución para determinar controles ambientales, con equipos de monitoreo calibrados?", "art": "Art. 10.2.6", "criticidad": "Moderada", "procedimiento": "Preguntá si hicieron un análisis de riesgo de las rutas más largas o críticas de distribución."}, {"id": "10.8", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Se utilizan, siempre que sea posible, vehículos/equipos exclusivos para medicamentos (o procedimientos que garanticen la calidad si no lo son)?", "art": "Art. 10.2.7", "criticidad": "Moderada", "procedimiento": "Preguntá si el vehículo es de uso exclusivo para medicamentos o comparte carga con otros rubros."}, {"id": "10.9", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Si el transporte es contratado, el contrato contempla los requisitos de actividades contratadas y se realizan auditorías periódicas al transportista?", "art": "Art. 10.2.8", "criticidad": "Moderada", "procedimiento": "Si el transporte es tercerizado, pedí el contrato y la última auditoría realizada al transportista."}, {"id": "10.10", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Se informa a los transportistas sobre las condiciones de transporte requeridas para los productos?", "art": "Art. 10.2.8.a", "criticidad": "Leve", "procedimiento": "Preguntá qué instrucciones reciben los choferes sobre el cuidado y las condiciones requeridas por la carga."}, {"id": "10.11", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿En caso de trasbordo, el depósito cuenta con área de acceso restringido y ambiente controlado, con monitoreo y registro constante de temperatura? (si aplica)", "art": "Art. 10.3.1 / 10.3.2", "criticidad": "Grave", "procedimiento": "Si hacen trasbordo, pedí ver el depósito de trasbordo y su control de temperatura y acceso."}, {"id": "10.12", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Existen procedimientos operativos escritos para contingencias en trasbordo (derrames, corte de energía, pérdida de cadena de frío)?", "art": "Art. 10.3.3", "criticidad": "Moderada", "procedimiento": "Pedí el procedimiento de contingencia para trasbordo (derrame, corte de luz, pérdida de cadena de frío)."}, {"id": "10.13", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Se cuenta con documentación que demuestre auditorías realizadas en los depósitos de trasbordo?", "art": "Art. 10.3.4", "criticidad": "Moderada", "procedimiento": "Pedí evidencia de auditorías realizadas al depósito de trasbordo."}, {"id": "10.14", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Los contenedores utilizados no tienen efecto negativo sobre la calidad y ofrecen protección adecuada contra influencias externas?", "art": "Art. 10.4.1", "criticidad": "Moderada", "procedimiento": "Observá el estado de las cajas o contenedores usados para transportar los productos."}, {"id": "10.15", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿La selección de contenedor/embalaje se basa en los requisitos de almacenamiento y transporte del producto?", "art": "Art. 10.4.2", "criticidad": "Leve", "procedimiento": "Preguntá cómo deciden qué embalaje usar según el producto, la cantidad y la distancia del envío."}, {"id": "10.16", "cap": 10, "capNombre": "TRANSPORTE", "requisito": "¿Los contenedores llevan etiquetas con información suficiente sobre manipulación, almacenamiento y precauciones?", "art": "Art. 10.4.3", "criticidad": "Leve", "procedimiento": "Verificá que los contenedores tengan etiqueta con las condiciones de manipulación y almacenamiento."}];
+const CHAPTERS = [{"num": 1, "name": "GESTIÓN DE LA CALIDAD"}, {"num": 2, "name": "CADENA LEGAL DE ABASTECIMIENTO"}, {"num": 3, "name": "DOCUMENTACIÓN"}, {"num": 4, "name": "PERSONAL"}, {"num": 5, "name": "INSTALACIONES Y EQUIPOS"}, {"num": 6, "name": "OPERACIONES"}, {"num": 7, "name": "ACTIVIDADES CONTRATADAS"}, {"num": 8, "name": "RECLAMOS, DEVOLUCIONES, RETIROS DE MERCADO Y MEDICAMENTOS ILEGÍTIMOS"}, {"num": 9, "name": "AUTO-INSPECCIONES"}, {"num": 10, "name": "TRANSPORTE"}];
+const STORAGE_KEY = "bpd_audit_state_v1";
+const THEME_KEY = "bpd_audit_theme";
+
+const META_FIELDS = [
+  ["razonSocial","Razón social","text"],
+  ["sucursal","Establecimiento / Sucursal","text"],
+  ["domicilio","Domicilio del depósito","text"],
+  ["fecha","Fecha de inspección","text"],
+  ["horaInicio","Hora de inicio","text"],
+  ["horaFin","Hora de finalización","text"],
+  ["caracter","Carácter","text"],
+  ["inspector","Inspector / Coordinador de Calidad","text"],
+  ["dt","Directora Técnica convocada","text"],
+];
+
+let state = loadState();
+
+function defaultState(){
+  return {
+    meta: {
+      razonSocial: "COFARSUR S.A.",
+      sucursal: "Córdoba (CBA)",
+      domicilio: "",
+      fecha: "24/09/2026",
+      horaInicio: "",
+      horaFin: "",
+      caracter: "Sorpresiva",
+      inspector: "Omar Pereyra",
+      dt: "",
+    },
+    items: {} // id -> {cumple, evidencia}
+  };
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    const base = defaultState();
+    return {
+      meta: Object.assign({}, base.meta, parsed.meta || {}),
+      items: parsed.items || {}
+    };
+  }catch(e){
+    console.warn("No se pudo leer localStorage, arrancando de cero.", e);
+    return defaultState();
+  }
+}
+
+let saveTimer = null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){
+      showToast("No se pudo guardar en este dispositivo (¿espacio lleno?).");
+    }
+  }, 150);
+}
+
+function getItemState(id){
+  return state.items[id] || { cumple: "", evidencia: "" };
+}
+function setItemState(id, patch){
+  state.items[id] = Object.assign({}, getItemState(id), patch);
+  saveState();
+}
+
+// ---------------- Filters state ----------------
+let filters = { crit: "all", cumple: "all", chapter: "all", q: "" };
+
+// ---------------- Render: meta ----------------
+function renderMeta(){
+  const grid = document.getElementById("metaGrid");
+  grid.innerHTML = "";
+  META_FIELDS.forEach(([key, label]) => {
+    const wrap = document.createElement("div");
+    wrap.className = "meta-field";
+    const lab = document.createElement("label");
+    lab.textContent = label;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = state.meta[key] || "";
+    input.addEventListener("input", () => {
+      state.meta[key] = input.value;
+      saveState();
+    });
+    wrap.appendChild(lab);
+    wrap.appendChild(input);
+    grid.appendChild(wrap);
+  });
+}
+
+// ---------------- Render: chapter select ----------------
+function renderChapterSelect(){
+  const sel = document.getElementById("chapterFilter");
+  CHAPTERS.forEach(ch => {
+    const opt = document.createElement("option");
+    opt.value = String(ch.num);
+    opt.textContent = "Cap. " + ch.num + " — " + ch.name;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", () => { filters.chapter = sel.value; renderList(); });
+}
+
+// ---------------- Dashboard ----------------
+function renderDashboard(){
+  const total = ITEMS.length;
+  let counts = { "Sí":0, "No":0, "Parcial":0, "N-A":0, pending:0 };
+  let critFindings = { "Muy Grave":0, "Grave":0, "Moderada":0, "Leve":0 };
+
+  ITEMS.forEach(it => {
+    const s = getItemState(it.id);
+    if(!s.cumple){ counts.pending++; return; }
+    counts[s.cumple] = (counts[s.cumple]||0) + 1;
+    if(s.cumple === "No" || s.cumple === "Parcial"){
+      critFindings[it.criticidad] = (critFindings[it.criticidad]||0) + 1;
+    }
+  });
+
+  const answered = total - counts.pending;
+  const applicable = total - counts["N-A"];
+  const pct = applicable > 0 ? Math.round((counts["Sí"] / applicable) * 100) : 0;
+
+  const dash = document.getElementById("dashboard");
+  dash.innerHTML = "";
+  const cards = [
+    ["Ítems totales", total, ""],
+    ["Cumple", counts["Sí"], "si"],
+    ["No cumple", counts["No"], "no"],
+    ["Parcial", counts["Parcial"], "parcial"],
+    ["Sin marcar", counts.pending, ""],
+    ["% cumplimiento", pct + "%", "pct"],
+  ];
+  cards.forEach(([label, num, cls]) => {
+    const div = document.createElement("div");
+    div.className = "stat-card " + cls;
+    div.innerHTML = '<div class="num">' + num + '</div><div class="label">' + label + '</div>';
+    dash.appendChild(div);
+  });
+
+  document.getElementById("progressFill").style.width = Math.round((answered/total)*100) + "%";
+
+  const critWrap = document.getElementById("critSummary");
+  critWrap.innerHTML = "";
+  const colors = { "Muy Grave":"var(--muy-grave)", "Grave":"var(--grave)", "Moderada":"var(--moderada)", "Leve":"var(--leve)" };
+  Object.keys(critFindings).forEach(k => {
+    const pill = document.createElement("div");
+    pill.className = "crit-pill";
+    pill.style.background = colors[k];
+    pill.textContent = k + ": " + critFindings[k] + " hallazgo(s)";
+    critWrap.appendChild(pill);
+  });
+  if(Object.values(critFindings).every(v => v === 0)){
+    const pill = document.createElement("div");
+    pill.className = "crit-pill";
+    pill.style.background = "var(--na)";
+    pill.textContent = "Todavía no hay hallazgos (No/Parcial) cargados";
+    critWrap.appendChild(pill);
+  }
+}
+
+// ---------------- List rendering ----------------
+function matchesFilters(it){
+  if(filters.crit !== "all" && it.criticidad !== filters.crit) return false;
+  if(filters.chapter !== "all" && String(it.cap) !== filters.chapter) return false;
+  const s = getItemState(it.id);
+  if(filters.cumple === "__pending" && s.cumple) return false;
+  if(filters.cumple !== "all" && filters.cumple !== "__pending" && s.cumple !== filters.cumple) return false;
+  if(filters.q){
+    const hay = (it.id + " " + it.requisito + " " + it.art + " " + it.procedimiento).toLowerCase();
+    if(!hay.includes(filters.q.toLowerCase())) return false;
+  }
+  return true;
+}
+
+function cumpleBtnRow(it){
+  const wrap = document.createElement("div");
+  wrap.className = "cumple-group";
+  ["Sí","No","Parcial","N-A"].forEach(val => {
+    const btn = document.createElement("button");
+    btn.className = "cumple-btn";
+    btn.dataset.val = val;
+    btn.textContent = val === "N-A" ? "N/A" : val;
+    const cur = getItemState(it.id).cumple;
+    if(cur === val) btn.classList.add("active");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const already = getItemState(it.id).cumple === val;
+      setItemState(it.id, { cumple: already ? "" : val });
+      renderDashboard();
+      renderList();
+    });
+    wrap.appendChild(btn);
+  });
+  return wrap;
+}
+
+function buildItemCard(it){
+  const card = document.createElement("div");
+  card.className = "item";
+  card.dataset.id = it.id;
+
+  const head = document.createElement("div");
+  head.className = "item-head";
+  const s = getItemState(it.id);
+
+  const dot = document.createElement("div");
+  dot.className = "status-dot";
+  if(s.cumple) dot.dataset.cumple = s.cumple;
+
+  const idEl = document.createElement("div");
+  idEl.className = "item-id";
+  idEl.textContent = it.id;
+
+  const main = document.createElement("div");
+  main.className = "item-main";
+  const req = document.createElement("div");
+  req.className = "item-req";
+  req.textContent = it.requisito;
+  const tags = document.createElement("div");
+  tags.className = "item-tags";
+  tags.innerHTML =
+    '<span class="badge-crit" data-crit="'+it.criticidad+'">'+it.criticidad+'</span>' +
+    '<span class="badge-art">'+it.art+'</span>';
+  main.appendChild(req);
+  main.appendChild(tags);
+
+  head.appendChild(dot);
+  head.appendChild(idEl);
+  head.appendChild(main);
+
+  head.addEventListener("click", () => {
+    card.classList.toggle("expanded");
+  });
+
+  const body = document.createElement("div");
+  body.className = "item-body";
+
+  body.appendChild(cumpleBtnRow(it));
+
+  const proc = document.createElement("div");
+  proc.className = "proc-box";
+  proc.innerHTML = '<div class="proc-label">🔎 Qué hacer como inspector</div><div>' + escapeHtml(it.procedimiento) + '</div>';
+  body.appendChild(proc);
+
+  const evidWrap = document.createElement("div");
+  evidWrap.className = "evid-field";
+  const lab = document.createElement("label");
+  lab.textContent = "Evidencia observada / documento solicitado";
+  const ta = document.createElement("textarea");
+  ta.value = s.evidencia || "";
+  ta.placeholder = "Anotá acá qué te mostraron, qué faltó, nombre del documento, etc.";
+  ta.addEventListener("click", e => e.stopPropagation());
+  ta.addEventListener("input", () => {
+    setItemState(it.id, { evidencia: ta.value });
+  });
+  evidWrap.appendChild(lab);
+  evidWrap.appendChild(ta);
+  body.appendChild(evidWrap);
+
+  card.appendChild(head);
+  card.appendChild(body);
+  return card;
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function renderList(){
+  const container = document.getElementById("chaptersContainer");
+  container.innerHTML = "";
+  let anyVisible = false;
+
+  CHAPTERS.forEach(ch => {
+    const chItems = ITEMS.filter(it => it.cap === ch.num && matchesFilters(it));
+    if(chItems.length === 0) return;
+    anyVisible = true;
+
+    const chDiv = document.createElement("div");
+    chDiv.className = "chapter";
+    chDiv.dataset.cap = ch.num;
+
+    const headDiv = document.createElement("div");
+    headDiv.className = "chapter-head";
+    headDiv.innerHTML =
+      '<h2>Cap. '+ch.num+' — '+ch.name+'</h2>' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<span class="meta-count">'+chItems.length+' ítem(s)</span>' +
+        '<span class="chevron">▾</span>' +
+      '</div>';
+    headDiv.addEventListener("click", () => chDiv.classList.toggle("collapsed"));
+
+    const bodyDiv = document.createElement("div");
+    bodyDiv.className = "chapter-body";
+    chItems.forEach(it => bodyDiv.appendChild(buildItemCard(it)));
+
+    chDiv.appendChild(headDiv);
+    chDiv.appendChild(bodyDiv);
+    container.appendChild(chDiv);
+  });
+
+  if(!anyVisible){
+    container.innerHTML = '<div class="empty-state">No hay ítems que coincidan con los filtros aplicados.</div>';
+  }
+}
+
+// ---------------- Filters wiring ----------------
+function wireFilters(){
+  document.getElementById("critFilters").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if(!chip) return;
+    document.querySelectorAll("#critFilters .chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    filters.crit = chip.dataset.crit;
+    renderList();
+  });
+  document.getElementById("cumpleFilters").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if(!chip) return;
+    document.querySelectorAll("#cumpleFilters .chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    filters.cumple = chip.dataset.cumple;
+    renderList();
+  });
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    filters.q = e.target.value;
+    renderList();
+  });
+  document.getElementById("clearFilters").addEventListener("click", () => {
+    filters = { crit: "all", cumple: "all", chapter: "all", q: "" };
+    document.getElementById("searchInput").value = "";
+    document.getElementById("chapterFilter").value = "all";
+    document.querySelectorAll("#critFilters .chip").forEach(c => c.classList.remove("active"));
+    document.querySelector('#critFilters .chip[data-crit="all"]').classList.add("active");
+    document.querySelectorAll("#cumpleFilters .chip").forEach(c => c.classList.remove("active"));
+    document.querySelector('#cumpleFilters .chip[data-cumple="all"]').classList.add("active");
+    renderList();
+  });
+}
+
+// ---------------- Theme ----------------
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  document.getElementById("themeLabel").textContent = theme === "dark" ? "Oscuro" : "Claro";
+  localStorage.setItem(THEME_KEY, theme);
+}
+function initTheme(){
+  let saved = null;
+  try{ saved = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(!saved){
+    saved = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  applyTheme(saved);
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+}
+
+// ---------------- Toast ----------------
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+// ---------------- Export / Import ----------------
+async function exportData(){
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    tipo: "inspeccion_bpd_cofarsur",
+    meta: state.meta,
+    items: state.items
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const fname = "inspeccion_bpd_" + (state.meta.fecha || "sin_fecha").replace(/[\/\:]/g,"-") + ".json";
+
+  try{
+    const downloads = await (window.claude && window.claude.use ? window.claude.use("downloads") : Promise.resolve(null));
+    if(downloads){
+      await downloads.save({ filename: fname, data: json });
+      showToast("Exportado: " + fname);
+      return;
+    }
+  }catch(e){
+    if(e && e.code === "declined"){ return; }
+    console.warn("downloads capability falló, uso fallback", e);
+  }
+  try{
+    const blob = new Blob([json], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Exportado: " + fname);
+  }catch(e2){
+    showToast("No se pudo exportar el archivo en este dispositivo.");
+  }
+}
+
+function importData(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!parsed || typeof parsed !== "object") throw new Error("formato inválido");
+      const base = defaultState();
+      state = {
+        meta: Object.assign({}, base.meta, parsed.meta || {}),
+        items: parsed.items || {}
+      };
+      saveState();
+      renderMeta();
+      renderDashboard();
+      renderList();
+      showToast("Importación completada.");
+    }catch(e){
+      showToast("El archivo no tiene un formato válido.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ---------------- Reset ----------------
+function wireReset(){
+  const overlay = document.getElementById("resetModal");
+  document.getElementById("resetBtn").addEventListener("click", () => overlay.classList.add("show"));
+  document.getElementById("cancelReset").addEventListener("click", () => overlay.classList.remove("show"));
+  document.getElementById("confirmReset").addEventListener("click", () => {
+    state = defaultState();
+    saveState();
+    renderMeta();
+    renderDashboard();
+    renderList();
+    overlay.classList.remove("show");
+    showToast("Se reinició toda la carga.");
+  });
+  overlay.addEventListener("click", (e) => { if(e.target === overlay) overlay.classList.remove("show"); });
+}
+
+// ---------------- Init ----------------
+function init(){
+  initTheme();
+  renderMeta();
+  renderChapterSelect();
+  renderDashboard();
+  renderList();
+  wireFilters();
+  wireReset();
+
+  document.getElementById("exportBtn").addEventListener("click", exportData);
+  document.getElementById("importInput").addEventListener("change", (e) => {
+    if(e.target.files && e.target.files[0]) importData(e.target.files[0]);
+    e.target.value = "";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
