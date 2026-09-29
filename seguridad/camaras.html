@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CENTINELA · Control de Cámaras</title>
+<style>
+:root{
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","Consolas","SF Mono",Menlo,monospace;
+  --r:14px;
+}
+[data-theme="dark"]{
+  --bg:#070b12; --bg2:#0c121d; --panel:#111a28; --panel2:#16213a; --line:#1f2c44;
+  --text:#e6edf7; --muted:#8497b3; --accent:#22d3ee; --accent2:#0ea5c6; --accent-ink:#04222b;
+  --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --rec:#ff3b4e;
+  --shadow:0 10px 30px rgba(0,0,0,.45); --glow:0 0 0 1px rgba(34,211,238,.25),0 0 22px rgba(34,211,238,.12);
+  --view1:#0a1422; --view2:#0d1d33; --scan:rgba(255,255,255,.035); --grid:rgba(34,211,238,.06);
+}
+[data-theme="light"]{
+  --bg:#eef2f7; --bg2:#e5ebf3; --panel:#ffffff; --panel2:#f3f6fb; --line:#d6dfeb;
+  --text:#0f1b2d; --muted:#5b6b82; --accent:#0a7c96; --accent2:#0e6b82; --accent-ink:#ffffff;
+  --ok:#15803d; --warn:#b45309; --bad:#c81e2e; --rec:#e11d2e;
+  --shadow:0 8px 24px rgba(20,40,80,.10); --glow:0 0 0 1px rgba(10,124,150,.25),0 6px 20px rgba(10,124,150,.10);
+  --view1:#1b2a40; --view2:#26415f; --scan:rgba(255,255,255,.05); --grid:rgba(255,255,255,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;min-height:100vh;
+  background-image:radial-gradient(1200px 500px at 80% -10%,rgba(34,211,238,.08),transparent 60%);}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+svg{display:block}
+
+/* ---------- Sidebar ---------- */
+aside{width:236px;flex:none;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;
+  padding:18px 14px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px}
+.brand .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid;place-items:center;color:var(--accent-ink);box-shadow:var(--glow)}
+.brand b{display:block;letter-spacing:.16em;font-size:15px}
+.brand small{color:var(--muted);font-size:11px;letter-spacing:.08em}
+nav{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.nav-btn{display:flex;align-items:center;gap:11px;background:none;border:1px solid transparent;border-radius:10px;
+  padding:11px 12px;text-align:left;color:var(--muted);font-weight:600;font-size:14px;transition:.15s}
+.nav-btn:hover{background:var(--panel);color:var(--text)}
+.nav-btn.active{background:var(--panel);color:var(--accent);border-color:var(--line);box-shadow:var(--glow)}
+.nav-btn .count{margin-left:auto;font-family:var(--mono);font-size:11px;background:var(--panel2);border:1px solid var(--line);
+  padding:1px 7px;border-radius:99px;color:var(--muted)}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.side-title{font-size:10px;letter-spacing:.14em;color:var(--muted);padding:0 8px;text-transform:uppercase;margin:14px 0 2px}
+
+/* ---------- Main ---------- */
+main{flex:1;min-width:0;display:flex;flex-direction:column}
+header.top{display:flex;align-items:center;gap:14px;padding:16px 26px;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+header.top h1{font-size:19px;margin:0;letter-spacing:.02em}
+header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
+.spacer{flex:1}
+.clock{font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:7px 11px;display:flex;gap:8px;align-items:center}
+.live{width:8px;height:8px;border-radius:50%;background:var(--rec);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rec) 70%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:9px 13px;font-weight:600;font-size:13px;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+.btn.danger{color:var(--bad)}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.btn.icon{padding:9px;width:38px;justify-content:center}
+.btn.unlocked{border-color:var(--warn);color:var(--warn);box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 15%,transparent)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.btn.icon.sm{width:32px;height:32px;padding:0;flex:none}
+.wrap{padding:24px 26px 60px;max-width:1500px;width:100%;margin:0 auto}
+.view{display:none}.view.active{display:block}
+
+/* ---------- Stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;right:-20px;bottom:-30px;width:90px;height:90px;border-radius:50%;
+  background:var(--c,var(--accent));opacity:.08}
+.stat .lbl{font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.stat .num{font-size:34px;font-weight:700;line-height:1.15;margin-top:4px;font-family:var(--mono);color:var(--c,var(--text))}
+.stat .hint{font-size:12px;color:var(--muted)}
+.bar{height:6px;border-radius:9px;background:var(--panel2);margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c,var(--accent));border-radius:9px;transition:width .4s}
+
+/* ---------- Toolbar ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.tab{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 15px;font-weight:700;font-size:13px;
+  display:flex;gap:9px;align-items:center;color:var(--muted);transition:.15s;cursor:pointer}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-color:var(--accent);box-shadow:var(--glow)}
+.tab .count{font-family:var(--mono);font-size:11px;background:var(--panel2);padding:1px 7px;border-radius:99px}
+.tab-edit{background:none;border:none;color:var(--muted);padding:2px;border-radius:6px;display:grid}
+.tab-edit:hover{color:var(--accent)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.search{position:relative;flex:1 1 260px;max-width:420px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;padding:10px 12px 10px 38px;background:var(--panel);border:1px solid var(--line);border-radius:10px;outline:none}
+.search input:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--muted)}
+.chip:hover{color:var(--text)}
+.chip.active{background:color-mix(in srgb,var(--accent) 16%,var(--panel));border-color:var(--accent);color:var(--accent)}
+
+/* ---------- Camera cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.cam{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .15s,border-color .15s,box-shadow .15s}
+.cam:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:var(--shadow)}
+.view-box{position:relative;height:118px;background:
+  linear-gradient(var(--grid) 1px,transparent 1px) 0 0/22px 22px,
+  linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/22px 22px,
+  linear-gradient(135deg,var(--view1),var(--view2));
+  display:flex;align-items:center;justify-content:center;color:#7dd3e8}
+.view-box::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,var(--scan) 0 1px,transparent 1px 3px);pointer-events:none}
+.view-box .ico{opacity:.55;filter:drop-shadow(0 0 8px rgba(34,211,238,.4))}
+.corner{position:absolute;width:16px;height:16px;border:2px solid rgba(125,211,232,.85)}
+.corner.tl{top:9px;left:9px;border-right:0;border-bottom:0}.corner.tr{top:9px;right:9px;border-left:0;border-bottom:0}
+.corner.bl{bottom:9px;left:9px;border-right:0;border-top:0}.corner.br{bottom:9px;right:9px;border-left:0;border-top:0}
+.camtag{position:absolute;left:14px;bottom:14px;font-family:var(--mono);font-weight:700;font-size:22px;color:#e9fbff;
+  text-shadow:0 0 12px rgba(34,211,238,.7);letter-spacing:.04em}
+.camtag small{font-size:11px;opacity:.7;margin-right:5px;letter-spacing:.14em}
+.rec{position:absolute;right:16px;top:14px;display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;color:#e9fbff;letter-spacing:.1em}
+.rec i{width:9px;height:9px;border-radius:50%;background:var(--rec);animation:blink 1.2s infinite}
+.rec.off i{background:#64748b;animation:none}
+.rec.warn i{background:var(--warn)}
+@keyframes blink{50%{opacity:.25}}
+.cam-body{padding:14px 15px 15px;display:flex;flex-direction:column;gap:10px;flex:1}
+.cam-head{display:flex;gap:8px;align-items:flex-start}
+.cam-name{font-weight:700;font-size:16px;line-height:1.25;flex:1;word-break:break-word;padding-top:5px}
+.cam-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{font-size:11px;font-weight:700;border-radius:99px;padding:3px 9px;border:1px solid var(--line);color:var(--muted);background:var(--panel2);
+  display:inline-flex;align-items:center;gap:5px}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.pill.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
+.pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.cam textarea{width:100%;min-height:92px;resize:vertical;background:var(--bg2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 11px;font-size:13.5px;line-height:1.45;outline:none}
+.cam textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.cam-foot{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.cam-foot select{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:4px 6px;font-size:12px;outline:none}
+.saved{margin-left:auto;font-family:var(--mono);opacity:0;transition:opacity .3s;color:var(--ok)}
+.saved.show{opacity:1}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+.empty b{display:block;color:var(--text);margin-bottom:6px;font-size:16px}
+
+/* ---------- Links ---------- */
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.link{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px;display:flex;flex-direction:column;gap:8px;transition:.15s}
+.link:hover{border-color:var(--accent);box-shadow:var(--glow)}
+.link .cat{font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:700}
+.link a.t{color:var(--text);font-weight:700;font-size:15px;text-decoration:none;display:flex;gap:8px;align-items:center;word-break:break-word}
+.link a.t:hover{color:var(--accent)}
+.link .u{font-family:var(--mono);font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
+.link .acts{display:flex;gap:6px;margin-top:auto;padding-top:4px}
+
+/* ---------- Modal / toast ---------- */
+.overlay{position:fixed;inset:0;background:rgba(3,7,14,.66);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.overlay.open{display:flex}
+.modal{width:100%;max-width:460px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);
+  animation:pop .18s ease-out;max-height:92vh;overflow:auto}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.modal h2{margin:0 0 4px;font-size:18px}
+.modal .desc{color:var(--muted);font-size:13px;margin:0 0 16px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.field input,.field select,.field textarea{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;width:100%}
+.field textarea{min-height:70px;resize:vertical}
+.row2{display:grid;grid-template-columns:110px 1fr;gap:12px}
+.modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.modal .acts .left{margin-right:auto}
+.err{color:var(--bad);font-size:12.5px;min-height:18px;margin:-4px 0 8px}
+.toasts{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:200}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:11px 15px;font-size:13px;
+  box-shadow:var(--shadow);animation:pop .2s;max-width:340px}
+.toast.bad{border-left-color:var(--bad)}.toast.ok{border-left-color:var(--ok)}
+.lockbar{display:none;align-items:center;gap:10px;background:color-mix(in srgb,var(--warn) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line));
+  color:var(--warn);border-radius:12px;padding:9px 14px;margin-bottom:16px;font-size:13px;font-weight:600}
+.lockbar.on{display:flex}
+
+/* ---------- Responsive ---------- */
+@media(max-width:980px){
+  body{flex-direction:column}
+  aside{width:100%;height:auto;position:sticky;top:0;z-index:30;flex-direction:row;align-items:center;padding:8px 12px;border-right:0;border-bottom:1px solid var(--line);gap:8px}
+  .brand{padding:0}.brand small,.side-title{display:none}
+  .side-foot{flex-direction:row;margin:0}
+  .side-foot .btn{padding:8px 10px;font-size:12px}
+  nav{flex-direction:row;margin:0 0 0 auto}
+  header.top{position:static;padding:14px 16px}.wrap{padding:16px 14px 50px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){.grid,.links{grid-template-columns:1fr}.nav-btn span.t,.brand div:last-child,.side-foot .btn span{display:none}}
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="brand">
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3z"/><circle cx="12" cy="11" r="2.6"/></svg></div>
+    <div><b>CENTINELA</b><small>CONTROL DE CÁMARAS</small></div>
+  </div>
+  <nav>
+    <button class="nav-btn active" data-view="cams"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h13a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><path d="M18 11l4-2v8l-4-2"/></svg><span class="t">Cámaras</span><span class="count" id="navCamCount">0</span></button>
+    <button class="nav-btn" data-view="links"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg><span class="t">Enlaces útiles</span><span class="count" id="navLinkCount">0</span></button>
+  </nav>
+  <div class="side-foot">
+    <div class="side-title">Datos</div>
+    <button class="btn" id="btnExport"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/></svg><span>Exportar JSON</span></button>
+    <button class="btn" id="btnImport"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0L8 7m4-4l4 4M4 17v3h16v-3"/></svg><span>Importar JSON</span></button>
+    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  </div>
+</aside>
+
+<main>
+  <header class="top">
+    <div>
+      <h1 id="pageTitle">Inventario de cámaras</h1>
+      <div class="sub" id="pageSub">Sistema de videovigilancia · perímetro</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="clock"><span class="live"></span><span id="clock">--:--:--</span></div>
+    <button class="btn" id="btnLock"></button>
+    <button class="btn icon" id="btnTheme" aria-label="Cambiar tema"></button>
+  </header>
+
+  <div class="wrap">
+    <div class="lockbar" id="lockbar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 017.5-2"/></svg>
+      Modo edición activo: podés cambiar numeración, nombres, NVR y agregar o quitar cámaras. Se bloquea solo tras 5 min sin actividad.
+    </div>
+
+    <!-- ===== CÁMARAS ===== -->
+    <section class="view active" id="view-cams">
+      <div class="stats" id="stats"></div>
+      <div class="tabs" id="nvrTabs"></div>
+      <div class="toolbar">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="q" type="search" placeholder="Buscar por número, nombre o descripción…" autocomplete="off">
+        </div>
+        <div class="chips" id="chips"></div>
+        <div class="spacer"></div>
+        <button class="btn primary" id="btnAddCam"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Agregar cámara</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ===== ENLACES ===== -->
+    <section class="view" id="view-links">
+      <div class="toolbar">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="ql" type="search" placeholder="Buscar enlaces…" autocomplete="off">
+        </div>
+        <div class="spacer"></div>
+        <button class="btn primary" id="btnAddLink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Agregar enlace</button>
+      </div>
+      <div class="links" id="links"></div>
+    </section>
+  </div>
+</main>
+
+<!-- Modales -->
+<div class="overlay" id="mPass"><div class="modal" role="dialog" aria-modal="true">
+  <h2>Desbloquear edición</h2>
+  <p class="desc">Ingresá la clave para modificar numeración, nombres y estructura de cámaras.</p>
+  <div class="field"><label for="passIn">Clave</label><input type="password" id="passIn" autocomplete="off"></div>
+  <div class="err" id="passErr"></div>
+  <div class="acts"><button class="btn" data-close>Cancelar</button><button class="btn primary" id="passOk">Desbloquear</button></div>
+</div></div>
+
+<div class="overlay" id="mCam"><div class="modal" role="dialog" aria-modal="true">
+  <h2 id="mCamTitle">Editar cámara</h2>
+  <p class="desc">Número y nombre tal como figuran en el NVR.</p>
+  <div class="row2">
+    <div class="field"><label for="fNum">N.º</label><input id="fNum" maxlength="6" placeholder="S/N"></div>
+    <div class="field"><label for="fName">Nombre</label><input id="fName" maxlength="60" placeholder="Ej: Playón 5"></div>
+  </div>
+  <div class="field"><label for="fType">Tipo</label>
+    <select id="fType"><option value="fija">Fija</option><option value="termica">Térmica</option><option value="domo">Domo</option><option value="facial">Reconocimiento facial</option><option value="otra">Otra</option></select></div>
+  <div class="err" id="camErr"></div>
+  <div class="acts"><button class="btn danger left" id="camDel">Eliminar</button><button class="btn" data-close>Cancelar</button><button class="btn primary" id="camOk">Guardar</button></div>
+</div></div>
+
+<div class="overlay" id="mNvr"><div class="modal" role="dialog" aria-modal="true">
+  <h2>Renombrar NVR</h2>
+  <p class="desc">Nombre que aparece en la pestaña.</p>
+  <div class="field"><label for="fNvr">Nombre</label><input id="fNvr" maxlength="40"></div>
+  <div class="acts"><button class="btn" data-close>Cancelar</button><button class="btn primary" id="nvrOk">Guardar</button></div>
+</div></div>
+
+<div class="overlay" id="mLink"><div class="modal" role="dialog" aria-modal="true">
+  <h2 id="mLinkTitle">Nuevo enlace</h2>
+  <p class="desc">Accesos rápidos para el coordinador de seguridad.</p>
+  <div class="field"><label for="lTitle">Título</label><input id="lTitle" maxlength="80" placeholder="Ej: Portal del proveedor de CCTV"></div>
+  <div class="field"><label for="lUrl">URL</label><input id="lUrl" placeholder="https://…"></div>
+  <div class="field"><label for="lCat">Categoría (opcional)</label><input id="lCat" maxlength="30" placeholder="Ej: Proveedores, Procedimientos"></div>
+  <div class="field"><label for="lDesc">Descripción (opcional)</label><textarea id="lDesc" maxlength="240"></textarea></div>
+  <div class="err" id="linkErr"></div>
+  <div class="acts"><button class="btn danger left" id="linkDel">Eliminar</button><button class="btn" data-close>Cancelar</button><button class="btn primary" id="linkOk">Guardar</button></div>
+</div></div>
+
+<div class="overlay" id="mConfirm"><div class="modal" role="dialog" aria-modal="true">
+  <h2 id="cTitle">Confirmar</h2>
+  <p class="desc" id="cText"></p>
+  <div class="acts"><button class="btn" data-close>Cancelar</button><button class="btn primary" id="cOk">Aceptar</button></div>
+</div></div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ===== Configuración ===== */
+const KEY = "centinela_camaras_v1";
+const THEME_KEY = "centinela_tema";
+const PASS_HASH = "4053577329116471";   // la clave se guarda como hash: disuade, pero no es seguridad real (el código es visible)
+const AUTOLOCK_MS = 5 * 60 * 1000;
+
+const cyrb53 = (str, seed = 0) => {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507); h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507); h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return String(4294967296 * (2097151 & h2) + (h1 >>> 0));
+};
+const hashPass = p => cyrb53("centinela|" + p);
+
+/* ===== Datos iniciales (según la captura del NVR) ===== */
+const seedCams = [
+  ["1","Tejido Noreste","fija"],["2","Tejido Noroeste","fija"],["3","Portón Norte","fija"],
+  ["4","Playón 1","fija"],["5","Playón 2","fija"],["6","Playón 3","fija"],["7","Playón 4","fija"],["8","Playón 5","fija"],
+  ["9","Tejido Este 1","fija"],["10","Tejido Este 2","fija"],["11","Tejido Oeste 1","fija"],
+  ["12","Callejón Tierra 1","fija"],["13","Vista Cochera Sur","fija"],["14","Callejón de Tierra 2","fija"],
+  ["15","Térmica Oeste","termica"],["16","Tejido Sureste","fija"],["17","Térmica Sureste","termica"],
+  ["","Domo","domo"],["","Facial Ingreso Sur","facial"],["","Facial Egreso Sur","facial"]
+];
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const mkCam = ([num, name, type]) => ({ id: uid(), num, name, type, status: "ok", desc: "", updated: "" });
+const seed = () => ({
+  version: 1,
+  nvrs: [
+    { id: uid(), name: "NVR 1 · Perimetral", cams: seedCams.map(mkCam) },
+    { id: uid(), name: "NVR 2", cams: [] }
+  ],
+  links: []
+});
+
+/* ===== Estado ===== */
+let db = load();
+const ui = { view: "cams", nvr: db.nvrs[0].id, filter: "all", q: "", ql: "", unlocked: false };
+let lockTimer = null;
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const d = sanitize(JSON.parse(raw)); if (d) return d; }
+  } catch (e) {}
+  return seed();
+}
+let storageWarned = false;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); }
+  catch (e) { if (!storageWarned) { storageWarned = true; toast("No se pudo guardar en el navegador. Exportá un JSON para no perder datos.", "bad"); } }
+}
+const str = (v, n) => (typeof v === "string" ? v : "").slice(0, n);
+function sanitize(d) {
+  if (!d || typeof d !== "object" || !Array.isArray(d.nvrs) || !d.nvrs.length) return null;
+  const types = ["fija","termica","domo","facial","otra"], sts = ["ok","warn","bad"];
+  const out = { version: 1, nvrs: [], links: [] };
+  d.nvrs.slice(0, 20).forEach(n => {
+    if (!n || typeof n !== "object") return;
+    out.nvrs.push({
+      id: str(n.id, 40) || uid(), name: str(n.name, 40) || "NVR",
+      cams: (Array.isArray(n.cams) ? n.cams : []).slice(0, 500).map(c => {
+        c = c && typeof c === "object" ? c : {};
+        return {
+          id: str(c.id, 40) || uid(), num: str(c.num, 6), name: str(c.name, 60) || "Sin nombre",
+          type: types.includes(c.type) ? c.type : "otra", status: sts.includes(c.status) ? c.status : "ok",
+          desc: str(c.desc, 4000), updated: str(c.updated, 40)
+        };
+      })
+    });
+  });
+  if (!out.nvrs.length) return null;
+  (Array.isArray(d.links) ? d.links : []).slice(0, 500).forEach(l => {
+    const u = l && safeUrl(l.url); if (!u) return;
+    out.links.push({ id: str(l.id, 40) || uid(), title: str(l.title, 80) || u, url: u, cat: str(l.cat, 30), desc: str(l.desc, 240) });
+  });
+  return out;
+}
+function safeUrl(u) {
+  if (typeof u !== "string") return "";
+  u = u.trim(); if (!u) return "";
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = "https://" + u;
+  try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ""; } catch (e) { return ""; }
+}
+
+/* ===== Utilidades DOM ===== */
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k === "html") e.innerHTML = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  kids.flat().forEach(c => { if (c === "" || c == null) return; e.append(c.nodeType ? c : document.createTextNode(c)); });
+  return e;
+}
+const SV = (p, w = 16, extra = "") => `<svg class="${extra}" width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${extra ? 1.5 : 2}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const I = {
+  edit: SV('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>', 15),
+  lock: SV('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>'),
+  unlock: SV('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 017.5-2"/>'),
+  sun: SV('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', 18),
+  moon: SV('<path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/>', 18),
+  ext: SV('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>', 14),
+  cams: {
+    fija: SV('<path d="M3 9l13-3 2 6-13 3z"/><path d="M18 12l3 1"/><path d="M10 16l-1 5"/><path d="M7 21h6"/>', 54, "ico"),
+    termica: SV('<path d="M14 14.8V5a2 2 0 00-4 0v9.8a4 4 0 104 0z"/><path d="M12 9v7"/><path d="M18 6h3M18 10h2"/>', 54, "ico"),
+    domo: SV('<path d="M4 10a8 8 0 0116 0z"/><path d="M3 10h18v2H3z"/><circle cx="12" cy="7" r="1.6"/><path d="M12 12v6M8 21h8"/>', 54, "ico"),
+    facial: SV('<path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><circle cx="9.5" cy="10.5" r=".6"/><circle cx="14.5" cy="10.5" r=".6"/><path d="M12 10v3h-1M9.5 15.5c1.5 1.3 3.5 1.3 5 0"/>', 54, "ico"),
+    otra: SV('<path d="M3 8h13a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><path d="M18 11l4-2v8l-4-2"/>', 54, "ico")
+  }
+};
+const TYPE_LBL = { fija: "Fija", termica: "Térmica", domo: "Domo", facial: "Facial", otra: "Otra" };
+const ST = { ok: ["Operativa", "ok"], warn: ["Con falla", "warn"], bad: ["Fuera de servicio", "bad"] };
+
+function toast(msg, kind = "") {
+  const t = el("div", { class: "toast " + kind }, msg);
+  $("#toasts").append(t); setTimeout(() => t.remove(), 3800);
+}
+function openM(id) {
+  $("#" + id).classList.add("open");
+  const f = $("#" + id + " input:not([type=hidden]), #" + id + " select");
+  if (f) setTimeout(() => f.focus(), 30);
+}
+function closeM(id) { $("#" + id).classList.remove("open"); }
+$$(".overlay").forEach(o => {
+  o.addEventListener("mousedown", e => { if (e.target === o) o.classList.remove("open"); });
+  o.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => o.classList.remove("open")));
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") $$(".overlay.open").forEach(o => o.classList.remove("open"));
+  if (e.key === "Enter" && e.target.tagName === "INPUT") {
+    const m = e.target.closest(".overlay.open");
+    if (m) { const ok = m.querySelector(".btn.primary"); if (ok) ok.click(); }
+  }
+});
+function confirmBox(title, text, okLabel = "Aceptar") {
+  return new Promise(res => {
+    $("#cTitle").textContent = title; $("#cText").textContent = text; $("#cOk").textContent = okLabel;
+    const o = $("#mConfirm"), ok = $("#cOk");
+    let settled = false;
+    const finish = v => { if (settled) return; settled = true; mo.disconnect(); ok.onclick = null; o.classList.remove("open"); res(v); };
+    const mo = new MutationObserver(() => { if (!o.classList.contains("open")) finish(false); });
+    ok.onclick = () => finish(true);
+    openM("mConfirm");
+    mo.observe(o, { attributes: true, attributeFilter: ["class"] });
+  });
+}
+
+/* ===== Bloqueo / edición con clave ===== */
+function armLock() {
+  clearTimeout(lockTimer);
+  if (ui.unlocked) lockTimer = setTimeout(() => { setLock(false); toast("Edición bloqueada por inactividad."); }, AUTOLOCK_MS);
+}
+function setLock(on) {
+  ui.unlocked = on; armLock();
+  const b = $("#btnLock");
+  b.classList.toggle("unlocked", on);
+  b.innerHTML = (on ? I.unlock : I.lock) + (on ? "Edición activa" : "Bloqueado");
+  b.title = on ? "Click para bloquear" : "Desbloquear edición de numeración y nombres";
+  $("#lockbar").classList.toggle("on", on);
+  renderAll();
+}
+["click", "keydown"].forEach(ev => document.addEventListener(ev, () => { if (ui.unlocked) armLock(); }));
+function requireUnlock(cb) {
+  if (ui.unlocked) return cb();
+  $("#passIn").value = ""; $("#passErr").textContent = "";
+  openM("mPass");
+  $("#passOk").onclick = () => {
+    if (hashPass($("#passIn").value) === PASS_HASH) { closeM("mPass"); setLock(true); toast("Edición desbloqueada.", "ok"); cb(); }
+    else { $("#passErr").textContent = "Clave incorrecta."; $("#passIn").select(); }
+  };
+}
+$("#btnLock").onclick = () => ui.unlocked ? (setLock(false), toast("Edición bloqueada.")) : requireUnlock(() => {});
+
+/* ===== Tema (oscuro por defecto) ===== */
+let theme = "dark";
+try { const t = localStorage.getItem(THEME_KEY); if (t === "light" || t === "dark") theme = t; } catch (e) {}
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", theme);
+  $("#btnTheme").innerHTML = theme === "dark" ? I.sun : I.moon;
+  $("#btnTheme").title = theme === "dark" ? "Cambiar a tema claro" : "Cambiar a tema oscuro";
+}
+applyTheme();
+$("#btnTheme").onclick = () => {
+  theme = theme === "dark" ? "light" : "dark"; applyTheme();
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+};
+
+/* ===== Reloj ===== */
+const p2 = n => String(n).padStart(2, "0");
+function tick() {
+  const d = new Date();
+  $("#clock").textContent = `${p2(d.getDate())}-${p2(d.getMonth() + 1)}-${d.getFullYear()}  ${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+}
+tick(); setInterval(tick, 1000);
+
+/* ===== Navegación ===== */
+$$(".nav-btn").forEach(b => b.onclick = () => { ui.view = b.dataset.view; renderAll(); });
+
+/* ===== Render cámaras ===== */
+const curNvr = () => db.nvrs.find(n => n.id === ui.nvr) || db.nvrs[0];
+const numSort = (a, b) => {
+  const A = parseInt(a.num, 10), B = parseInt(b.num, 10), an = isNaN(A), bn = isNaN(B);
+  if (an && bn) return a.name.localeCompare(b.name, "es");
+  if (an) return 1; if (bn) return -1;
+  return A - B || a.name.localeCompare(b.name, "es");
+};
+const fmtDate = iso => { if (!iso) return ""; const d = new Date(iso); return isNaN(d) ? "" : `${p2(d.getDate())}/${p2(d.getMonth() + 1)}/${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+
+function renderStats() {
+  const all = db.nvrs.flatMap(n => n.cams), tot = all.length;
+  const doc = all.filter(c => c.desc.trim()).length, ok = all.filter(c => c.status === "ok").length;
+  const issues = tot - ok;
+  const pct = tot ? Math.round(doc * 100 / tot) : 0, pctOk = tot ? Math.round(ok * 100 / tot) : 0;
+  const card = (lbl, num, hint, color, bar) => el("div", { class: "stat", style: `--c:${color}` },
+    el("div", { class: "lbl" }, lbl), el("div", { class: "num" }, String(num)), el("div", { class: "hint" }, hint),
+    bar != null ? el("div", { class: "bar" }, el("i", { style: `width:${bar}%` })) : null);
+  $("#stats").replaceChildren(
+    card("Cámaras totales", tot, `${db.nvrs.length} NVR registrados`, "var(--accent)", null),
+    card("Documentadas", pct + "%", `${doc} de ${tot} con descripción`, "var(--ok)", pct),
+    card("Operativas", pctOk + "%", `${ok} de ${tot} en servicio`, "var(--accent)", pctOk),
+    card("Con novedades", issues, issues ? "Con falla o fuera de servicio" : "Sin novedades", issues ? "var(--bad)" : "var(--ok)", null)
+  );
+}
+
+function renderTabs() {
+  const box = $("#nvrTabs"); box.replaceChildren();
+  db.nvrs.forEach(n => {
+    const t = el("div", { class: "tab" + (n.id === ui.nvr ? " active" : ""), role: "button", tabindex: "0", onclick: () => { ui.nvr = n.id; renderAll(); } },
+      el("span", {}, n.name), el("span", { class: "count" }, String(n.cams.length)));
+    if (ui.unlocked) t.append(el("button", { class: "tab-edit", title: "Renombrar NVR", "aria-label": "Renombrar NVR", html: I.edit, onclick: e => { e.stopPropagation(); renameNvr(n); } }));
+    box.append(t);
+  });
+}
+
+function renderChips() {
+  const opts = [["all", "Todas"], ["nodesc", "Sin describir"], ["ok", "Operativas"], ["warn", "Con falla"], ["bad", "Fuera de servicio"]];
+  $("#chips").replaceChildren(...opts.map(([k, l]) => el("button", { class: "chip" + (ui.filter === k ? " active" : ""), onclick: () => { ui.filter = k; renderChips(); renderCams(); } }, l)));
+}
+
+function renderCams() {
+  const nvr = curNvr(), q = ui.q.trim().toLowerCase();
+  const list = nvr.cams.filter(c => {
+    if (ui.filter === "nodesc" && c.desc.trim()) return false;
+    if (["ok", "warn", "bad"].includes(ui.filter) && c.status !== ui.filter) return false;
+    if (q && !(`${c.num} ${c.name} ${c.desc} ${TYPE_LBL[c.type]}`.toLowerCase().includes(q))) return false;
+    return true;
+  }).sort(numSort);
+  const g = $("#grid"); g.replaceChildren();
+  if (!list.length) {
+    g.append(el("div", { class: "empty" }, el("b", {}, nvr.cams.length ? "Sin resultados" : "Este NVR todavía no tiene cámaras"),
+      nvr.cams.length ? "Probá con otro filtro o búsqueda." : "Desbloqueá la edición y usá “Agregar cámara”."));
+    return;
+  }
+  list.forEach(c => g.append(camCard(c)));
+}
+
+function flash(n) { n.classList.add("show"); setTimeout(() => n.classList.remove("show"), 1400); }
+
+function camCard(c) {
+  const [stLbl, stCls] = ST[c.status];
+  const recCls = c.status === "ok" ? "" : c.status === "warn" ? " warn" : " off";
+  const recTxt = c.status === "ok" ? "REC" : c.status === "warn" ? "FALLA" : "SIN SEÑAL";
+
+  const ta = el("textarea", { placeholder: "Qué cubre o enfoca, ángulo de visión, puntos ciegos, particularidades…", "aria-label": "Descripción de " + c.name });
+  ta.value = c.desc;
+  const saved = el("span", { class: "saved" }, "✓ guardado");
+  const upd = el("span", {}, c.updated ? "Act. " + fmtDate(c.updated) : "");
+  let tm;
+  ta.addEventListener("input", () => {
+    clearTimeout(tm);
+    tm = setTimeout(() => {
+      c.desc = ta.value; c.updated = new Date().toISOString();
+      upd.textContent = "Act. " + fmtDate(c.updated); save(); renderStats(); flash(saved);
+    }, 350);
+  });
+
+  const sel = el("select", { "aria-label": "Estado" }, ...Object.entries(ST).map(([k, v]) => el("option", { value: k }, v[0])));
+  sel.value = c.status;
+  sel.addEventListener("change", () => { c.status = sel.value; c.updated = new Date().toISOString(); save(); renderStats(); renderCams(); });
+
+  const editBtn = el("button", { class: "btn icon sm", title: "Editar número y nombre (requiere clave)", "aria-label": "Editar número y nombre", html: I.edit, onclick: () => requireUnlock(() => editCam(c)) });
+
+  const vb = el("div", { class: "view-box", html: I.cams[c.type] || I.cams.otra },
+    el("i", { class: "corner tl" }), el("i", { class: "corner tr" }), el("i", { class: "corner bl" }), el("i", { class: "corner br" }),
+    el("div", { class: "rec" + recCls }, el("i"), recTxt),
+    el("div", { class: "camtag" }, el("small", {}, "CAM"), c.num ? c.num.padStart(2, "0") : "S/N"));
+
+  return el("article", { class: "cam" }, vb,
+    el("div", { class: "cam-body" },
+      el("div", { class: "cam-head" }, el("div", { class: "cam-name" }, c.name), editBtn),
+      el("div", { class: "cam-meta" },
+        el("span", { class: "pill" }, TYPE_LBL[c.type]),
+        el("span", { class: "pill " + stCls }, el("i", { class: "dot" }), stLbl)),
+      ta,
+      el("div", { class: "cam-foot" }, el("span", {}, "Estado"), sel, upd, saved)));
+}
+
+/* ===== Edición de cámaras / NVR ===== */
+let editing = null;
+function editCam(c, isNew = false) {
+  editing = { c, isNew };
+  $("#mCamTitle").textContent = isNew ? "Agregar cámara" : "Editar cámara";
+  $("#fNum").value = c.num; $("#fName").value = isNew ? "" : c.name; $("#fType").value = c.type; $("#camErr").textContent = "";
+  $("#camDel").style.display = isNew ? "none" : "";
+  openM("mCam");
+}
+$("#camOk").onclick = () => {
+  const num = $("#fNum").value.trim(), name = $("#fName").value.trim(), type = $("#fType").value;
+  if (!name) return $("#camErr").textContent = "El nombre es obligatorio.";
+  if (num && !/^[0-9A-Za-z-]{1,6}$/.test(num)) return $("#camErr").textContent = "El número admite letras, dígitos y guion (máx. 6).";
+  const dup = curNvr().cams.find(x => x.num && x.num === num && x.id !== editing.c.id);
+  if (dup) return $("#camErr").textContent = `El número ${num} ya lo usa “${dup.name}”.`;
+  Object.assign(editing.c, { num, name, type, updated: new Date().toISOString() });
+  if (editing.isNew) curNvr().cams.push(editing.c);
+  const wasNew = editing.isNew;
+  save(); closeM("mCam"); renderAll(); toast(wasNew ? "Cámara agregada." : "Cámara actualizada.", "ok");
+};
+$("#camDel").onclick = async () => {
+  const c = editing.c;
+  if (!await confirmBox("Eliminar cámara", `¿Eliminar “${c.name}” del inventario? Se pierde su descripción.`, "Eliminar")) return;
+  const n = curNvr(); n.cams = n.cams.filter(x => x.id !== c.id);
+  save(); closeM("mCam"); renderAll(); toast("Cámara eliminada.");
+};
+$("#btnAddCam").onclick = () => requireUnlock(() => editCam({ id: uid(), num: "", name: "", type: "fija", status: "ok", desc: "", updated: "" }, true));
+
+let nvrEditing = null;
+function renameNvr(n) { nvrEditing = n; $("#fNvr").value = n.name; openM("mNvr"); }
+$("#nvrOk").onclick = () => {
+  const v = $("#fNvr").value.trim(); if (!v) return;
+  nvrEditing.name = v; save(); closeM("mNvr"); renderAll();
+};
+
+/* ===== Enlaces ===== */
+let linkEditing = null;
+function renderLinks() {
+  const q = ui.ql.trim().toLowerCase(), box = $("#links"); box.replaceChildren();
+  const list = db.links.filter(l => !q || `${l.title} ${l.url} ${l.cat} ${l.desc}`.toLowerCase().includes(q))
+    .sort((a, b) => (a.cat || "~").localeCompare(b.cat || "~", "es") || a.title.localeCompare(b.title, "es"));
+  if (!list.length) {
+    box.append(el("div", { class: "empty" }, el("b", {}, db.links.length ? "Sin resultados" : "Todavía no hay enlaces"),
+      db.links.length ? "Probá con otra búsqueda." : "Agregá los accesos que necesita el coordinador: portales, procedimientos, contactos…"));
+    return;
+  }
+  list.forEach(l => box.append(el("div", { class: "link" },
+    l.cat ? el("div", { class: "cat" }, l.cat) : null,
+    el("a", { class: "t", href: l.url, target: "_blank", rel: "noopener noreferrer" }, l.title, el("span", { html: I.ext })),
+    el("div", { class: "u", title: l.url }, l.url),
+    l.desc ? el("p", {}, l.desc) : null,
+    el("div", { class: "acts" }, el("button", { class: "btn sm", onclick: () => editLink(l) }, "Editar")))));
+}
+function editLink(l) {
+  linkEditing = l || { id: uid() };
+  $("#mLinkTitle").textContent = l ? "Editar enlace" : "Nuevo enlace";
+  $("#lTitle").value = l ? l.title : ""; $("#lUrl").value = l ? l.url : ""; $("#lCat").value = l ? l.cat : ""; $("#lDesc").value = l ? l.desc : "";
+  $("#linkErr").textContent = ""; $("#linkDel").style.display = l ? "" : "none";
+  openM("mLink");
+}
+$("#btnAddLink").onclick = () => editLink(null);
+$("#linkOk").onclick = () => {
+  const title = $("#lTitle").value.trim(), url = safeUrl($("#lUrl").value);
+  if (!title) return $("#linkErr").textContent = "Ingresá un título.";
+  if (!url) return $("#linkErr").textContent = "La URL no es válida (solo http o https).";
+  Object.assign(linkEditing, { title, url, cat: $("#lCat").value.trim(), desc: $("#lDesc").value.trim() });
+  if (!db.links.includes(linkEditing)) db.links.push(linkEditing);
+  save(); closeM("mLink"); renderAll(); toast("Enlace guardado.", "ok");
+};
+$("#linkDel").onclick = async () => {
+  if (!await confirmBox("Eliminar enlace", `¿Eliminar “${linkEditing.title}”?`, "Eliminar")) return;
+  db.links = db.links.filter(x => x !== linkEditing); save(); closeM("mLink"); renderAll();
+};
+
+/* ===== Exportar / Importar JSON ===== */
+$("#btnExport").onclick = () => {
+  const payload = { app: "centinela-camaras", version: 1, exportedAt: new Date().toISOString(), nvrs: db.nvrs, links: db.links };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const d = new Date();
+  const a = el("a", { href: URL.createObjectURL(blob), download: `centinela-camaras-${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}.json` });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Copia exportada.", "ok");
+};
+$("#btnImport").onclick = () => requireUnlock(() => $("#fileIn").click());
+$("#fileIn").onchange = e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const r = new FileReader();
+  r.onload = async () => {
+    let data = null; try { data = sanitize(JSON.parse(r.result)); } catch (err) {}
+    if (!data) return toast("El archivo no tiene un formato válido.", "bad");
+    const nc = data.nvrs.reduce((s, n) => s + n.cams.length, 0);
+    if (!await confirmBox("Importar datos", `Se reemplazarán los datos actuales por ${nc} cámaras en ${data.nvrs.length} NVR y ${data.links.length} enlaces. Si querés conservar lo actual, exportá antes una copia.`, "Importar")) return;
+    db = data; ui.nvr = db.nvrs[0].id; save(); renderAll(); toast("Datos importados.", "ok");
+  };
+  r.readAsText(f);
+};
+
+/* ===== Render general ===== */
+function renderAll() {
+  $$(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.view === ui.view));
+  $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + ui.view));
+  $("#pageTitle").textContent = ui.view === "cams" ? "Inventario de cámaras" : "Enlaces útiles";
+  $("#pageSub").textContent = ui.view === "cams" ? "Sistema de videovigilancia · perímetro" : "Accesos rápidos del coordinador de seguridad";
+  $("#navCamCount").textContent = db.nvrs.reduce((s, n) => s + n.cams.length, 0);
+  $("#navLinkCount").textContent = db.links.length;
+  if (!db.nvrs.some(n => n.id === ui.nvr)) ui.nvr = db.nvrs[0].id;
+  renderStats(); renderTabs(); renderChips(); renderCams(); renderLinks();
+}
+$("#q").addEventListener("input", e => { ui.q = e.target.value; renderCams(); });
+$("#ql").addEventListener("input", e => { ui.ql = e.target.value; renderLinks(); });
+
+setLock(false);
+})();
+</script>
+</body>
+</html>
