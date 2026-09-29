@@ -148,6 +148,12 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
 .saved.show{opacity:1}
 .empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
 .empty b{display:block;color:var(--text);margin-bottom:6px;font-size:16px}
+.sector-h{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent)}
+.sector-h:first-child{margin-top:0}
+.sector-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.sector-h span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;background:var(--panel2);border:1px solid var(--line);
+  padding:1px 8px;border-radius:99px}
 
 /* ---------- Links ---------- */
 .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
@@ -282,6 +288,7 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
     <div class="field"><label for="fNum">N.º</label><input id="fNum" maxlength="6" placeholder="S/N"></div>
     <div class="field"><label for="fName">Nombre</label><input id="fName" maxlength="60" placeholder="Ej: Playón 5"></div>
   </div>
+  <div class="field"><label for="fSector">Sector (opcional)</label><input id="fSector" maxlength="40" list="sectorList" placeholder="Ej: Administración"><datalist id="sectorList"></datalist></div>
   <div class="field"><label for="fType">Tipo</label>
     <select id="fType"><option value="fija">Fija</option><option value="termica">Térmica</option><option value="domo">Domo</option><option value="facial">Reconocimiento facial</option><option value="otra">Otra</option></select></div>
   <div class="err" id="camErr"></div>
@@ -321,6 +328,7 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
 /* ===== Configuración ===== */
 const KEY = "centinela_camaras_v1";
 const THEME_KEY = "centinela_tema";
+const SEED2_KEY = "centinela_nvr2_cargado_v1";
 const PASS_HASH = "4053577329116471";   // la clave se guarda como hash: disuade, pero no es seguridad real (el código es visible)
 const AUTOLOCK_MS = 5 * 60 * 1000;
 
@@ -346,12 +354,27 @@ const seedCams = [
   ["","Domo","domo"],["","Facial Ingreso Sur","facial"],["","Facial Egreso Sur","facial"]
 ];
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
-const mkCam = ([num, name, type]) => ({ id: uid(), num, name, type, status: "ok", desc: "", updated: "" });
+const mkCam = ([num, name, type, sector]) => ({ id: uid(), num, name, type, sector: sector || "", status: "ok", desc: "", updated: "" });
+
+/* NVR 2: cámaras agrupadas por sector (cercanía). La numeración 1..N se asigna de corrido según este orden. */
+const nvr2Sectors = [
+  ["Perímetro y accesos vehiculares", ["Estacionamiento", "Barreras", "Estación EPEC", "Portón Sur", "Guardia Sur"]],
+  ["Ingreso peatonal", ["Ingreso Operario", "Molinetes", "Puertas Cristal", "Guardia", "Escalera Principal"]],
+  ["Administración", ["Ingreso Administración", "Administración", "Administración 2", "Caja", "Tesorería"]],
+  ["Staff y servicios", ["Ingreso Staff", "Ingreso Staff 2", "Staff", "Staff 2", "Cocina", "Comedor", "SUM"]],
+  ["Depósito · Nave Norte", ["Nave Norte", "Recepción Mercadería", "Robot", "Preparación Norte", "Rack Norte", "Portones Expedición", "Mesones Control", "Cámara Frío", "Entrepiso"]],
+  ["Depósito · Nave Sur", ["Nave Sur", "Preparación Sur"]],
+  ["Sin identificar", ["Zona 3", "Sin nombre (orig. 1)", "Sin nombre (orig. 2)", "Sin nombre (orig. 4)", "Sin nombre (orig. 5)", "Sin nombre (orig. 6)", "IPC 1", "IPC 2", "IPC 3", "IPC 4", "IPC 5"]]
+];
+const nvr2Cams = () => {
+  let n = 0;
+  return nvr2Sectors.flatMap(([sector, names]) => names.map(name => mkCam([String(++n), name, "fija", sector])));
+};
 const seed = () => ({
   version: 1,
   nvrs: [
     { id: uid(), name: "NVR 1 · Perimetral", cams: seedCams.map(mkCam) },
-    { id: uid(), name: "NVR 2", cams: [] }
+    { id: uid(), name: "NVR 2", cams: nvr2Cams() }
   ],
   links: []
 });
@@ -362,11 +385,25 @@ const ui = { view: "cams", nvr: db.nvrs[0].id, filter: "all", q: "", ql: "", unl
 let lockTimer = null;
 
 function load() {
+  let d = null;
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const d = sanitize(JSON.parse(raw)); if (d) return d; }
+    if (raw) d = sanitize(JSON.parse(raw));
   } catch (e) {}
-  return seed();
+  if (!d) { d = seed(); try { localStorage.setItem(SEED2_KEY, "1"); } catch (e) {} return d; }
+  migrateNvr2(d);
+  return d;
+}
+/* Datos ya guardados en este navegador: carga una sola vez las cámaras del NVR 2 si ese NVR sigue vacío. */
+function migrateNvr2(d) {
+  try {
+    if (localStorage.getItem(SEED2_KEY)) return;
+    if (d.nvrs[1] && d.nvrs[1].cams.length === 0) {
+      d.nvrs[1].cams = nvr2Cams();
+      localStorage.setItem(KEY, JSON.stringify(d));
+    }
+    localStorage.setItem(SEED2_KEY, "1");
+  } catch (e) {}
 }
 let storageWarned = false;
 function save() {
@@ -385,7 +422,7 @@ function sanitize(d) {
       cams: (Array.isArray(n.cams) ? n.cams : []).slice(0, 500).map(c => {
         c = c && typeof c === "object" ? c : {};
         return {
-          id: str(c.id, 40) || uid(), num: str(c.num, 6), name: str(c.name, 60) || "Sin nombre",
+          id: str(c.id, 40) || uid(), num: str(c.num, 6), name: str(c.name, 60) || "Sin nombre", sector: str(c.sector, 40),
           type: types.includes(c.type) ? c.type : "otra", status: sts.includes(c.status) ? c.status : "ok",
           desc: str(c.desc, 4000), updated: str(c.updated, 40)
         };
@@ -569,7 +606,7 @@ function renderCams() {
   const list = nvr.cams.filter(c => {
     if (ui.filter === "nodesc" && c.desc.trim()) return false;
     if (["ok", "warn", "bad"].includes(ui.filter) && c.status !== ui.filter) return false;
-    if (q && !(`${c.num} ${c.name} ${c.desc} ${TYPE_LBL[c.type]}`.toLowerCase().includes(q))) return false;
+    if (q && !(`${c.num} ${c.name} ${c.sector} ${c.desc} ${TYPE_LBL[c.type]}`.toLowerCase().includes(q))) return false;
     return true;
   }).sort(numSort);
   const g = $("#grid"); g.replaceChildren();
@@ -578,7 +615,15 @@ function renderCams() {
       nvr.cams.length ? "Probá con otro filtro o búsqueda." : "Desbloqueá la edición y usá “Agregar cámara”."));
     return;
   }
-  list.forEach(c => g.append(camCard(c)));
+  const grouped = list.some(c => c.sector);
+  let prev = null;
+  list.forEach(c => {
+    if (grouped && c.sector !== prev) {
+      prev = c.sector;
+      g.append(el("div", { class: "sector-h" }, c.sector || "Sin sector", el("span", {}, String(list.filter(x => x.sector === c.sector).length))));
+    }
+    g.append(camCard(c));
+  });
 }
 
 function flash(n) { n.classList.add("show"); setTimeout(() => n.classList.remove("show"), 1400); }
@@ -617,6 +662,7 @@ function camCard(c) {
       el("div", { class: "cam-head" }, el("div", { class: "cam-name" }, c.name), editBtn),
       el("div", { class: "cam-meta" },
         el("span", { class: "pill" }, TYPE_LBL[c.type]),
+        c.sector ? el("span", { class: "pill" }, c.sector) : null,
         el("span", { class: "pill " + stCls }, el("i", { class: "dot" }), stLbl)),
       ta,
       el("div", { class: "cam-foot" }, el("span", {}, "Estado"), sel, upd, saved)));
@@ -628,16 +674,18 @@ function editCam(c, isNew = false) {
   editing = { c, isNew };
   $("#mCamTitle").textContent = isNew ? "Agregar cámara" : "Editar cámara";
   $("#fNum").value = c.num; $("#fName").value = isNew ? "" : c.name; $("#fType").value = c.type; $("#camErr").textContent = "";
+  $("#fSector").value = c.sector || "";
+  $("#sectorList").replaceChildren(...[...new Set(curNvr().cams.map(x => x.sector).filter(Boolean))].map(s => el("option", { value: s })));
   $("#camDel").style.display = isNew ? "none" : "";
   openM("mCam");
 }
 $("#camOk").onclick = () => {
-  const num = $("#fNum").value.trim(), name = $("#fName").value.trim(), type = $("#fType").value;
+  const num = $("#fNum").value.trim(), name = $("#fName").value.trim(), type = $("#fType").value, sector = $("#fSector").value.trim();
   if (!name) return $("#camErr").textContent = "El nombre es obligatorio.";
   if (num && !/^[0-9A-Za-z-]{1,6}$/.test(num)) return $("#camErr").textContent = "El número admite letras, dígitos y guion (máx. 6).";
   const dup = curNvr().cams.find(x => x.num && x.num === num && x.id !== editing.c.id);
   if (dup) return $("#camErr").textContent = `El número ${num} ya lo usa “${dup.name}”.`;
-  Object.assign(editing.c, { num, name, type, updated: new Date().toISOString() });
+  Object.assign(editing.c, { num, name, type, sector, updated: new Date().toISOString() });
   if (editing.isNew) curNvr().cams.push(editing.c);
   const wasNew = editing.isNew;
   save(); closeM("mCam"); renderAll(); toast(wasNew ? "Cámara agregada." : "Cámara actualizada.", "ok");
@@ -648,7 +696,7 @@ $("#camDel").onclick = async () => {
   const n = curNvr(); n.cams = n.cams.filter(x => x.id !== c.id);
   save(); closeM("mCam"); renderAll(); toast("Cámara eliminada.");
 };
-$("#btnAddCam").onclick = () => requireUnlock(() => editCam({ id: uid(), num: "", name: "", type: "fija", status: "ok", desc: "", updated: "" }, true));
+$("#btnAddCam").onclick = () => requireUnlock(() => editCam({ id: uid(), num: "", name: "", type: "fija", sector: "", status: "ok", desc: "", updated: "" }, true));
 
 let nvrEditing = null;
 function renameNvr(n) { nvrEditing = n; $("#fNvr").value = n.name; openM("mNvr"); }
