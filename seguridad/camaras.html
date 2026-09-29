@@ -155,6 +155,84 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
 .sector-h span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;background:var(--panel2);border:1px solid var(--line);
   padding:1px 8px;border-radius:99px}
 
+/* ---------- Selector de vista ---------- */
+.view-toggle{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.view-toggle button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.view-toggle button:hover{color:var(--text)}
+.view-toggle button.active{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));color:var(--accent)}
+
+/* ---------- Vista lista (una cámara por fila) ---------- */
+.list{display:flex;flex-direction:column;gap:8px}
+.list-head,.lrow{display:grid;grid-template-columns:84px minmax(170px,1.1fr) 92px 156px minmax(260px,3fr) 42px;gap:14px;align-items:start}
+.list-head{padding:0 14px 0 17px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.lrow{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--stc,var(--ok));border-radius:12px;padding:10px 14px 10px 13px;
+  transition:border-color .15s,box-shadow .15s}
+.lrow:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));border-left-color:var(--stc);box-shadow:var(--shadow)}
+.lnum{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--accent);background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:7px 0;text-align:center}
+.lmain{padding-top:2px;min-width:0}
+.lname{font-weight:700;font-size:15px;line-height:1.3;word-break:break-word}
+.lsec{font-size:12px;color:var(--muted);margin-top:2px}
+.ltype{padding-top:5px}
+.lstat select{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:7px 8px;font-size:12.5px;font-weight:700;outline:none;color:var(--stc)}
+.lstat select:focus{border-color:var(--accent)}
+.ldesc textarea{width:100%;min-height:38px;resize:none;overflow:hidden;display:block;background:var(--bg2);border:1px solid var(--line);border-radius:9px;
+  padding:8px 10px;font-size:13.5px;line-height:1.45;outline:none}
+.ldesc textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.ldesc .meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);margin-top:4px;min-height:14px}
+.lact{padding-top:2px}
+@media(max-width:980px){
+  .list-head{display:none}
+  .lrow{grid-template-columns:64px 1fr 42px;grid-template-areas:"num main act" "desc desc desc" "type stat stat";gap:10px 12px}
+  .lnum{grid-area:num}.lmain{grid-area:main}.lact{grid-area:act}.ldesc{grid-area:desc}.ltype{grid-area:type}.lstat{grid-area:stat}
+}
+
+/* ---------- Reportes ---------- */
+.rp-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px}
+.rp-type{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px;transition:.15s}
+.rp-type:hover{border-color:var(--accent)}
+.rp-type.active{border-color:var(--accent);box-shadow:var(--glow)}
+.rp-type .n{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent);line-height:1.1}
+.rp-type b{font-size:14px}
+.rp-type span{font-size:12px;color:var(--muted);line-height:1.4}
+.tsel{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tsel select{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;outline:none;color:var(--text)}
+.tsel select:focus{border-color:var(--accent)}
+.rp-meta{font-size:12px;color:var(--muted);margin:2px 0 10px;font-family:var(--mono)}
+.rp-scroll{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.rp-table{width:100%;border-collapse:collapse;font-size:13px}
+.rp-table th{background:var(--panel2);text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.rp-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.rp-table tr:last-child td{border-bottom:0}
+.rp-table .c{text-align:center}
+.rp-table td.desc{min-width:280px;white-space:pre-wrap}
+.rp-table td.nodesc{color:var(--muted);font-style:italic}
+.rp-table td.st-ok{color:var(--ok);font-weight:700}.rp-table td.st-warn{color:var(--warn);font-weight:700}.rp-table td.st-bad{color:var(--bad);font-weight:700}
+.rp-table tr.total td{font-weight:700;background:var(--panel2)}
+
+/* ---------- Impresión / PDF ---------- */
+#printArea{display:none}
+.pr{font-family:var(--font);color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pr-head{border-bottom:2px solid #0e6b82;padding-bottom:6px;margin-bottom:6px}
+.pr-head h1{font-size:18px;margin:0;color:#0e6b82;letter-spacing:.04em}
+.pr-head small{font-size:10px;color:#555}
+.pr-meta{font-size:10px;color:#444;margin-bottom:8px}
+.pr table{width:100%;border-collapse:collapse;font-size:9.5px}
+.pr thead{display:table-header-group}
+.pr th{background:#0e6b82;color:#fff;text-align:left;padding:5px 6px}
+.pr td{border-bottom:1px solid #ccc;padding:4px 6px;vertical-align:top}
+.pr tr{break-inside:avoid;page-break-inside:avoid}
+.pr .c{text-align:center}
+.pr td.desc{white-space:pre-wrap}
+.pr td.nodesc{color:#777;font-style:italic}
+.pr td.st-warn{color:#b45309;font-weight:700}.pr td.st-bad{color:#c81e2e;font-weight:700}.pr td.st-ok{color:#15803d;font-weight:700}
+.pr tr.total td{font-weight:700;background:#e8f1f5}
+@page{size:A4 landscape;margin:12mm;@bottom-right{content:"Pág. " counter(page) " de " counter(pages);font-size:9px;color:#666}}
+@media print{
+  html,body{background:#fff!important;background-image:none!important;color:#111!important;display:block!important;height:auto!important;min-height:0!important}
+  aside,main,.overlay,.toasts{display:none!important}
+  #printArea{display:block!important}
+}
+
 /* ---------- Links ---------- */
 .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .link{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px;display:flex;flex-direction:column;gap:8px;transition:.15s}
@@ -214,6 +292,7 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
   <nav>
     <button class="nav-btn active" data-view="cams"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h13a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><path d="M18 11l4-2v8l-4-2"/></svg><span class="t">Cámaras</span><span class="count" id="navCamCount">0</span></button>
     <button class="nav-btn" data-view="links"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg><span class="t">Enlaces útiles</span><span class="count" id="navLinkCount">0</span></button>
+    <button class="nav-btn" data-view="reports"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6M9 9h2"/></svg><span class="t">Reportes</span></button>
   </nav>
   <div class="side-foot">
     <div class="side-title">Datos</div>
@@ -251,6 +330,7 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
           <input id="q" type="search" placeholder="Buscar por número, nombre o descripción…" autocomplete="off">
         </div>
         <div class="chips" id="chips"></div>
+        <div class="view-toggle" id="viewToggle" role="group" aria-label="Tipo de vista"></div>
         <div class="spacer"></div>
         <button class="btn primary" id="btnAddCam"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Agregar cámara</button>
       </div>
@@ -268,6 +348,20 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
         <button class="btn primary" id="btnAddLink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Agregar enlace</button>
       </div>
       <div class="links" id="links"></div>
+    </section>
+
+    <!-- ===== REPORTES ===== -->
+    <section class="view" id="view-reports">
+      <div class="rp-types" id="rpTypes"></div>
+      <div class="toolbar">
+        <label class="tsel">NVR <select id="rpNvr"></select></label>
+        <label class="tsel">Sector <select id="rpSector"></select></label>
+        <div class="spacer"></div>
+        <button class="btn" id="btnXlsx"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>Exportar Excel</button>
+        <button class="btn primary" id="btnPdf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg>Exportar PDF</button>
+      </div>
+      <div class="rp-meta" id="rpMeta"></div>
+      <div id="rpBody"></div>
     </section>
   </div>
 </main>
@@ -320,6 +414,7 @@ header.top .sub{color:var(--muted);font-size:12px;font-family:var(--mono)}
 </div></div>
 
 <div class="toasts" id="toasts"></div>
+<div id="printArea"></div>
 
 <script>
 (() => {
@@ -381,7 +476,10 @@ const seed = () => ({
 
 /* ===== Estado ===== */
 let db = load();
-const ui = { view: "cams", nvr: db.nvrs[0].id, filter: "all", q: "", ql: "", unlocked: false };
+const VIEW_MODE_KEY = "centinela_vista";
+let viewMode = "lista";   // la lista es la vista por defecto
+try { const m = localStorage.getItem(VIEW_MODE_KEY); if (m === "lista" || m === "tarjetas") viewMode = m; } catch (e) {}
+const ui = { view: "cams", nvr: db.nvrs[0].id, filter: "all", q: "", ql: "", unlocked: false, mode: viewMode, report: "inv", rpNvr: "all", rpSector: "all" };
 let lockTimer = null;
 
 function load() {
@@ -610,11 +708,13 @@ function renderCams() {
     return true;
   }).sort(numSort);
   const g = $("#grid"); g.replaceChildren();
+  g.className = ui.mode === "lista" ? "list" : "grid";
   if (!list.length) {
     g.append(el("div", { class: "empty" }, el("b", {}, nvr.cams.length ? "Sin resultados" : "Este NVR todavía no tiene cámaras"),
       nvr.cams.length ? "Probá con otro filtro o búsqueda." : "Desbloqueá la edición y usá “Agregar cámara”."));
     return;
   }
+  if (ui.mode === "lista") g.append(el("div", { class: "list-head" }, ...["N.º", "Cámara", "Tipo", "Estado", "Descripción", ""].map(t => el("div", {}, t))));
   const grouped = list.some(c => c.sector);
   let prev = null;
   list.forEach(c => {
@@ -622,23 +722,34 @@ function renderCams() {
       prev = c.sector;
       g.append(el("div", { class: "sector-h" }, c.sector || "Sin sector", el("span", {}, String(list.filter(x => x.sector === c.sector).length))));
     }
-    g.append(camCard(c));
+    g.append(ui.mode === "lista" ? listRow(c) : camCard(c));
   });
+  if (ui.mode === "lista") fitAll();
+}
+function fitAll() { requestAnimationFrame(() => $$("#grid textarea[data-fit]").forEach(t => t._fit && t._fit())); }
+let rsz; window.addEventListener("resize", () => { clearTimeout(rsz); rsz = setTimeout(() => { if (ui.mode === "lista") fitAll(); }, 150); });
+
+function renderToggle() {
+  const defs = [["lista", "Lista", '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'],
+    ["tarjetas", "Tarjetas", '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>']];
+  $("#viewToggle").replaceChildren(...defs.map(([k, l, p]) => el("button", {
+    class: ui.mode === k ? "active" : "", "aria-pressed": String(ui.mode === k), title: "Vista " + l.toLowerCase(), html: SV(p, 15) + "<span>" + l + "</span>",
+    onclick: () => { ui.mode = k; try { localStorage.setItem(VIEW_MODE_KEY, k); } catch (e) {} renderToggle(); renderCams(); }
+  })));
 }
 
 function flash(n) { n.classList.add("show"); setTimeout(() => n.classList.remove("show"), 1400); }
 
-function camCard(c) {
-  const [stLbl, stCls] = ST[c.status];
-  const recCls = c.status === "ok" ? "" : c.status === "warn" ? " warn" : " off";
-  const recTxt = c.status === "ok" ? "REC" : c.status === "warn" ? "FALLA" : "SIN SEÑAL";
-
+/* Controles compartidos por la vista de tarjetas y la de lista (descripción, estado, edición) */
+function camParts(c) {
   const ta = el("textarea", { placeholder: "Qué cubre o enfoca, ángulo de visión, puntos ciegos, particularidades…", "aria-label": "Descripción de " + c.name });
   ta.value = c.desc;
   const saved = el("span", { class: "saved" }, "✓ guardado");
   const upd = el("span", {}, c.updated ? "Act. " + fmtDate(c.updated) : "");
+  ta._fit = () => { if (!ta.offsetParent) return; ta.style.height = "auto"; ta.style.height = (ta.scrollHeight + 2) + "px"; };
   let tm;
   ta.addEventListener("input", () => {
+    if (ta.dataset.fit) ta._fit();
     clearTimeout(tm);
     tm = setTimeout(() => {
       c.desc = ta.value; c.updated = new Date().toISOString();
@@ -646,11 +757,33 @@ function camCard(c) {
     }, 350);
   });
 
-  const sel = el("select", { "aria-label": "Estado" }, ...Object.entries(ST).map(([k, v]) => el("option", { value: k }, v[0])));
+  const sel = el("select", { "aria-label": "Estado de " + c.name }, ...Object.entries(ST).map(([k, v]) => el("option", { value: k }, v[0])));
   sel.value = c.status;
   sel.addEventListener("change", () => { c.status = sel.value; c.updated = new Date().toISOString(); save(); renderStats(); renderCams(); });
 
   const editBtn = el("button", { class: "btn icon sm", title: "Editar número y nombre (requiere clave)", "aria-label": "Editar número y nombre", html: I.edit, onclick: () => requireUnlock(() => editCam(c)) });
+  return { ta, saved, upd, sel, editBtn };
+}
+
+const STC = { ok: "var(--ok)", warn: "var(--warn)", bad: "var(--bad)" };
+
+function listRow(c) {
+  const p = camParts(c);
+  p.ta.dataset.fit = "1";
+  return el("article", { class: "lrow", style: `--stc:${STC[c.status]}` },
+    el("div", { class: "lnum", title: "Número de cámara" }, c.num ? c.num.padStart(2, "0") : "S/N"),
+    el("div", { class: "lmain" }, el("div", { class: "lname" }, c.name), c.sector ? el("div", { class: "lsec" }, c.sector) : null),
+    el("div", { class: "ltype" }, el("span", { class: "pill" }, TYPE_LBL[c.type])),
+    el("div", { class: "lstat" }, p.sel),
+    el("div", { class: "ldesc" }, p.ta, el("div", { class: "meta" }, p.upd, p.saved)),
+    el("div", { class: "lact" }, p.editBtn));
+}
+
+function camCard(c) {
+  const [stLbl, stCls] = ST[c.status];
+  const recCls = c.status === "ok" ? "" : c.status === "warn" ? " warn" : " off";
+  const recTxt = c.status === "ok" ? "REC" : c.status === "warn" ? "FALLA" : "SIN SEÑAL";
+  const p = camParts(c);
 
   const vb = el("div", { class: "view-box", html: I.cams[c.type] || I.cams.otra },
     el("i", { class: "corner tl" }), el("i", { class: "corner tr" }), el("i", { class: "corner bl" }), el("i", { class: "corner br" }),
@@ -659,13 +792,13 @@ function camCard(c) {
 
   return el("article", { class: "cam" }, vb,
     el("div", { class: "cam-body" },
-      el("div", { class: "cam-head" }, el("div", { class: "cam-name" }, c.name), editBtn),
+      el("div", { class: "cam-head" }, el("div", { class: "cam-name" }, c.name), p.editBtn),
       el("div", { class: "cam-meta" },
         el("span", { class: "pill" }, TYPE_LBL[c.type]),
         c.sector ? el("span", { class: "pill" }, c.sector) : null,
         el("span", { class: "pill " + stCls }, el("i", { class: "dot" }), stLbl)),
-      ta,
-      el("div", { class: "cam-foot" }, el("span", {}, "Estado"), sel, upd, saved)));
+      p.ta,
+      el("div", { class: "cam-foot" }, el("span", {}, "Estado"), p.sel, p.upd, p.saved)));
 }
 
 /* ===== Edición de cámaras / NVR ===== */
@@ -767,16 +900,239 @@ $("#fileIn").onchange = e => {
   r.readAsText(f);
 };
 
+/* ===== Reportes ===== */
+const STATUS_LBL = { ok: "Operativa", warn: "Con falla", bad: "Fuera de servicio" };
+const STATUS_KEY = { "Operativa": "ok", "Con falla": "warn", "Fuera de servicio": "bad" };
+const NO_DESC = "(sin descripción)";
+const numCell = v => /^\d+$/.test(v) ? Number(v) : (v || "S/N");
+
+function reportItems() {
+  const out = [];
+  db.nvrs.forEach(n => {
+    if (ui.rpNvr !== "all" && n.id !== ui.rpNvr) return;
+    [...n.cams].sort(numSort).forEach(c => {
+      if (ui.rpSector !== "all" && (c.sector || "__none") !== ui.rpSector) return;
+      out.push({ nvr: n.name, c });
+    });
+  });
+  return out;
+}
+const camCols = full => [
+  { key: "num", label: "N.º", w: 7, al: "c" }, { key: "nvr", label: "NVR", w: 22 }, { key: "sector", label: "Sector", w: 30 },
+  { key: "name", label: "Cámara", w: 28 }, { key: "type", label: "Tipo", w: 12 }, { key: "status", label: "Estado", w: 18 },
+  ...(full ? [{ key: "desc", label: "Descripción", w: 64 }, { key: "upd", label: "Últ. actualización", w: 19 }] : [])
+];
+const camRow = (it, full) => [numCell(it.c.num), it.nvr, it.c.sector || "—", it.c.name, TYPE_LBL[it.c.type], STATUS_LBL[it.c.status],
+  ...(full ? [it.c.desc.trim() || NO_DESC, fmtDate(it.c.updated) || "—"] : [])];
+
+const REPORTS = {
+  inv: { slug: "inventario", title: "Inventario de cámaras", desc: "Todas las cámaras con su estado y descripción",
+    build: items => ({ title: "Inventario de cámaras", cols: camCols(true), rows: items.map(i => camRow(i, true)), note: `${items.length} cámaras` }) },
+  nov: { slug: "novedades", title: "Cámaras con novedades", desc: "Con falla o fuera de servicio",
+    build: items => { const s = items.filter(i => i.c.status !== "ok"); return { title: "Cámaras con novedades", cols: camCols(true), rows: s.map(i => camRow(i, true)), note: `${s.length} cámaras` }; } },
+  pen: { slug: "pendientes", title: "Pendientes de documentar", desc: "Cámaras sin descripción cargada",
+    build: items => { const s = items.filter(i => !i.c.desc.trim()); return { title: "Pendientes de documentar", cols: camCols(false), rows: s.map(i => camRow(i, false)), note: `${s.length} cámaras` }; } },
+  sec: { slug: "resumen-sectores", title: "Resumen por sector", desc: "Totales, estado y avance de documentación",
+    build: items => {
+      const map = new Map();
+      items.forEach(({ nvr, c }) => {
+        const k = nvr + "\u0000" + (c.sector || "");
+        if (!map.has(k)) map.set(k, { nvr, sector: c.sector || "Sin sector", t: 0, ok: 0, warn: 0, bad: 0, doc: 0 });
+        const g = map.get(k); g.t++; g[c.status]++; if (c.desc.trim()) g.doc++;
+      });
+      const gs = [...map.values()], sum = f => gs.reduce((s, g) => s + g[f], 0), pct = (d, t) => t ? d / t : 0;
+      return {
+        title: "Resumen por sector",
+        cols: [{ key: "nvr", label: "NVR", w: 22 }, { key: "sector", label: "Sector", w: 34 }, { key: "t", label: "Total", w: 9, t: "int" },
+          { key: "ok", label: "Operativas", w: 12, t: "int" }, { key: "warn", label: "Con falla", w: 11, t: "int" },
+          { key: "bad", label: "Fuera de servicio", w: 17, t: "int" }, { key: "doc", label: "Documentadas", w: 15, t: "int" },
+          { key: "pct", label: "% documentado", w: 15, t: "pct" }],
+        rows: gs.map(g => [g.nvr, g.sector, g.t, g.ok, g.warn, g.bad, g.doc, pct(g.doc, g.t)]),
+        total: gs.length ? ["TOTAL", "", sum("t"), sum("ok"), sum("warn"), sum("bad"), sum("doc"), pct(sum("doc"), sum("t"))] : null,
+        note: `${items.length} cámaras en ${gs.length} grupos`
+      };
+    } }
+};
+
+function cellInfo(rep, i, v) {
+  const col = rep.cols[i], cls = [];
+  if (col.al === "c" || col.t) cls.push("c");
+  const txt = col.t === "pct" ? Math.round(v * 100) + "%" : String(v);
+  if (col.key === "status" && STATUS_KEY[v]) cls.push("st-" + STATUS_KEY[v]);
+  if (col.key === "desc") { cls.push("desc"); if (v === NO_DESC) cls.push("nodesc"); }
+  return { cls: cls.join(" "), txt };
+}
+function reportTable(rep, forPrint) {
+  const t = el("table", { class: forPrint ? "" : "rp-table" });
+  t.append(el("thead", {}, el("tr", {}, ...rep.cols.map(c => el("th", { class: c.al === "c" || c.t ? "c" : "" }, c.label)))));
+  const tb = el("tbody");
+  const add = (r, rc) => tb.append(el("tr", { class: rc || "" }, ...r.map((v, i) => { const x = cellInfo(rep, i, v); return el("td", { class: x.cls }, x.txt); })));
+  rep.rows.forEach(r => add(r));
+  if (rep.total) add(rep.total, "total");
+  t.append(tb);
+  return t;
+}
+function reportState() {
+  const rep = REPORTS[ui.report].build(reportItems());
+  const nvrName = ui.rpNvr === "all" ? "Todos" : (db.nvrs.find(n => n.id === ui.rpNvr) || {}).name;
+  const secName = ui.rpSector === "all" ? "Todos" : ui.rpSector === "__none" ? "Sin sector" : ui.rpSector;
+  return { rep, meta: `Generado: ${fmtDate(new Date().toISOString())} · NVR: ${nvrName} · Sector: ${secName} · ${rep.note}` };
+}
+function renderReports() {
+  if (ui.rpNvr !== "all" && !db.nvrs.some(n => n.id === ui.rpNvr)) ui.rpNvr = "all";
+  const scope = db.nvrs.filter(n => ui.rpNvr === "all" || n.id === ui.rpNvr).flatMap(n => n.cams);
+  const secs = [...new Set(scope.map(c => c.sector).filter(Boolean))];
+  const showNone = secs.length > 0 && scope.some(c => !c.sector);
+  if (ui.rpSector !== "all" && !(secs.includes(ui.rpSector) || (ui.rpSector === "__none" && showNone))) ui.rpSector = "all";
+  const nsel = $("#rpNvr"), ssel = $("#rpSector");
+  nsel.replaceChildren(el("option", { value: "all" }, "Todos"), ...db.nvrs.map(n => el("option", { value: n.id }, n.name)));
+  nsel.value = ui.rpNvr;
+  ssel.replaceChildren(el("option", { value: "all" }, "Todos"), ...secs.map(s => el("option", { value: s }, s)), ...(showNone ? [el("option", { value: "__none" }, "Sin sector")] : []));
+  ssel.value = ui.rpSector;
+
+  const items = reportItems();
+  $("#rpTypes").replaceChildren(...Object.entries(REPORTS).map(([k, d]) => el("button", { class: "rp-type" + (ui.report === k ? " active" : ""), onclick: () => { ui.report = k; renderReports(); } },
+    el("div", { class: "n" }, String(d.build(items).rows.length)), el("b", {}, d.title), el("span", {}, d.desc))));
+  const { rep, meta } = reportState();
+  $("#rpMeta").textContent = meta;
+  $("#rpBody").replaceChildren(rep.rows.length
+    ? el("div", { class: "rp-scroll" }, reportTable(rep, false))
+    : el("div", { class: "empty" }, el("b", {}, "Sin datos para este reporte"), "Probá con otros filtros."));
+}
+$("#rpNvr").addEventListener("change", e => { ui.rpNvr = e.target.value; ui.rpSector = "all"; renderReports(); });
+$("#rpSector").addEventListener("change", e => { ui.rpSector = e.target.value; renderReports(); });
+
+/*XLSX-START*/
+const XML = s => String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const colName = i => { let s = ""; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+
+function makeZip(files) {   // ZIP sin compresión (método "store"), suficiente para un .xlsx
+  const enc = new TextEncoder(), chunks = [], cd = [];
+  let off = 0;
+  files.forEach(f => {
+    const name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, 0, true); lh.setUint16(12, 33, true); lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true);
+    lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    chunks.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(10, 0, true); ch.setUint16(12, 0, true); ch.setUint16(14, 33, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint16(30, 0, true); ch.setUint16(32, 0, true); ch.setUint16(34, 0, true); ch.setUint16(36, 0, true);
+    ch.setUint32(38, 0, true); ch.setUint32(42, off, true);
+    cd.push(new Uint8Array(ch.buffer), name);
+    off += 30 + name.length + data.length;
+  });
+  const cdSize = cd.reduce((s, a) => s + a.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(4, 0, true); end.setUint16(6, 0, true);
+  end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, off, true); end.setUint16(20, 0, true);
+  return new Blob([...chunks, ...cd, new Uint8Array(end.buffer)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+
+function buildXlsx(rep, title, info) {
+  const nCols = rep.cols.length, HEAD = 4, lastCol = colName(nCols - 1);
+  const cell = (r, c, v, s) => {
+    const ref = colName(c) + r;
+    if (typeof v === "number") return `<c r="${ref}" s="${s}"><v>${v}</v></c>`;
+    return `<c r="${ref}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${XML(v)}</t></is></c>`;
+  };
+  const rows = [];
+  rows.push(`<row r="1" ht="24" customHeight="1">${cell(1, 0, title, 4)}</row>`);
+  rows.push(`<row r="2">${cell(2, 0, info, 5)}</row>`);
+  rows.push(`<row r="${HEAD}" ht="24" customHeight="1">${rep.cols.map((c, i) => cell(HEAD, i, c.label, 1)).join("")}</row>`);
+  let r = HEAD;
+  rep.rows.forEach(row => { r++; rows.push(`<row r="${r}">${row.map((v, i) => cell(r, i, v, rep.cols[i].t === "pct" ? 6 : typeof v === "number" ? 3 : 2)).join("")}</row>`); });
+  const last = r;
+  if (rep.total) { r++; rows.push(`<row r="${r}">${rep.total.map((v, i) => cell(r, i, v, rep.cols[i].t === "pct" ? 9 : typeof v === "number" ? 8 : 7)).join("")}</row>`); }
+  const cols = rep.cols.map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${c.w || 16}" customWidth="1"/>`).join("");
+  const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  const sheet = `${head}<worksheet ${NS}><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${lastCol}${r}"/>` +
+    `<sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="${HEAD}" topLeftCell="A${HEAD + 1}" activePane="bottomLeft" state="frozen"/>` +
+    `<selection pane="bottomLeft" activeCell="A${HEAD + 1}" sqref="A${HEAD + 1}"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/>` +
+    `<cols>${cols}</cols><sheetData>${rows.join("")}</sheetData><autoFilter ref="A${HEAD}:${lastCol}${last}"/>` +
+    `<pageMargins left="0.4" right="0.4" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`;
+  const sname = rep.title.replace(/[\[\]:*?\/\\]/g, " ").slice(0, 31);
+  const bdr = '<border><left style="thin"><color rgb="FFBFCBD6"/></left><right style="thin"><color rgb="FFBFCBD6"/></right><top style="thin"><color rgb="FFBFCBD6"/></top><bottom style="thin"><color rgb="FFBFCBD6"/></bottom><diagonal/></border>';
+  const styles = `${head}<styleSheet ${NS}>` +
+    '<fonts count="5"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>' +
+    '<font><b/><sz val="14"/><color rgb="FF0E6B82"/><name val="Calibri"/></font><font><i/><sz val="10"/><color rgb="FF666666"/><name val="Calibri"/></font>' +
+    '<font><b/><sz val="11"/><name val="Calibri"/></font></fonts>' +
+    '<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' +
+    '<fill><patternFill patternType="solid"><fgColor rgb="FF0E6B82"/><bgColor indexed="64"/></patternFill></fill>' +
+    '<fill><patternFill patternType="solid"><fgColor rgb="FFE8F1F5"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+    `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bdr}</borders>` +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+    '<cellXfs count="10">' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+    '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>' +
+    '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="9" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>' +
+    '<xf numFmtId="0" fontId="4" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top"/></xf>' +
+    '<xf numFmtId="0" fontId="4" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>' +
+    '<xf numFmtId="9" fontId="4" fillId="3" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>' +
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  const wb = `${head}<workbook ${NS} xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${XML(sname)}" sheetId="1" r:id="rId1"/></sheets>` +
+    `<definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">${XML("'" + sname.replace(/'/g, "''") + "'")}!$A$${HEAD}:$${lastCol}$${last}</definedName></definedNames></workbook>`;
+  const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  return makeZip([
+    { name: "[Content_Types].xml", text: `${head}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>` },
+    { name: "_rels/.rels", text: `${head}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: "xl/workbook.xml", text: wb },
+    { name: "xl/_rels/workbook.xml.rels", text: `${head}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${REL}/styles" Target="styles.xml"/></Relationships>` },
+    { name: "xl/styles.xml", text: styles },
+    { name: "xl/worksheets/sheet1.xml", text: sheet }
+  ]);
+}
+/*XLSX-END*/
+
+const stamp = () => { const d = new Date(); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`; };
+$("#btnXlsx").onclick = () => {
+  const { rep, meta } = reportState();
+  if (!rep.rows.length) return toast("No hay datos para exportar con estos filtros.", "bad");
+  const blob = buildXlsx(rep, "CENTINELA · " + rep.title, meta);
+  const a = el("a", { href: URL.createObjectURL(blob), download: `centinela-${REPORTS[ui.report].slug}-${stamp()}.xlsx` });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Excel generado.", "ok");
+};
+let savedTitle = null;
+window.addEventListener("afterprint", () => { if (savedTitle !== null) { document.title = savedTitle; savedTitle = null; } });
+$("#btnPdf").onclick = () => {
+  const { rep, meta } = reportState();
+  if (!rep.rows.length) return toast("No hay datos para exportar con estos filtros.", "bad");
+  $("#printArea").replaceChildren(el("div", { class: "pr" },
+    el("div", { class: "pr-head" }, el("h1", {}, "CENTINELA · " + rep.title), el("small", {}, "Control de cámaras de seguridad")),
+    el("div", { class: "pr-meta" }, meta), reportTable(rep, true)));
+  savedTitle = document.title;
+  document.title = `centinela-${REPORTS[ui.report].slug}-${stamp()}`;
+  toast("En la ventana de impresión elegí “Guardar como PDF” como destino.");
+  setTimeout(() => window.print(), 250);
+};
+
 /* ===== Render general ===== */
+const VIEW_TXT = {
+  cams: ["Inventario de cámaras", "Sistema de videovigilancia · perímetro"],
+  links: ["Enlaces útiles", "Accesos rápidos del coordinador de seguridad"],
+  reports: ["Reportes", "Informes exportables a Excel y PDF"]
+};
 function renderAll() {
   $$(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.view === ui.view));
   $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + ui.view));
-  $("#pageTitle").textContent = ui.view === "cams" ? "Inventario de cámaras" : "Enlaces útiles";
-  $("#pageSub").textContent = ui.view === "cams" ? "Sistema de videovigilancia · perímetro" : "Accesos rápidos del coordinador de seguridad";
+  $("#pageTitle").textContent = VIEW_TXT[ui.view][0];
+  $("#pageSub").textContent = VIEW_TXT[ui.view][1];
   $("#navCamCount").textContent = db.nvrs.reduce((s, n) => s + n.cams.length, 0);
   $("#navLinkCount").textContent = db.links.length;
   if (!db.nvrs.some(n => n.id === ui.nvr)) ui.nvr = db.nvrs[0].id;
-  renderStats(); renderTabs(); renderChips(); renderCams(); renderLinks();
+  renderStats(); renderTabs(); renderChips(); renderToggle(); renderCams(); renderLinks(); renderReports();
 }
 $("#q").addEventListener("input", e => { ui.q = e.target.value; renderCams(); });
 $("#ql").addEventListener("input", e => { ui.ql = e.target.value; renderLinks(); });
