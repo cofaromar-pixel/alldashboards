@@ -149,7 +149,7 @@ footer{padding:26px 0 50px;color:var(--muted);font-size:13px}
 <section id="p3">
   <span class="step">PASO 3</span>
   <h2>Implementar controles preventivos solo donde reducen riesgo de verdad</h2>
-  <p class="mut">Cada control apunta a un punto concentrado de los datos y se integra a un paso que ya existe (carga de pedido, facturación, preparación, emisión del crédito). Ninguno suma un formulario aparte.</p>
+  <p class="mut">Los controles se identifican como C1 a C8 y el plan a 90 días los cita con ese código y su nombre. Cada control apunta a un punto concentrado de los datos y se integra a un paso que ya existe (carga de pedido, facturación, preparación, emisión del crédito). Ninguno suma un formulario aparte.</p>
   <div class="tw card"><table id="tCtl"></table></div>
   <p class="small mut" style="margin-top:8px">Esfuerzo: B = bajo (configuración o cambio de criterio), M = medio (ajuste en sistema o capacitación), A = alto. Responsables propuestos para discutir con la gerencia de Logística.</p>
 </section>
@@ -398,9 +398,9 @@ $('tElim').innerHTML='<tr><th>Candidato</th><th>Evidencia</th><th>Propuesta</th>
 
 /* Plan 90 días */
 $('phases').innerHTML=[
- ['Días 1 a 30 · Ordenar',['Pedir el denominador: líneas y pedidos despachados por mes.','Implementar C1: responsable y causa en el crédito.','Taller de causa raíz en CBA con los 3 clientes principales.','Revisar los 4 eventos de facturación (17/04, 29/04, 16/05, 11/09) y el episodio de VME.','Activar C6 para créditos mayores a $1 M.']],
- ['Días 31 a 60 · Controlar',['Reunión con los primeros 10 clientes recurrentes (C2).','Regla de alerta de precio y cantidad en facturación (C3).','Marca de confirmación para promocionales (C4).','Talleres en RIO4 y VME.','Primer informe mensual con indicadores normalizados.']],
- ['Días 61 a 90 · Verificar y simplificar',['Comparar 4 semanas antes y después de cada control.','Extender C5 solo si bajó el indicador.','Decidir sobre los candidatos del Paso 5.','Presentar resultados a Logística y a la DT; cargar en revisión por la dirección (ISO 9001 §9.3).']]
+ ['Días 1 a 30 · Ordenar',['Pedir el denominador: líneas y pedidos despachados por mes.','C1 · Catálogo de motivos: agregar responsable y causa como listas desplegables al emitir el crédito.','Taller de causa raíz en CBA con los 3 clientes principales.','Revisar los 4 eventos de facturación (17/04, 29/04, 16/05, 11/09) y el episodio de VME.','C6 · Revisión obligatoria de créditos mayores a $1 M.']],
+ ['Días 31 a 60 · Controlar',['C2 · Revisión de patrón con los primeros 10 clientes recurrentes.','C3 · Alerta de precio y cantidad antes de facturar.','C4 · Confirmación de productos promocionales y de alto valor.','Talleres en RIO4 y VME.','Primer informe mensual con indicadores normalizados.']],
+ ['Días 61 a 90 · Verificar y simplificar',['Comparar 4 semanas antes y después de cada control.','C5 · Verificación por escaneo en preparación: extender solo si bajó el indicador.','Decidir sobre los candidatos a eliminar del Paso 5.','Presentar resultados a Logística y a la DT; cargar en revisión por la dirección (ISO 9001 §9.3).']]
 ].map(p=>`<div class="card phase"><h3 style="margin-top:0">${p[0]}</h3><ul class="tight">${p[1].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
 
 /* Límites */
