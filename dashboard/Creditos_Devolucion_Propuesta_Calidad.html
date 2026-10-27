@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Créditos por devolución · Propuesta de Calidad</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --bg:#f3f5f2; --panel:#ffffff; --ink:#0d1410; --ink2:#36443b; --muted:#64736a; --line:#1a3a2a33; --card-b:#1a3a2a;
+  --title:#c2006f; --pos:#008a4e; --neg:#c42020; --info:#00799c; --lab:#b8480f; --gray:#8a948e; --soft:#e9efe9;
+  --mono:"Share Tech Mono",ui-monospace,Consolas,"Courier New",monospace;
+}
+:root[data-theme="dark"]{
+  --bg:#0a0a0a; --panel:#0f130f; --ink:#d8ffe9; --ink2:#a9d9bf; --muted:#6f9a83; --line:#1a3a2a; --card-b:#1a3a2a;
+  --title:#ff2d9b; --pos:#00ff88; --neg:#ff3333; --info:#00cfff; --lab:#e8632a; --gray:#5c6f64; --soft:#121a14;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--mono);}
+.wrap{max-width:1280px;margin:0 auto;padding:0 max(16px,2.5vw)}
+h1,h2,h3{text-transform:uppercase;letter-spacing:.04em;font-weight:400;margin:0}
+h1{color:var(--title);font-size:clamp(24px,4vw,40px);line-height:1.1}
+h2{color:var(--title);font-size:clamp(20px,2.6vw,28px);margin-bottom:6px}
+h3{color:var(--lab);font-size:15px;margin:22px 0 8px}
+p{margin:0 0 10px}
+.mut{color:var(--muted)} .small{font-size:13px}
+a{color:var(--info)}
+header.top{border-bottom:1px solid var(--card-b);padding:22px 0 16px}
+.eyebrow{color:var(--lab);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.top .row{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:flex-end}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:transparent;border:1px solid var(--info);color:var(--info);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.btn:hover{background:var(--info);color:var(--bg)}
+nav{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--card-b)}
+nav .wrap{display:flex;gap:4px 18px;flex-wrap:wrap;padding-block:8px}
+nav a{color:var(--ink2);text-decoration:none;font-size:13px;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;border-bottom:1px solid transparent}
+nav a:hover{color:var(--title);border-color:var(--title)}
+section{padding:34px 0 8px;border-bottom:1px dashed var(--line)}
+.step{display:inline-block;color:var(--bg);background:var(--lab);padding:1px 8px;font-size:12px;letter-spacing:.1em;margin-bottom:6px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0}
+.card{background:var(--panel);border:1px solid var(--card-b);padding:14px 16px}
+.kpi .n{font-size:clamp(24px,2.8vw,34px);line-height:1.1;white-space:nowrap;color:var(--info);text-shadow:0 0 12px color-mix(in srgb,var(--info) 40%,transparent)}
+.kpi .l{color:var(--lab);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.kpi .s{color:var(--muted);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
+.find{border-left:3px solid var(--title);padding:8px 14px;margin:8px 0;background:var(--panel)}
+.find b{color:var(--pos)} .warn{border-left-color:var(--lab)} .warn b{color:var(--lab)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{color:var(--lab);text-transform:uppercase;letter-spacing:.06em;font-weight:400;text-align:left;padding:6px 8px;border-bottom:1px solid var(--card-b);font-size:12px;white-space:nowrap}
+td{padding:6px 8px;vertical-align:top;border-bottom:1px solid var(--line)}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.tag{display:inline-block;font-size:11px;padding:0 6px;border:1px solid currentColor;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.t-hi{color:var(--neg)} .t-mid{color:var(--lab)} .t-lo{color:var(--pos)} .t-info{color:var(--info)}
+.bar{height:10px;background:var(--soft);position:relative}
+.bar i{display:block;height:100%;background:var(--info)}
+svg text{font-family:var(--mono);fill:var(--ink2);font-size:11px}
+svg .t{fill:var(--muted)} svg .g{stroke:var(--line);stroke-width:1}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin:6px 0}
+.leg i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+.sim label{display:block;font-size:13px;margin-top:10px}
+.sim input[type=range]{width:100%;accent-color:var(--pos)}
+.sim input[type=number]{background:var(--bg);color:var(--ink);border:1px solid var(--card-b);font:inherit;padding:4px 8px;width:90px}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.res .n{font-size:30px;color:var(--pos)}
+.steps{counter-reset:s}
+ul.tight{margin:4px 0 10px;padding-left:20px} ul.tight li{margin:2px 0}
+.phase{border-top:3px solid var(--info)}
+footer{padding:26px 0 50px;color:var(--muted);font-size:13px}
+.no{color:var(--neg)}
+@media print{nav,.btns{display:none} body{background:#fff;color:#000;font-size:12px} section{break-inside:auto} .card,.find{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap row">
+  <div>
+    <div class="eyebrow">COFARSUR · Calidad · Logística inversa · Disp. ANMAT 2069/2018</div>
+    <h1>Créditos por devolución<br>Propuesta de Calidad</h1>
+    <p class="mut small" style="margin-top:8px">Análisis con el método de cinco pasos para mejorar la productividad desde Calidad · Fuente: <span id="srcTxt"></span></p>
+  </div>
+  <div class="btns">
+    <button class="btn" id="bTheme">Modo oscuro</button>
+    <button class="btn" id="bCsv">Plan de acción CSV</button>
+    <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+</div></header>
+<nav><div class="wrap">
+  <a href="#resumen">Resumen</a><a href="#p1">1 Identificar</a><a href="#p2">2 Investigar</a><a href="#p3">3 Controles</a><a href="#p4">4 Verificar</a><a href="#p5">5 Eliminar</a><a href="#plan">Plan 90 días</a><a href="#lim">Alcance y límites</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="resumen">
+  <h2>Resumen ejecutivo</h2>
+  <div class="kpis" id="kpis"></div>
+  <div id="resumenFind"></div>
+</section>
+
+<section id="p1">
+  <span class="step">PASO 1</span>
+  <h2>Identificar qué consume más capacidad</h2>
+  <p class="mut">Pareto sobre los créditos por devolución. Cada línea de crédito es trabajo real: recepción, verificación, nota de crédito, reingreso o descarte. Por eso se mide en <b>líneas</b> (capacidad) y en <b>$</b> (impacto económico).</p>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Pareto por motivo · % de líneas</h3><div id="chParL"></div></div>
+    <div class="card"><h3 style="margin-top:0">Pareto por motivo · % del valor $</h3><div id="chParV"></div></div>
+  </div>
+  <div id="find1"></div>
+  <h3>Tabla de motivos</h3>
+  <div class="tw card"><table id="tMot"></table></div>
+
+  <h3>Concentración: pocos clientes y pocos productos explican mucho</h3>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Top 12 clientes por valor</h3><div id="chCli"></div></div>
+    <div class="card"><h3 style="margin-top:0">Top 10 clientes por cantidad de líneas</h3><div id="chCliL"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3 style="margin-top:0">Top 12 productos por valor</h3><div id="chProd"></div></div>
+  <div id="find1b"></div>
+
+  <h3>Cuándo y dónde</h3>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Valor mensual por grupo de motivo</h3><div id="chMes"></div></div>
+    <div class="card"><h3 style="margin-top:0">Líneas de crédito por día hábil, por mes</h3><div id="chMesL"></div></div>
+    <div class="card"><h3 style="margin-top:0">Mezcla de motivos por sucursal (% del valor)</h3><div id="chSuc"></div></div>
+    <div class="card"><h3 style="margin-top:0">Líneas por día, según día de la semana</h3><div id="chDow"></div></div>
+  </div>
+  <h3>Dónde conviene poner el control: tramos por valor de línea</h3>
+  <div class="card"><div id="chTier"></div></div>
+  <div id="find1c"></div>
+</section>
+
+<section id="p2">
+  <span class="step">PASO 2</span>
+  <h2>Investigar las causas, no solo corregir consecuencias</h2>
+  <p class="mut">Los datos muestran <b>dónde</b> y <b>cuánto</b>, pero no el <b>porqué</b>. Lo que sigue son hipótesis construidas con la evidencia del tablero, para validar en taller de causa raíz con quienes conocen el proceso (preparación, facturación, ventas, transporte, DT de cada sucursal). No son conclusiones.</p>
+  <div class="grid2" id="rcaGrid"></div>
+  <h3>Hallazgo estructural: el motivo "Mal pedido" no dice quién se equivocó</h3>
+  <div class="find warn"><b>Es el cuello de botella de información.</b> Reúne <span class="v" id="mpShare"></span> de las líneas, pero el mismo código sirve para un error del cliente al pedir, un error de preparación de COFARSUR o un error del vendedor al cargar. Mientras no se separe, no se puede dirigir la acción ni medir su efecto. La primera medida de la propuesta (control C1) corrige esto sin agregar pasos: cargar <b>responsable</b> y <b>causa</b> como listas desplegables al emitir el crédito.</div>
+  <h3>Taller de causa raíz sugerido (90 min por sucursal)</h3>
+  <ul class="tight">
+    <li>Participan: preparación/picking, facturación, un vendedor, un chofer o referente de transporte y la DT.</li>
+    <li>Material: los 20 clientes de mayor reincidencia y 30 líneas reales de cada motivo prioritario, tomadas de este tablero.</li>
+    <li>Técnica: 5 porqués por línea, luego Ishikawa 6M por motivo. Criterio de cierre: llegar a una causa sobre la que el proceso pueda actuar.</li>
+    <li>Registro: si la causa afecta calidad del producto o trazabilidad, abrir RNC con su CAPA; si es de eficiencia, registrar como acción de mejora (ISO 9001 §10.3).</li>
+  </ul>
+</section>
+
+<section id="p3">
+  <span class="step">PASO 3</span>
+  <h2>Implementar controles preventivos solo donde reducen riesgo de verdad</h2>
+  <p class="mut">Cada control apunta a un punto concentrado de los datos y se integra a un paso que ya existe (carga de pedido, facturación, preparación, emisión del crédito). Ninguno suma un formulario aparte.</p>
+  <div class="tw card"><table id="tCtl"></table></div>
+  <p class="small mut" style="margin-top:8px">Esfuerzo: B = bajo (configuración o cambio de criterio), M = medio (ajuste en sistema o capacitación), A = alto. Responsables propuestos para discutir con la gerencia de Logística.</p>
+</section>
+
+<section id="p4">
+  <span class="step">PASO 4</span>
+  <h2>Verificar efectividad con indicadores, antes y después</h2>
+  <p class="mut">Línea base calculable hoy con este archivo, e indicadores de proceso que necesitan un dato más (el denominador de pedidos o líneas despachadas).</p>
+  <div class="tw card"><table id="tKpi"></table></div>
+  <h3>Regla de verificación de cada cambio</h3>
+  <ul class="tight">
+    <li>Medir 4 semanas antes y 4 semanas después, mismo alcance (clientes o sucursal piloto) y comparar contra un grupo sin cambio.</li>
+    <li>Normalizar por volumen despachado (por cada 1.000 líneas facturadas), porque el nivel de actividad varía de un mes a otro.</li>
+    <li>Un cambio queda como estándar solo si el indicador mejora y no aparece un motivo "vecino" que suba en su lugar (efecto globo).</li>
+    <li>Eventos únicos (por ejemplo un solo cliente con 374 líneas en un día) se analizan aparte y no entran en la tendencia.</li>
+  </ul>
+  <h3>Simulador de impacto en capacidad</h3>
+  <div class="grid2">
+    <div class="card sim">
+      <p class="small mut">Mové las metas de reducción por motivo. Los valores iniciales son un escenario prudente, no un compromiso: se ajustan con lo que salga del taller del Paso 2.</p>
+      <div id="simCtl"></div>
+      <label>Minutos de trabajo por línea de crédito (supuesto) <input type="number" id="simMin" value="8" min="1" max="60"></label>
+      <p class="small mut">Supuesto a reemplazar por cronometraje real de recepción, verificación, nota de crédito y reingreso.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Resultado sobre el período analizado</h3>
+      <div class="res" id="simRes"></div>
+      <p class="small mut" style="margin-top:12px">El valor de créditos evitado mide volumen de retrabajo comercial. No equivale a pérdida económica: el costo real depende de si la mercadería reingresa a stock.</p>
+    </div>
+  </div>
+</section>
+
+<section id="p5">
+  <span class="step">PASO 5</span>
+  <h2>Eliminar controles que no agregan valor</h2>
+  <p class="mut">Este archivo no contiene los controles actuales del circuito, así que acá va la lista de <b>candidatos a revisar</b> y el criterio de decisión. Cada ítem se confirma contra el procedimiento vigente antes de tocarlo.</p>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Regla de decisión</h3>
+      <p>Un control se puede eliminar o simplificar solo si cumple las tres:</p>
+      <ul class="tight"><li>No responde a un requisito de la Disp. ANMAT 2069/2018 (verificar el texto del boletín oficial para cada caso).</li><li>No está asociado a un riesgo de la matriz de riesgos (ISO 9001 §6.1).</li><li>Un piloto de 4 semanas muestra indicadores estables (Paso 4).</li></ul>
+    </div>
+    <div class="card"><h3 style="margin-top:0;color:var(--neg)">Se mantiene, no se toca</h3>
+      <ul class="tight"><li>Segregación y evaluación del producto devuelto antes de decidir su destino, con registro.</li><li>Trazabilidad de lote y vencimiento en el reingreso.</li><li>Aprobación de la DT para reingresar a stock.</li><li>Registro de condiciones y desvíos de cadena de frío.</li></ul>
+    </div>
+  </div>
+  <div class="tw card" style="margin-top:14px"><table id="tElim"></table></div>
+</section>
+
+<section id="plan">
+  <h2>Plan de implementación a 90 días</h2>
+  <div class="grid3" id="phases"></div>
+</section>
+
+<section id="lim">
+  <h2>Alcance y límites del análisis</h2>
+  <ul class="tight" id="limList"></ul>
+</section>
+
+</main>
+<footer><div class="wrap">Elaborado por Calidad · COFARSUR S.A. · Fuente: creditos.xlsx (cubo de devoluciones 2026) · Marco: Disp. ANMAT 2069/2018 e ISO 9001:2015 §8.7, §9.1, §10.2, §10.3. Archivo único, sin conexión externa obligatoria.</div></footer>
+
+<script>
+const A = {"meta": {"lines": 44030, "units": 173779, "value": 2605476721.93, "cost": 2849507314.09, "days": 243, "clients": 1589, "skus": 10230, "desde": "02/01/2026", "hasta": "26/10/2026", "f1": 3762, "f2": 1037}, "mot": [{"name": "Mal pedido", "lines": 35753, "units": 87665, "value": 1698163655.75, "clients": 1378, "skus": 9035, "ratio": 1.0261408547092326, "valuePerLine": 47497.095509467734}, {"name": "Mal facturado", "lines": 1620, "units": 47760, "value": 372797659.98, "clients": 225, "skus": 1104, "ratio": 0.5085458972691318, "valuePerLine": 230122.01233333335}, {"name": "No solicitado", "lines": 3738, "units": 32107, "value": 449767004.26, "clients": 497, "skus": 2228, "ratio": 0.9576954519659567, "valuePerLine": 120322.90108614232}, {"name": "Mal estado", "lines": 2110, "units": 3235, "value": 45627993.48, "clients": 694, "skus": 1447, "ratio": 0.8727876686908678, "valuePerLine": 21624.64145971564}, {"name": "Devolvió el cliente", "lines": 736, "units": 2681, "value": 20085813.5, "clients": 171, "skus": 550, "ratio": 0.1263250617244736, "valuePerLine": 27290.507472826088}, {"name": "Acuerdo comercial", "lines": 6, "units": 211, "value": 1666233.4000000001, "clients": 2, "skus": 3, "ratio": 0.8033841123370399, "valuePerLine": 277705.5666666667}, {"name": "Cadena de frío no enviada", "lines": 67, "units": 120, "value": 17368361.56, "clients": 35, "skus": 15, "ratio": 2.6969502729343997, "valuePerLine": 259229.27701492535}], "month": [{"m": 1, "lines": 4397, "value": 203430745.05, "units": 11551, "days": 26, "l0": 3708, "v0": 136314157.11, "l1": 99, "v1": 15820853.629999999, "l2": 289, "v2": 46169748.34, "l3": 221, "v3": 3354011.2399999998, "l4": 80, "v4": 1771974.73, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 2, "lines": 4139, "value": 249058054.34, "units": 17995, "days": 23, "l0": 3461, "v0": 176256961.12, "l1": 82, "v1": 17819208.54, "l2": 244, "v2": 32877548.88, "l3": 133, "v3": 2069360.43, "l4": 153, "v4": 2840856.25, "l5": 0, "v5": 0, "l6": 66, "v6": 17194119.12}, {"m": 3, "lines": 4186, "value": 292480781.47, "units": 24356, "days": 25, "l0": 3638, "v0": 199108887.94, "l1": 152, "v1": 54847284.36, "l2": 164, "v2": 31961400.17, "l3": 136, "v3": 2431067.56, "l4": 96, "v4": 4132141.44, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 4, "lines": 5084, "value": 419575379.11, "units": 28378, "days": 25, "l0": 3534, "v0": 172708681.16, "l1": 580, "v1": 144661616.77, "l2": 664, "v2": 93906152.11, "l3": 134, "v3": 3709806.9, "l4": 172, "v4": 4589122.17, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 5, "lines": 5598, "value": 368368796.73, "units": 23118, "days": 23, "l0": 4319, "v0": 221685117.41, "l1": 296, "v1": 72147848.68, "l2": 693, "v2": 63470361.46, "l3": 214, "v3": 6939018.58, "l4": 76, "v4": 4126450.6, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 6, "lines": 4509, "value": 204295057.3, "units": 13269, "days": 24, "l0": 3768, "v0": 156689446.49, "l1": 68, "v1": 3353162.23, "l2": 430, "v2": 39675532.92, "l3": 175, "v3": 3981882.36, "l4": 67, "v4": 595033.3, "l5": 1, "v5": 0.0, "l6": 0, "v6": 0}, {"m": 7, "lines": 4617, "value": 266870574.31, "units": 15339, "days": 26, "l0": 3859, "v0": 174840462.45, "l1": 102, "v1": 12318504.89, "l2": 390, "v2": 72880790.77, "l3": 231, "v3": 4967281.17, "l4": 29, "v4": 23059.19, "l5": 5, "v5": 1666233.4000000001, "l6": 1, "v6": 174242.44}, {"m": 8, "lines": 3887, "value": 211525653.02, "units": 13471, "days": 25, "l0": 3235, "v0": 158174265.23, "l1": 86, "v1": 21470860.69, "l2": 274, "v2": 24894431.39, "l3": 257, "v3": 5366090.49, "l4": 35, "v4": 1620005.22, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 9, "lines": 4113, "value": 216704717.2, "units": 15902, "days": 25, "l0": 3388, "v0": 164033923.06, "l1": 128, "v1": 28804075.78, "l2": 258, "v2": 16083648.81, "l3": 323, "v3": 7462937.69, "l4": 16, "v4": 320131.86, "l5": 0, "v5": 0, "l6": 0, "v6": 0}, {"m": 10, "lines": 3500, "value": 173166963.4, "units": 10400, "days": 21, "l0": 2843, "v0": 138351753.78, "l1": 27, "v1": 1554244.41, "l2": 332, "v2": 27847389.41, "l3": 286, "v3": 5346537.0600000005, "l4": 12, "v4": 67038.74, "l5": 0, "v5": 0, "l6": 0, "v6": 0}], "sucmot": [[1235104266.33, 233299975.95, 375296521.44, 33041319.93, 5413546.640000001, 772484.0, 0], [328957405.79, 131503528.93, 56111890.14, 7683963.03, 13850525.47, 893749.4, 0], [134101983.63, 7994155.1, 18358592.68, 4902710.5200000005, 821741.39, 0, 17368361.56]], "sucmotl": [[24926, 1024, 3110, 1436, 267, 2, 0], [7568, 510, 446, 359, 436, 4, 0], [3259, 86, 182, 315, 33, 0, 67]], "suc": [{"name": "Córdoba", "lines": 30765, "value": 1882928114.29, "units": 141993}, {"name": "Río Cuarto", "lines": 9323, "value": 539001062.76, "units": 23087}, {"name": "Villa Mercedes", "lines": 3942, "value": 183547544.88, "units": 8699}], "dow": [{"dow": "Lun", "lines": 5805, "value": 290720538.26, "days": 37}, {"dow": "Mar", "lines": 7111, "value": 439178691.12, "days": 41}, {"dow": "Mié", "lines": 9329, "value": 547246850.56, "days": 42}, {"dow": "Jue", "lines": 7648, "value": 422737554.72, "days": 41}, {"dow": "Vie", "lines": 9272, "value": 560713152.13, "days": 42}, {"dow": "Sáb", "lines": 4865, "value": 344879935.14, "days": 40}], "topcli": [{"name": "COSTAMAGNA ETELVINO", "lines": 402, "value": 104665759.77000001, "units": 3304, "days": 10}, {"name": "NUEVA ROSA", "lines": 1842, "value": 84371881.14000008, "units": 4461, "days": 60}, {"name": "DROGUERIA LIDER", "lines": 184, "value": 70161822.06000002, "units": 12803, "days": 29}, {"name": "DEL SUBNIVEL - TRF", "lines": 173, "value": 62033670.42999999, "units": 3494, "days": 18}, {"name": "ANA LONDERO DE ARGUELLO", "lines": 1932, "value": 60424379.43000012, "units": 2848, "days": 57}, {"name": "DROGUERIA GARZON S A", "lines": 481, "value": 59329381.36999996, "units": 3754, "days": 29}, {"name": "RED COLON", "lines": 192, "value": 57493809.560000025, "units": 3040, "days": 5}, {"name": "CORBELLA DE GRAU II", "lines": 109, "value": 52500090.839999996, "units": 11647, "days": 18}, {"name": "GRASSI", "lines": 110, "value": 49120076.37, "units": 1403, "days": 5}, {"name": "BOYOCCHI", "lines": 1458, "value": 47298034.17, "units": 2338, "days": 70}, {"name": "SINDICAL SUTIAGA 1", "lines": 453, "value": 43589920.980000064, "units": 1987, "days": 36}, {"name": "DROGUERIA SIFARM - SISTEMAS FARMACEUTICOS SA", "lines": 18, "value": 35871647.17, "units": 629, "days": 3}, {"name": "MODERNA 1 - TRF", "lines": 127, "value": 34834997.35000002, "units": 2330, "days": 4}, {"name": "NERVEGNA II", "lines": 180, "value": 34275608.39999998, "units": 683, "days": 62}, {"name": "SVFARMA 7 (SALSIPUEDES)", "lines": 84, "value": 33401804.659999996, "units": 1500, "days": 6}], "topprod": [{"name": "FORXIGA 10 MG COM X 28", "lines": 34, "value": 94136246.69, "units": 1627, "days": 21}, {"name": "VICK EXHIBIDOR COMBO WINTER SEASON", "lines": 5, "value": 23225663.12, "units": 27, "days": 2}, {"name": "POLPER B 12 AMP X 30", "lines": 48, "value": 14151049.030000003, "units": 343, "days": 41}, {"name": "MOUNJARO 5 MG/0.6 ML X1 KWIKPEN", "lines": 6, "value": 12790129.959999999, "units": 22, "days": 5}, {"name": "SANCOR BEBE 1 ADVANCED X 200 ML (PACK X 24)", "lines": 55, "value": 12306637.469999993, "units": 360, "days": 42}, {"name": "FREVIA 160/4,5 MCG X 120 INHALACIONES", "lines": 26, "value": 11392444.259999996, "units": 146, "days": 24}, {"name": "ACTRON 600 R A CAP BLA NUEVA FORMULA X 20", "lines": 24, "value": 11198643.6, "units": 1000, "days": 20}, {"name": "LOTRIAL 10 MG COM X 60", "lines": 25, "value": 9610371.47, "units": 728, "days": 22}, {"name": "URALOS CR COM X 30", "lines": 45, "value": 9557156.78, "units": 254, "days": 36}, {"name": "POLPER FORTE B 12 COM X 30", "lines": 47, "value": 9032739.61, "units": 196, "days": 35}, {"name": "OBETIDE 1,7 MG JER PRELL X 4", "lines": 15, "value": 8895555.09, "units": 64, "days": 7}, {"name": "_LIPITOR 40 MG COM X 30.", "lines": 6, "value": 8891169.58, "units": 176, "days": 4}], "topcliLines": [{"name": "ANA LONDERO DE ARGUELLO", "lines": 1932, "share": 0.043879173290937996}, {"name": "NUEVA ROSA", "lines": 1842, "share": 0.04183511242334772}, {"name": "BOYOCCHI", "lines": 1458, "share": 0.03311378605496253}, {"name": "IVI CHAVEZ", "lines": 623, "share": 0.014149443561208267}, {"name": "NERVEGNA", "lines": 616, "share": 0.013990461049284579}, {"name": "FARMACIA HEBER ROMANUTTI (COL. CAROYA)", "lines": 495, "share": 0.011242334771746536}, {"name": "DROGUERIA GARZON S A", "lines": 481, "share": 0.010924369747899159}, {"name": "SINDICAL SUTIAGA 1", "lines": 453, "share": 0.010288439700204407}, {"name": "COSTAMAGNA ETELVINO", "lines": 402, "share": 0.009130138541903247}, {"name": "ARGUELLO", "lines": 358, "share": 0.008130819895525778}], "lineConc": {"3": 0.11882807176924824, "10": 0.1966840790370202, "20": 0.260935725641608, "50": 0.3737905973200091, "100": 0.4921190097660686}, "curveCli": [1589, [[1, 0.04017144305648186], [5, 0.14648279511293752], [10, 0.24847618084280604], [20, 0.36463658086580464], [50, 0.49685754442321983], [100, 0.6064297696083774], [200, 0.7352273173720826], [500, 0.9012594536559784], [1000, 0.9861522792445935], [1589, 0.9999999999999994]]], "curveProd": [10230, [[1, 0.036130143055075475], [5, 0.06010789693564861], [10, 0.07960197081951599], [20, 0.11063446085078647], [50, 0.17560392144708342], [100, 0.24904784668325036], [200, 0.34477573530366545], [500, 0.5142149309810625], [1000, 0.66299330268068], [10230, 1.0000000000000004]]], "topcli_m0": [{"name": "NUEVA ROSA", "lines": 1792, "value": 78995350.48000015, "units": 4081, "days": 58}, {"name": "ANA LONDERO DE ARGUELLO", "lines": 1871, "value": 57405388.63000016, "units": 2361, "days": 51}, {"name": "DROGUERIA GARZON S A", "lines": 319, "value": 49923281.45999997, "units": 3079, "days": 24}, {"name": "BOYOCCHI", "lines": 1431, "value": 46544009.919999994, "units": 2299, "days": 70}, {"name": "DEL SUBNIVEL - TRF", "lines": 44, "value": 43434557.29, "units": 2057, "days": 13}, {"name": "NERVEGNA II", "lines": 179, "value": 34269058.61999998, "units": 681, "days": 62}, {"name": "NOYA (STA MARIA DE PUNILLA)", "lines": 50, "value": 29364699.68, "units": 931, "days": 6}, {"name": "GRASSI", "lines": 10, "value": 20901954.01, "units": 77, "days": 1}], "topprod_m0": [{"name": "FORXIGA 10 MG COM X 28", "lines": 26, "value": 74396379.75999999, "units": 1270, "days": 18}, {"name": "SANCOR BEBE 1 ADVANCED X 200 ML (PACK X 24)", "lines": 51, "value": 11535166.589999994, "units": 336, "days": 40}, {"name": "MOUNJARO 5 MG/0.6 ML X1 KWIKPEN", "lines": 2, "value": 9170790.53, "units": 15, "days": 2}, {"name": "LOTRIAL 10 MG COM X 60", "lines": 22, "value": 8821116.620000001, "units": 670, "days": 19}, {"name": "OBETIDE 1,7 MG JER PRELL X 4", "lines": 7, "value": 7835691.8100000005, "units": 56, "days": 4}, {"name": "_LIPITOR 40 MG COM X 30.", "lines": 4, "value": 7682883.899999999, "units": 148, "days": 3}], "topcli_m1": [{"name": "COSTAMAGNA ETELVINO", "lines": 374, "value": 100973493.57000002, "units": 3046, "days": 1}, {"name": "RED COLON", "lines": 186, "value": 54750015.96000003, "units": 2565, "days": 2}, {"name": "CORBELLA DE GRAU II", "lines": 57, "value": 49237462.559999995, "units": 11280, "days": 1}, {"name": "DROGUERIA LIDER", "lines": 101, "value": 42211165.99999999, "units": 9079, "days": 4}, {"name": "GRASSI", "lines": 97, "value": 26689204.68, "units": 1243, "days": 2}, {"name": "_DYL FARMA II", "lines": 89, "value": 20381547.190000005, "units": 3076, "days": 1}, {"name": "DIFARMA SALUD I (DEPO)", "lines": 51, "value": 16466397.950000001, "units": 1128, "days": 1}, {"name": "ADRIANA TABORDA", "lines": 2, "value": 7024013.339999999, "units": 201, "days": 1}], "topprod_m1": [{"name": "DOVE DESODORANTE ANTITRANSP ORIGINAL AER X 150", "lines": 1, "value": 8339789.999999999, "units": 3000, "days": 1}, {"name": "FURADANTINA MC 100 MG CAP X 36", "lines": 2, "value": 7024013.339999999, "units": 201, "days": 1}, {"name": "TRAYENTA 5 MG COM X 30", "lines": 1, "value": 4713820.38, "units": 27, "days": 1}, {"name": "DOVE DES ANT BARRA VITAMIN CARE COCONUT & SHEA X 74", "lines": 3, "value": 4289394.0, "units": 600, "days": 1}, {"name": "AMPLIAR 20 MG COM X 30", "lines": 4, "value": 4039919.1999999993, "units": 94, "days": 2}, {"name": "JARDIANCE 25 MG COM X 30", "lines": 1, "value": 4036502.46, "units": 29, "days": 1}], "topcli_m2": [{"name": "DROGUERIA SIFARM - SISTEMAS FARMACEUTICOS SA", "lines": 17, "value": 35553753.61, "units": 617, "days": 2}, {"name": "SINDICAL SUTIAGA 1", "lines": 201, "value": 33900222.99, "units": 1526, "days": 6}, {"name": "ESTRELLA - MIGNOLA ADRIANA RAQUEL", "lines": 137, "value": 22620138.120000005, "units": 975, "days": 2}, {"name": "MODERNA 1 - TRF", "lines": 80, "value": 20028145.689999994, "units": 709, "days": 1}, {"name": "SVFARMA 7 (SALSIPUEDES)", "lines": 51, "value": 19572302.279999997, "units": 1082, "days": 3}, {"name": "COCOFA - DROGUERIA", "lines": 2, "value": 17151182.4, "units": 20, "days": 1}, {"name": "CENTRAL - BENGOLEA", "lines": 38, "value": 15277365.649999999, "units": 524, "days": 5}, {"name": "DEL SUBNIVEL - TRF", "lines": 78, "value": 12045729.920000002, "units": 1076, "days": 6}], "topprod_m2": [{"name": "FORXIGA 10 MG COM X 28", "lines": 8, "value": 19739866.929999996, "units": 357, "days": 3}, {"name": "VICK EXHIBIDOR COMBO WINTER SEASON", "lines": 2, "value": 17151182.4, "units": 20, "days": 1}, {"name": "POLPER B 12 AMP X 30", "lines": 10, "value": 9786742.59, "units": 243, "days": 9}, {"name": "FREVIA 160/4,5 MCG X 120 INHALACIONES", "lines": 4, "value": 8004912.099999999, "units": 105, "days": 4}, {"name": "URALOS CR COM X 30", "lines": 11, "value": 5690848.48, "units": 158, "days": 7}, {"name": "ACTRON 600 R A CAP BLA NUEVA FORMULA X 20", "lines": 6, "value": 5676633.5, "units": 510, "days": 4}], "tiers": [{"label": "< $10 mil", "lines": 8160, "value": 49357234.73}, {"label": "$10–50 mil", "lines": 26322, "value": 645391624.14}, {"label": "$50–200 mil", "lines": 7657, "value": 688971530.06}, {"label": "$200 mil–1 M", "lines": 1623, "value": 650978343.72}, {"label": "> $1 M", "lines": 268, "value": 570777989.28}], "topdays": [{"date": "17/04", "lines": 575, "value": 108627695.19999999}, {"date": "10/03", "lines": 207, "value": 54759526.349999964}, {"date": "10/07", "lines": 163, "value": 43109400.029999994}, {"date": "16/05", "lines": 140, "value": 41264514.64000001}, {"date": "30/05", "lines": 489, "value": 36724256.84}, {"date": "25/03", "lines": 160, "value": 34592272.730000004}, {"date": "18/04", "lines": 264, "value": 34115112.43000001}, {"date": "24/04", "lines": 238, "value": 33426776.009999998}], "mpRec": {"clients": 250, "lines": 24450, "mplines": 35753}, "canal": [{"name": "Farmacias y otros", "lines": 42419, "value": 2324343265.68}, {"name": "Droguerías y distribuidoras", "lines": 973, "value": 238306946.88}, {"name": "Hospitales y clínicas", "lines": 441, "value": 42537752.410000004}, {"name": "Licitaciones", "lines": 197, "value": 288756.96}], "cat": [{"name": "Especialidad medicinal", "lines": 29070, "value": 1826808940.3000033}, {"name": "Cosmético", "lines": 7117, "value": 338226087.17000085}, {"name": "Psicotrópico", "lines": 2521, "value": 127263117.70999989}, {"name": "Sustancias controladas", "lines": 1696, "value": 121116544.58999988}, {"name": "Alimentos", "lines": 1279, "value": 93837057.54000011}, {"name": "Reactivo", "lines": 267, "value": 39761895.71000002}]};
+(function(){
+const $=id=>document.getElementById(id);
+const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:0}), nf1=new Intl.NumberFormat('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const fI=v=>nf.format(v), fP=v=>nf1.format(v*100)+'%';
+const fM=v=>{const m=v/1e6; return '$'+(m>=100?nf.format(m):nf1.format(m))+' M'};
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const E=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild||d};
+const M=A.mot, T=A.meta, GR=[0,1,0,2,3,3,2]; // grupo por motivo (índice)
+const GN=['Pedido (mal pedido + no solicitado)','Facturación','Producto y cadena de frío','Comercial / cliente'];
+const GC=()=>[css('--title'),css('--info'),css('--lab'),css('--gray')];
+const tl=M.reduce((s,x)=>s+x.lines,0), tv=M.reduce((s,x)=>s+x.value,0);
+const days=T.days, lpd=T.lines/days;
+const mot=n=>M.find(x=>x.name===n);
+const MP=mot('Mal pedido'),MF=mot('Mal facturado'),NS=mot('No solicitado'),ME=mot('Mal estado');
+$('srcTxt').textContent=`${fI(T.lines)} líneas de crédito, del ${T.desde} al ${T.hasta} (${days} días con actividad)`;
+
+/* KPIs */
+$('kpis').innerHTML=[
+ [fI(T.lines),'Líneas de crédito',`${nf1.format(lpd)} por día hábil`],
+ [fI(T.units),'Unidades devueltas',`${nf1.format(T.units/T.lines)} por línea`],
+ [fM(T.value),'Valor acreditado','a precio de venta'],
+ [fI(T.clients),'Clientes con crédito',`${fI(T.skus)} productos distintos`],
+ [fP(MP.lines/tl),'Líneas por "Mal pedido"',`${fP(MP.value/tv)} del valor`],
+ [fP((MP.value+NS.value+MF.value)/tv),'Valor en 3 motivos','Mal pedido, No solicitado, Mal facturado']
+].map(k=>`<div class="card kpi"><div class="n">${k[0]}</div><div class="l">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+
+const c2=A.curveCli[1], cp=A.curveProd[1];
+const pc=(arr,n)=>{const r=arr.find(x=>x[0]===n);return r?r[1]:null};
+const tier=A.tiers, tN=tier.reduce((s,x)=>s+x.lines,0), tV=tier.reduce((s,x)=>s+x.value,0);
+const low=tier[0].lines+tier[1].lines, lowV=tier[0].value+tier[1].value;
+const hi=tier[3].lines+tier[4].lines, hiV=tier[3].value+tier[4].value;
+$('resumenFind').innerHTML=`
+ <div class="find"><b>1. El problema es de pedido, no de producto.</b> "Mal pedido" concentra ${fP(MP.lines/tl)} de las líneas (${fI(MP.lines)}) y ${fP(MP.value/tv)} del valor. Con "No solicitado" y "Mal facturado" suman ${fP((MP.value+NS.value+MF.value)/tv)} del valor. "Mal estado" y cadena de frío pesan ${fP((ME.value+mot('Cadena de frío no enviada').value)/tv)}.</div>
+ <div class="find"><b>2. Es un patrón recurrente, no una suma de accidentes.</b> ${fI(A.mpRec.clients)} clientes con "Mal pedido" en 20 días distintos o más generan ${fP(A.mpRec.lines/A.mpRec.mplines)} de esas líneas. Tres farmacias (${A.topcliLines.slice(0,3).map(x=>x.name.split(' ').slice(0,2).join(' ')).join(', ')}) aportan ${fP(A.lineConc['3'])} de todas las líneas del sistema, con 20 a 37 líneas por día de devolución.</div>
+ <div class="find"><b>3. El valor se concentra en pocas líneas, el trabajo en muchas.</b> ${fP(low/tN)} de las líneas valen menos de $50 mil y suman ${fP(lowV/tV)} del valor. ${fP(hi/tN)} de las líneas (${fI(hi)}) pasan los $200 mil y suman ${fP(hiV/tV)}. El control fuerte va en las pocas líneas grandes, el circuito liviano en las muchas chicas.</div>
+ <div class="find"><b>4. "Mal facturado" es un problema de pocos eventos.</b> 10 clientes explican 88% de su valor y los días pico (50 o más líneas en un día) explican 75%. Un solo día (17/04, un cliente, 374 líneas) es el 27% del motivo. Además, el precio acreditado es en promedio 51% del costo de reposición, lo que apunta a errores de precio o descuento en la factura (hipótesis a confirmar).</div>
+ <div class="find warn"><b>5. Falta el denominador.</b> El archivo tiene solo créditos. Para calcular First Pass Yield y tasa de retrabajo hace falta el total de líneas despachadas por mes. Es el primer dato a pedir (ver Paso 4).</div>`;
+
+/* ---------- helpers de gráficos ---------- */
+function hbars(el,items,opt={}){ // items: {label,value,sub}
+  const W=opt.w||680, lw=opt.lw||200, rh=24, H=items.length*rh+6, max=Math.max(...items.map(i=>i.value))||1;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${opt.aria||''}">`;
+  items.forEach((it,i)=>{const y=i*rh+3,bw=(W-lw-(opt.rs||150))*it.value/max;
+    const mx=opt.mx||30, lab=it.label.length>mx?it.label.slice(0,mx-1)+'…':it.label;
+    s+=`<text x="0" y="${y+15}">${lab}</text><rect x="${lw}" y="${y+4}" width="${Math.max(bw,1)}" height="14" fill="${it.color||css('--info')}"/><text x="${lw+bw+6}" y="${y+15}" class="t">${it.text}</text>`});
+  el.innerHTML=s+'</svg>';
+}
+function pareto(el,key,fmt){
+  const rows=[...M].sort((a,b)=>b[key]-a[key]); const tot=rows.reduce((s,x)=>s+x[key],0);
+  const W=560,H=250,L=36,B=64,R=70,T0=12, bw=(W-L-R)/rows.length; let cum=0, pts=[];
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Pareto por motivo">`;
+  [0,.25,.5,.75,1].forEach(g=>{const y=T0+(H-B-T0)*(1-g);s+=`<line class="g" x1="${L}" x2="${W-R}" y1="${y}" y2="${y}"/><text class="t" x="${L-4}" y="${y+4}" text-anchor="end">${g*100}%</text>`});
+  rows.forEach((r,i)=>{const h=(H-B-T0)*r[key]/tot, x=L+i*bw+6, y=H-B-h; cum+=r[key];
+    s+=`<rect x="${x}" y="${y}" width="${bw-12}" height="${Math.max(h,1)}" fill="${GC()[GR[M.indexOf(r)]]}"/>`;
+    s+=`<text x="${x+(bw-12)/2}" y="${y-3}" text-anchor="middle">${fP(r[key]/tot)}</text>`;
+    pts.push([x+(bw-12)/2,T0+(H-B-T0)*(1-cum/tot)]);
+    const w=r.name.split(' ');s+=`<text class="t" transform="translate(${x+(bw-12)/2},${H-B+10}) rotate(35)">${r.name.length>20?r.name.slice(0,19)+'…':r.name}</text>`});
+  s+=`<polyline fill="none" stroke="${css('--neg')}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/>`+pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${css('--neg')}"/>`).join('');
+  el.innerHTML=s+'</svg><div class="leg">'+GN.map((n,i)=>`<span><i style="background:${GC()[i]}"></i>${n}</span>`).join('')+`<span><i style="background:${css('--neg')}"></i>% acumulado</span></div>`;
+}
+function stack(el,cats,series,opt={}){ // columnas apiladas; series:[{name,color,vals[]}]
+  const W=560,H=250,L=44,B=34,T0=10,R=6,n=cats.length,bw=(W-L-R)/n;
+  const tot=cats.map((_,i)=>series.reduce((s,x)=>s+x.vals[i],0)), max=Math.max(...tot)*1.08;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${opt.aria||''}">`;
+  for(let g=0;g<=4;g++){const v=max*g/4,y=T0+(H-B-T0)*(1-g/4);s+=`<line class="g" x1="${L}" x2="${W-R}" y1="${y}" y2="${y}"/><text class="t" x="${L-4}" y="${y+4}" text-anchor="end">${opt.axf(v)}</text>`}
+  cats.forEach((c,i)=>{let y=H-B;series.forEach(se=>{const h=(H-B-T0)*se.vals[i]/max;y-=h;s+=`<rect x="${L+i*bw+4}" y="${y}" width="${bw-8}" height="${Math.max(h,0)}" fill="${se.color}"/>`});
+    s+=`<text x="${L+i*bw+bw/2}" y="${H-B+14}" text-anchor="middle">${c}</text>`;
+    if(opt.top)s+=`<text class="t" x="${L+i*bw+bw/2}" y="${y-3}" text-anchor="middle">${opt.top(tot[i],i)}</text>`});
+  el.innerHTML=s+'</svg>'+(opt.leg===false?'':'<div class="leg">'+series.map(se=>`<span><i style="background:${se.color}"></i>${se.name}</span>`).join('')+'</div>');
+}
+function render(){
+  /* Paso 1 */
+  pareto($('chParL'),'lines'); pareto($('chParV'),'value');
+  const sortedV=[...M].sort((a,b)=>b.value-a.value);
+  $('find1').innerHTML=`<div class="find"><b>Lectura.</b> Tres motivos cubren ${fP((MP.value+NS.value+MF.value)/tv)} del valor, pero por capacidad el panorama es otro: "Mal pedido" son ${fI(MP.lines)} líneas (${fP(MP.lines/tl)}), unas ${nf.format(MP.lines/days)} por día hábil. "Mal facturado" tiene pocas líneas (${fI(MF.lines)}) pero ${fP(MF.value/tv)} del valor, con 29 unidades por línea. Prioridad 1: Mal pedido (capacidad). Prioridad 2: Mal facturado y No solicitado (valor, y son pocos eventos).</div>`;
+  const resp={ 'Mal pedido':'Por definir (cliente / preparación / ventas)','No solicitado':'Ventas / preparación','Mal facturado':'Facturación','Mal estado':'Almacén / transporte / proveedor','Devolvió el cliente':'Cliente','Acuerdo comercial':'Comercial','Cadena de frío no enviada':'Preparación / DT'};
+  let t='<tr><th>Motivo</th><th class="r">Líneas</th><th class="r">% líneas</th><th class="r">Unidades</th><th class="r">Valor</th><th class="r">% valor</th><th class="r">$ por línea</th><th class="r">Clientes</th><th>Responsable probable</th></tr>';
+  sortedV.forEach(m=>t+=`<tr><td>${m.name}</td><td class="r">${fI(m.lines)}</td><td class="r">${fP(m.lines/tl)}</td><td class="r">${fI(m.units)}</td><td class="r">${fM(m.value)}</td><td class="r">${fP(m.value/tv)}</td><td class="r">$${fI(m.valuePerLine)}</td><td class="r">${fI(m.clients)}</td><td class="mut">${resp[m.name]}</td></tr>`);
+  $('tMot').innerHTML=t;
+  hbars($('chCli'),A.topcli.slice(0,12).map(x=>({label:x.name,value:x.value,text:fM(x.value)+' · '+fI(x.lines)+' lín.'})),{lw:200,mx:30,aria:'Top clientes por valor'});
+  hbars($('chCliL'),A.topcliLines.map(x=>({label:x.name,value:x.lines,text:fI(x.lines)+' · '+fP(x.share),color:css('--title')})),{lw:200,mx:30,aria:'Top clientes por líneas'});
+  hbars($('chProd'),A.topprod.map(x=>({label:x.name,value:x.value,text:fM(x.value)+' · '+fI(x.units)+' u.',color:css('--lab')})),{lw:360,w:1000,rs:260,mx:46,aria:'Top productos'});
+  $('find1b').innerHTML=`<div class="find"><b>Lectura.</b> El 20% de los clientes explica 82% del valor y el 20% de los productos, 81%. Por valor, los 10 primeros clientes suman ${fP(pc(c2,10))}. Por <i>líneas</i> la concentración es otra: tres farmacias de alta frecuencia concentran ${fP(A.lineConc['3'])} del trabajo y los 10 primeros, ${fP(A.lineConc['10'])}. Un mismo cliente puede ser grande por valor (una devolución de Forxiga) o por trabajo (30 líneas chicas por día): requieren acciones distintas.</div>`;
+  const g4=[0,1,2,3].map(g=>({name:GN[g],color:GC()[g],vals:A.month.map(m=>[0,1,2,3,4,5,6].filter(k=>GR[k]===g).reduce((s,k)=>s+m['v'+k],0))}));
+  const mn=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct*'];
+  stack($('chMes'),mn,g4,{axf:v=>nf.format(v/1e6)+'M',top:(v)=>nf.format(v/1e6),aria:'Valor mensual'});
+  $('chMes').insertAdjacentHTML('beforeend','<p class="small mut">*Octubre incompleto, hasta el 26/10. Abril: pico por eventos puntuales de facturación (17/04) y No solicitado.</p>');
+  stack($('chMesL'),mn,[{name:'Líneas por día hábil',color:css('--info'),vals:A.month.map(m=>m.lines/m.days)}],{axf:v=>nf.format(v),top:v=>nf.format(v),leg:false,aria:'Líneas por día'});
+  $('chMesL').insertAdjacentHTML('beforeend',`<p class="small mut">Q1: 172 · Abr–Jun: 211 · Jul–Oct: 166 líneas por día hábil. El pico de abril a junio coincide con los eventos de facturación y No solicitado.</p>`);
+  // sucursal 100%
+  const sn={'Córdoba':'CBA','Río Cuarto':'RIO4','Villa Mercedes':'VME'}; const mc=[css('--title'),css('--info'),css('--lab'),css('--pos'),css('--gray'),css('--muted'),css('--neg')];
+  let sv=`<svg viewBox="0 0 560 ${A.suc.length*46+10}" width="100%" role="img" aria-label="Mezcla de motivos por sucursal">`;
+  A.sucmot.forEach((row,i)=>{const tot=row.reduce((a,b)=>a+b,0);let x=60;sv+=`<text x="0" y="${i*46+24}">${sn[A.suc[i].name]}</text><text class="t" x="0" y="${i*46+38}">${fM(tot)}</text>`;
+    row.forEach((v,k)=>{const w=480*v/tot; sv+=`<rect x="${x}" y="${i*46+8}" width="${w}" height="26" fill="${mc[k]}"/>`; if(w>34)sv+=`<text x="${x+w/2}" y="${i*46+25}" text-anchor="middle" style="fill:#fff">${nf.format(v/tot*100)}%</text>`; x+=w})});
+  $('chSuc').innerHTML=sv+'</svg><div class="leg">'+M.map((m,k)=>`<span><i style="background:${mc[k]}"></i>${m.name}</span>`).join('')+'</div><p class="small mut">RIO4 tiene el mayor peso de Mal facturado (24%) y VME de Cadena de frío (9,5%, un único episodio de 66 líneas en febrero). CBA concentra 72% del valor total.</p>';
+  hbars($('chDow'),A.dow.map(d=>({label:d.dow,value:d.lines/d.days,text:nf.format(d.lines/d.days)+' /día',color:css('--info')})),{lw:50,w:560,aria:'Líneas por día de semana'});
+  $('chDow').insertAdjacentHTML('beforeend','<p class="small mut">Miércoles y viernes llevan 222 y 221 líneas por día, contra 157 del lunes y 122 del sábado: 1,8 veces entre el día más cargado y el más liviano. La fecha es la del crédito, no la de la recepción física.</p>');
+  // tiers
+  hbars($('chTier'),tier.map(x=>({label:x.label,value:x.lines,text:`${fI(x.lines)} líneas (${fP(x.lines/tN)}) · ${fM(x.value)} (${fP(x.value/tV)})`,color:css('--lab')})),{lw:140,w:1000,rs:420,aria:'Tramos por valor de línea'});
+  $('find1c').innerHTML=`<div class="find"><b>Lectura.</b> Las ${fI(tier[4].lines)} líneas de más de $1 M son ${fP(tier[4].lines/tN)} de las líneas y ${fP(tier[4].value/tV)} del valor. Este es el lugar para una revisión de causa raíz obligatoria. En el otro extremo, ${fI(low)} líneas (${fP(low/tN)}) valen menos de $50 mil: allí el control debe ser liviano.</div>`;
+}
+render();
+
+/* Paso 2: hipótesis */
+const R=[
+ ['Mal pedido · recurrencia por cliente',MP,[
+   `${fI(A.mpRec.clients)} clientes con 20 o más días de crédito por este motivo = ${fP(A.mpRec.lines/A.mpRec.mplines)} de las líneas.`,
+   'ANA LONDERO, NUEVA ROSA y BOYOCCHI: 20 a 37 líneas por día de devolución, con más de 1.000 productos distintos cada una.',
+   '423 pares cliente-producto repiten el error en 3 días distintos o más (1.833 líneas, $114 M).'],
+   ['Hipótesis A: el cliente pide por un canal o pedido sugerido que no refleja su necesidad y devuelve el sobrante de forma sistemática.','Hipótesis B: el cliente usa la devolución como mecanismo de ajuste de stock, aceptado por costumbre.','Hipótesis C: errores de preparación en productos de presentaciones parecidas (a verificar con picking).'],
+   '¿Quién generó el error en cada línea de los 3 clientes principales? ¿El pedido original coincide con lo despachado?'],
+ ['Mal facturado · pocos eventos grandes',MF,[
+   '88% del valor en 10 clientes; 75% en días pico de 50 o más líneas.',
+   '17/04: 1 cliente, 374 líneas, $101 M (27% del motivo).',
+   'Precio acreditado = 51% del costo de reposición (en 49% de las líneas el precio es menor al costo).'],
+   ['Hipótesis A: error de lista de precios o de descuento aplicado en lote a un cliente (factura masiva rehecha).','Hipótesis B: cambio de condición comercial no cargado a tiempo en el sistema.','Hipótesis C: cantidades o unidades mal cargadas en pedidos grandes (29 unidades por línea).'],
+   '¿Qué pasó el 17/04, el 29/04, el 16/05 y el 11/09? ¿Hay un procedimiento de control de precios antes de emitir?'],
+ ['No solicitado · producto que el cliente no pidió',NS,[
+   '497 clientes, 44% del valor en 10; 3.738 líneas con 8,6 unidades por línea.',
+   'Productos de mayor valor: Forxiga, Vick Exhibidor Winter Season, Polper B12, Frevia, Dermaglos edición limitada.',
+   'Picos en abril y julio, ligados a clientes tipo droguería y transferencias (TRF).'],
+   ['Hipótesis A: envío de exhibidores, ediciones limitadas o promociones sin confirmación del cliente.','Hipótesis B: pedido cargado por ventas con cliente o producto equivocado.','Hipótesis C: sustitución de producto por faltante sin aviso.'],
+   '¿El pedido tiene registro de quién lo cargó y por qué canal? ¿Hay confirmación para productos promocionales?'],
+ ['Mal estado y cadena de frío · riesgo de producto',ME,[
+   'Mal estado: 2.110 líneas, $45,6 M (1,8% del valor), 1,5 unidades por línea.',
+   'Cadena de frío no enviada: 66 de 67 líneas en VME durante febrero (Novorapid y otros).',
+   'Especialidad medicinal concentra 59% del valor de Mal estado.'],
+   ['Hipótesis A: daños en manipulación o transporte, con baja frecuencia pero riesgo sanitario alto.','Hipótesis B: el episodio de febrero en VME fue una falla puntual de procedimiento de despacho de frío.'],
+   '¿Existe RNC o registro de desvío de temperatura asociado al episodio de VME de febrero y su CAPA verificada?']
+];
+$('rcaGrid').innerHTML=R.map(r=>`<div class="card"><h3 style="margin-top:0">${r[0]}</h3>
+ <div class="small mut">Evidencia en los datos</div><ul class="tight">${r[2].map(x=>`<li>${x}</li>`).join('')}</ul>
+ <div class="small mut">Hipótesis de causa (a validar)</div><ul class="tight">${r[3].map(x=>`<li>${x}</li>`).join('')}</ul>
+ <div class="small mut">Pregunta para el taller</div><p>${r[4]}</p></div>`).join('');
+$('mpShare').textContent=fP(MP.lines/tl);
+
+/* Paso 3: controles */
+const CT=[
+ ['C1','Catálogo de motivos con responsable y causa','Todos, sobre todo Mal pedido ('+fP(MP.lines/tl)+' de líneas)','Al emitir el crédito, dos listas desplegables obligatorias: responsable (cliente, ventas, facturación, preparación, transporte) y causa. Se fusiona "Acuerdo comercial" (6 líneas en 10 meses) con otro motivo.','Calidad + Sistemas','B','Alta'],
+ ['C2','Revisión de patrón por cliente reincidente','Los 3 a 10 clientes con más líneas ('+fP(A.lineConc['10'])+' de todas las líneas)','Reunión Comercial, Logística y Calidad con cada cliente: revisar origen del pedido, ventana de pedido, pedido sugerido y reglas de devolución. Semáforo mensual de reincidencia (días con crédito por mes).','Comercial + Calidad','M','Alta'],
+ ['C3','Alerta de precio y cantidad antes de facturar','Mal facturado (88% del valor en 10 clientes)','Regla en el sistema de facturación: bloqueo suave cuando el precio se desvía de lista o descuento vigente más de un umbral, o la cantidad supera el percentil 95 del cliente. Solo se revisa la excepción.','Facturación + Sistemas','M','Alta'],
+ ['C4','Confirmación de productos promocionales y de alto valor','No solicitado (exhibidores, ediciones limitadas, productos de alto precio)','Marca en el pedido para lo promocional y lo mayor a un monto definido: confirmación breve con el cliente o vendedor antes del despacho. Queda el registro de origen del pedido.','Ventas + Preparación','B','Media'],
+ ['C5','Verificación por escaneo en preparación, solo donde hay error','Mal pedido interno (confirmado por C1) en los productos y clientes con más repetición','Lectura de código en picking/packing únicamente para el Top de productos y pares cliente-producto con 3 o más días de error. Se amplía solo si baja el indicador.','Preparación','M','Media'],
+ ['C6','Revisión obligatoria de créditos grandes','Líneas de más de $1 M ('+fI(tier[4].lines)+' líneas, '+fP(tier[4].value/tV)+' del valor)','Revisión de causa raíz y visto bueno de Calidad o jefatura de Logística antes de cerrar el crédito, más una revisión mensual de los eventos del mes.','Calidad + Logística','B','Alta'],
+ ['C7','Nivelación de carga de devoluciones','Miércoles y viernes con 40% más líneas que el lunes','Programar recepción de devoluciones por ruta y día, con tope razonable por jornada. Se evalúa con el tiempo de ciclo del Paso 4.','Logística / Transporte','M','Media'],
+ ['C8','Mantener y cerrar el circuito de cadena de frío','Mal estado y Cadena de frío (2,4% del valor, riesgo alto)','Sin control nuevo: verificar que el episodio de VME de febrero tenga RNC con CAPA y verificación de eficacia, y que el registro de desvíos de temperatura lo cubra.','DT VME + Calidad','B','Alta']
+];
+const pr=p=>p==='Alta'?'t-hi':p==='Media'?'t-mid':'t-lo';
+$('tCtl').innerHTML='<tr><th>#</th><th>Control</th><th>Dónde pega</th><th>Cómo se integra al flujo</th><th>Responsable</th><th>Esfuerzo</th><th>Prioridad</th></tr>'+CT.map(c=>`<tr><td>${c[0]}</td><td><b>${c[1]}</b></td><td>${c[2]}</td><td>${c[3]}</td><td>${c[4]}</td><td>${c[5]}</td><td><span class="tag ${pr(c[6])}">${c[6]}</span></td></tr>`).join('');
+
+/* Paso 4: indicadores */
+const KP=[
+ ['Líneas de crédito por día hábil','Total de líneas ÷ días con actividad',nf1.format(lpd)+' (ene–oct); 166 en jul–oct','Este archivo','Bajar en jul–oct sostenido','Ya medible'],
+ ['Líneas por motivo y día hábil','Líneas del motivo ÷ días hábiles',`Mal pedido ${nf1.format(MP.lines/days)} · No solicitado ${nf1.format(NS.lines/days)} · Mal estado ${nf1.format(ME.lines/days)} · Mal facturado ${nf1.format(MF.lines/days)}`,'Este archivo','Según simulador (Paso 4)','Ya medible'],
+ ['Tasa de retrabajo logístico','Líneas de crédito ÷ líneas facturadas × 1.000','Sin dato','Líneas facturadas por mes (sistema de ventas)','Definir tras 2 meses de línea base','Falta denominador'],
+ ['First Pass Yield de pedido','Pedidos sin crédito posterior ÷ pedidos despachados','Sin dato','Pedidos despachados por mes','Definir tras línea base','Falta denominador'],
+ ['Reincidencia de clientes','Clientes con 3 o más días de crédito por Mal pedido en el mes ÷ clientes con crédito','Calculable mes a mes con este tablero','Este archivo','Bajar mes a mes en los 10 clientes tratados','Ya medible'],
+ ['Créditos mayores a $1 M','Cantidad y valor por mes',`${fI(tier[4].lines)} líneas en el período (${nf1.format(tier[4].lines/10)} por mes en promedio)`,'Este archivo','Todos con causa raíz documentada','Ya medible'],
+ ['Tiempo de ciclo del crédito','Fecha de nota de crédito − fecha de recepción de la devolución','Sin dato (el archivo tiene una sola fecha)','Fecha de recepción física en el registro','Definir tras línea base','Falta dato'],
+ ['Cobertura de causa registrada','Líneas con responsable y causa cargados ÷ líneas totales','0% hoy (campo no existe)','Control C1','≥ 95% a los 60 días','Nuevo']
+];
+$('tKpi').innerHTML='<tr><th>Indicador</th><th>Fórmula</th><th>Línea base</th><th>Fuente</th><th>Meta propuesta</th><th>Estado</th></tr>'+KP.map(k=>`<tr><td><b>${k[0]}</b></td><td>${k[1]}</td><td>${k[2]}</td><td>${k[3]}</td><td>${k[4]}</td><td><span class="tag ${k[5]==='Ya medible'?'t-lo':k[5]==='Nuevo'?'t-info':'t-mid'}">${k[5]}</span></td></tr>`).join('');
+
+/* Simulador */
+const SIM=[['Mal pedido',15],['No solicitado',25],['Mal facturado',40],['Mal estado',10]];
+$('simCtl').innerHTML=SIM.map((s,i)=>`<label>${s[0]}: reducción de líneas <b id="sv${i}">${s[1]}%</b><input type="range" min="0" max="80" value="${s[1]}" id="sr${i}"></label>`).join('');
+function sim(){
+  let l=0,v=0;SIM.forEach((s,i)=>{const p=+$('sr'+i).value/100;$('sv'+i).textContent=Math.round(p*100)+'%';const m=mot(s[0]);l+=m.lines*p;v+=m.value*p});
+  const min=Math.max(1,+$('simMin').value||8), h=l*min/60;
+  $('simRes').innerHTML=[[fI(l),'Líneas evitadas'],[nf1.format(l/days),'Líneas menos por día hábil'],[fP(l/tl),'Del total de líneas'],[nf.format(h),'Horas de trabajo liberadas'],[nf1.format(h/days),'Horas por día hábil'],[fM(v),'Valor de créditos evitado']].map(r=>`<div><div class="n">${r[0]}</div><div class="small mut">${r[1]}</div></div>`).join('');
+}
+SIM.forEach((_,i)=>$('sr'+i).addEventListener('input',sim));$('simMin').addEventListener('input',sim);sim();
+
+/* Paso 5 */
+const EL=[
+ ['Motivo "Acuerdo comercial"','6 líneas en 10 meses (0,1% del valor)','Fusionar con otro motivo o tratar como excepción comercial. Simplifica el catálogo (C1).','Bajo'],
+ ['Revisión manual de todos los créditos de bajo valor',`${fI(low)} líneas (${fP(low/tN)}) menores a $50 mil suman ${fP(lowV/tV)} del valor`,'Pasar a muestreo o regla automática, manteniendo siempre la inspección física del producto devuelto. Piloto de 4 semanas.','Medio'],
+ ['Planillas o registros que repiten datos del sistema','No visible en el archivo; relevar en el circuito','Reemplazar por el reporte automático de este tablero cuando el registro no sea requisito de BPD.','Bajo'],
+ ['Doble aprobación de créditos rutinarios','No visible en el archivo; relevar en el circuito','Dejar la segunda firma solo para líneas mayores a $200 mil o para eventos fuera de patrón (C6).','Medio'],
+ ['Informes manuales mensuales de créditos','No visible en el archivo','Sustituir por este tablero con filtros por sucursal, cliente y motivo.','Bajo']
+];
+$('tElim').innerHTML='<tr><th>Candidato</th><th>Evidencia</th><th>Propuesta</th><th>Riesgo de eliminar</th></tr>'+EL.map(e=>`<tr><td><b>${e[0]}</b></td><td>${e[1]}</td><td>${e[2]}</td><td><span class="tag ${e[3]==='Bajo'?'t-lo':'t-mid'}">${e[3]}</span></td></tr>`).join('');
+
+/* Plan 90 días */
+$('phases').innerHTML=[
+ ['Días 1 a 30 · Ordenar',['Pedir el denominador: líneas y pedidos despachados por mes.','Implementar C1: responsable y causa en el crédito.','Taller de causa raíz en CBA con los 3 clientes principales.','Revisar los 4 eventos de facturación (17/04, 29/04, 16/05, 11/09) y el episodio de VME.','Activar C6 para créditos mayores a $1 M.']],
+ ['Días 31 a 60 · Controlar',['Reunión con los primeros 10 clientes recurrentes (C2).','Regla de alerta de precio y cantidad en facturación (C3).','Marca de confirmación para promocionales (C4).','Talleres en RIO4 y VME.','Primer informe mensual con indicadores normalizados.']],
+ ['Días 61 a 90 · Verificar y simplificar',['Comparar 4 semanas antes y después de cada control.','Extender C5 solo si bajó el indicador.','Decidir sobre los candidatos del Paso 5.','Presentar resultados a Logística y a la DT; cargar en revisión por la dirección (ISO 9001 §9.3).']]
+].map(p=>`<div class="card phase"><h3 style="margin-top:0">${p[0]}</h3><ul class="tight">${p[1].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+
+/* Límites */
+$('limList').innerHTML=[
+ `El archivo contiene créditos, no ventas. Sin el total de líneas despachadas no se pueden calcular tasas ni First Pass Yield; hoy se trabaja con volumen y concentración.`,
+ `El valor está a precio de venta. El costo de reposición falta en ${fI(T.f1)} líneas (sin costo) y ${fI(T.f2)} están excluidas, por lo que cualquier comparación contra el costo es parcial y se usó solo como indicio.`,
+ `La fecha es la del crédito. No sirve para medir el tiempo de ciclo ni la demora entre recepción y nota de crédito.`,
+ `Las causas del Paso 2 son hipótesis construidas con patrones de los datos. Se confirman en taller con el personal antes de actuar.`,
+ `Las metas del simulador y los minutos por línea son supuestos para dimensionar el orden de magnitud, no compromisos.`,
+ `Los requisitos de la Disp. ANMAT 2069/2018 citados son generales. Antes de eliminar o modificar un control, verificar el texto exacto en el boletín oficial.`,
+ `Octubre llega hasta el 26/10 y se marca como incompleto.`
+].map(x=>`<li>${x}</li>`).join('');
+
+/* Botones */
+const root=document.documentElement;
+try{const t=localStorage.getItem('cr-theme'); if(t)root.dataset.theme=t;}catch(e){}
+const setLab=()=>$('bTheme').textContent=root.dataset.theme==='dark'?'Modo claro':'Modo oscuro';setLab();
+$('bTheme').onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('cr-theme',root.dataset.theme)}catch(e){};setLab();render()};
+$('bCsv').onclick=()=>{
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  let csv='﻿ID;Control;Donde pega;Como se integra;Responsable;Esfuerzo;Prioridad;Estado;Fecha objetivo\n'+CT.map(c=>[...c.map(q),q('Pendiente'),q('')].join(';')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='plan_accion_creditos_devolucion.csv';a.click();
+};
+})();
+</script>
+</body>
+</html>
